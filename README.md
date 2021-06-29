@@ -1,4 +1,4 @@
-# Rsrvyest - R Survey Estimation
+# rsrvyest - R Survey Estimation
 
 Repositorio desarrollado por el equipo de estadística y ciencia de datos del Departamento de Investigación Aplicada y Opinión (DIAO) de la UNAM.
 
