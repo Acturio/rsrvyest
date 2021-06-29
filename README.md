@@ -6,20 +6,24 @@ El desarrollo de esta librería tiene por objetivo crear el reporte de las frecu
 
 ## Instalación
 
+```
 > install.packages("devtools")
 > library(devtools)
 > install_github("Acturio/rsrvyest")
+```
 
 # Requisitos
 
 Para poder hacer uso de la librería *rsrvyest*, es importante tener instalada la librería y contar con la siguiente estructura de carpetas:
 
+```
   | data
     |- datos.sav
     |- lista_preguntas.xlsx
   | results
   | src
-  
+```
+
  # Uso
  
  Una vez que se cuenta con la carpeta *data* junto con los datos en formato .sav (spss) y la lista de pregunta que describe las preguntas para las cuales serán calculadas sus estadísticos univariados y bivariados, el análisis se realiza a través del siguiente flujo de funciones, las cuales pueden estar almacenadas en un archivo .R dentro de la carpeta *src*.
