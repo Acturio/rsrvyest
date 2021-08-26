@@ -39,7 +39,63 @@ disenio <- disenio_categorico(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos 
 
 disenio
 
-### Agregar pruebas unitarias librería argument check 
+### Funciones categorias respuestas Solo es para tabas cruzadas
+
+categorias_pregunta_formato <- function(pregunta, datos, metricas = TRUE){
+  
+  categs <- NULL
+  
+  categorias <- datos %>%
+    select(!!sym(pregunta)) %>%
+    pull()%>%
+    levels() %>% 
+    as_tibble() %>% 
+    mutate(
+      a = NA,
+      b = NA
+    )
+  
+  for (i in 1:nrow(categorias)){
+    categs <- c(categs, categorias[i,]) %>% unlist() %>% t() %>% as_tibble()
+  } 
+  
+  
+  if (metricas){
+    
+    categs <- NULL
+    
+    categorias %<>% 
+      mutate(c = NA)
+    
+    for (i in 1:nrow(categorias)){
+      categs <- c(categs, categorias[i,]) %>% unlist() %>% t() %>% as_tibble()
+    } 
+    
+  }
+  
+  return(categs)
+  
+}
+
+categorias_pregunta_formato(pregunta = 'P2', datos = dataset, metricas = TRUE)
+
+
+# Escribir en excel
+
+escribir_tabla <- function(tabla, wb, hoja, renglon, columna,
+                           bordes = 'surrounding', color_borde = 'black',
+                           estilo_borde = 'medium', filtro = FALSE,
+                           na = TRUE, reemplazo_na = '-',
+                           nombres_columnas = FALSE, estilo_encabezado = NULL){
+  
+  
+  writeData(wb = wb, sheet = hoja, x = tabla, startRow = renglon, 
+            startCol = columna, colNames = nombres_columnas, borders = bordes,
+            borderColour = color_borde, borderStyle = estilo_borde,
+            withFilter = filtro, keepNA = na, na.string = reemplazo_na,
+            col.names = nombres_columnas, headerStyle = estilo_encabezado)
+  
+}
 
 ################### Función survey mean y estadísticas
 
@@ -72,6 +128,7 @@ estadisticas_categoricas <- function(diseño, pregunta, na.rm = TRUE,
 }
 
 est <- estadisticas_categoricas(diseño = disenio, pregunta = 'P2')
+
 est
 
 ################## Función formatear tabla
@@ -119,6 +176,25 @@ formatear_tabla_categorica <- function(pregunta, datos, tabla){
 freq <- formatear_tabla_categorica(pregunta = 'P2', datos = dataset, tabla = est)
 freq
 
+
+####### Función escribir frecuencias simples en excel
+
+formato_frecuencias_simples <- function(tabla, wb, hojas = c(1,2) ,renglon, columna,
+                                        estilo_encabezado){
+  
+  # Primera Página renglón 2 columna 1
+  
+  escribir_tabla(tabla = tabla[[1]], wb = wb, hoja = hojas[1], renglon = renglon,
+                 columna = columna, nombres_columnas = TRUE, estilo_borde = 'thin',
+                 estilo_encabezado = estilo_encabezado)
+  
+  escribir_tabla(tabla = tabla[[2]], wb = wb, hoja = hojas[2], renglon = renglon,
+                 columna = columna, estilo_borde = 'thin', nombres_columnas = TRUE,
+                 estilo_encabezado = estilo_encabezado)
+  
+}
+
+
 ################## Función inicializar ínidces
 
 actualizar_indices <- function(k, k1, k2, k3, k4, np, tabla1, tabla2, tabla3, tabla4){
@@ -151,9 +227,9 @@ tablas_cruzadas_categoricas <- function(diseño, pregunta, dominio,
         proportion = proporcion,
         prop_method = metodo_prop,
         deff = na.rm),
-      total = survey_total(
+      total = round(survey_total(
         na.rm = na.rm
-      )
+      ), 0)
     )%>% 
     mutate(prop_low = ifelse(prop_low < 0, 0, prop_low),
            prop_upp = ifelse(prop_upp > 1, 1, prop_upp),
@@ -178,7 +254,7 @@ tablas_cruzadas_categoricas <- function(diseño, pregunta, dominio,
       names_glue = sprintf("{%s}_{.value}", {{pregunta}})) %>% 
     dplyr::rename(Categorias := !!sym(dominio))
 
-  doms <- c(dominio, rep(NA, nrow(estadisticas_wide) - 1))
+  doms <- rep(dominio, nrow(estadisticas_wide))
   
   estadisticas_wide <- bind_cols('Dominio' = doms, estadisticas_wide)
 
@@ -293,9 +369,9 @@ total_nacional <- function(diseño, pregunta, na.rm = TRUE,
         prop_method = metodo_prop,
         deff = DEFF
       ),
-      total = survey_total(
+      total = round(survey_total(
         na.rm = na.rm
-      )
+      ),0)
     ) %>% 
     mutate(prop_low = ifelse(prop_low < 0, 0, prop_low),
            prop_upp = ifelse(prop_upp > 1, 1, prop_upp),
@@ -327,9 +403,151 @@ f_n <- formatear_tabla_cruzada(pregunta = 'P2', datos = dataset, tabla = naciona
 
 f_n
 
-# Gráficas
+###### Funcion completa tabla cruzada pega dominios con total nacional 
 
-## Numero pregunta, añadir total?, valores, categorías.
+tabla_cruzada_total <- function(diseño, pregunta, datos, dominios = Dominios){
+  
+  # Tabla nacional
+  nacional <- total_nacional(diseño = diseño, pregunta = pregunta)
+  
+  f_n <- formatear_tabla_cruzada(pregunta = pregunta, datos = datos,
+                                 tabla = nacional)
+  
+  # Dominios de dispersión
+  
+  for (d in dominios) {
+    tc <- tablas_cruzadas_categoricas(diseño = diseño, pregunta = pregunta, 
+                                      dominio = d)
+    
+    f_tc <- formatear_tabla_cruzada(pregunta = pregunta, datos = datos, 
+                                    tabla = tc)
+    
+    f_n[[1]] <- rbind(f_n[[1]], f_tc[[1]])
+    f_n[[2]] <- rbind(f_n[[2]], f_tc[[2]])
+    
+    
+  }
+  
+  return(f_n)
+}
+
+
+#######  Formato Categorías
+
+formato_categorias <- function(tabla, pregunta, datos, wb, renglon, columna = 4,
+                               hojas = c(3,4), estilo_cuerpo){
+  
+  # Renglón 2 columna 4
+  
+  simples <- categorias_pregunta_formato(pregunta = pregunta, datos = datos,
+                                         metricas = FALSE)
+  
+  escribir_tabla(tabla = simples, wb = wb, hoja = hojas[1], renglon = renglon,
+                 columna = columna, bordes = 'surrounding', estilo_borde = 'thin',
+                 na = FALSE)
+  
+  for (k in seq(columna, ncol(tabla[[1]]), by=3)){
+    
+    mergeCells(wb = wb, sheet = hojas[1], cols = k:(k+2), rows = renglon)
+    addStyle(wb = wb, sheet = hojas[1], style = estilo_cuerpo, rows = renglon,
+             cols = k:(k+2), stack = TRUE)
+  }
+  
+  
+  metricas <- categorias_pregunta_formato(pregunta = pregunta, datos = datos,
+                                          metricas = TRUE)
+  
+  escribir_tabla(tabla = metricas, wb = wb, hoja = hojas[2], renglon = renglon,
+                 columna = columna, bordes = 'surrounding', estilo_borde = 'thin',
+                 na = FALSE)
+  
+  for (k in seq(columna, ncol(tabla[[2]]), by=4)) {
+    mergeCells(wb = wb, sheet = hojas[2], cols = k:(k+3), rows = renglon)
+    addStyle(wb = wb, sheet = hojas[2], style = estilo_cuerpo, rows = renglon,
+             cols = k:(k+3), stack = TRUE)
+  }
+  
+}
+
+# Formato Tablas Cruzadas 
+
+formato_tablas_cruzadas <- function(tabla, wb, renglon, columna = 1, hojas = c(3,4),
+                                    estilo_encabezado = headerStyle,
+                                    estilo_tabla = horizontalStyle){
+  
+  
+  # renglón 3 columna 1
+  escribir_tabla(tabla = tabla[[1]], wb = wb, hoja = hojas[1], renglon = renglon,
+                 columna = columna, bordes = 'surrounding', estilo_borde = 'thin',
+                 na = TRUE, reemplazo_na = '-', nombres_columnas = TRUE,
+                 estilo_encabezado = estilo_encabezado)
+  
+  
+  
+  escribir_tabla(tabla = tabla[[2]], wb = wb, hoja = hojas[2], renglon = renglon,
+                 columna = columna, bordes = 'surrounding', na = TRUE,
+                 reemplazo_na = '-', nombres_columnas = TRUE, estilo_borde = 'thin',
+                 estilo_encabezado = estilo_encabezado)
+  
+  
+}
+
+
+###############################
+
+# Merge Dominios y Líneas Horizontales
+
+estilo_dominios <- function(tabla, wb, columna = 1, hojas = c(3,4), dominios,
+                            renglon, estilo_dominios = horizontalStyle,
+                            estilo_merge_dominios = bodyStyle){
+  
+  # Renglón donde se empieza a escribir la tabla cruzada + 1 para linea horizontal nacional 
+  
+  r <- renglon + 1
+  
+  dominios_general <- c('General', dominios)
+  
+  for (d in dominios_general) {
+    tope <- tabla[[1]] %>% select(Dominio) %>% filter(Dominio == d) %>% nrow()
+    
+    for (i in hojas){
+      mergeCells(wb = wb, sheet = i, cols = 1, rows = r:(r+tope-1))
+      addStyle(wb = wb, sheet = i, cols = 1, rows = r:(r+tope-1), style = estilo_merge_dominios,
+               stack = TRUE)
+    }
+    
+    addStyle(wb = wb, sheet = hojas[1], cols = 1:ncol(tabla[[1]]), rows = (r+tope-1),
+             style = estilo_dominios, stack = TRUE)
+    
+    addStyle(wb = wb, sheet = hojas[2], cols = 1:ncol(tabla[[2]]), rows = (r+tope-1),
+             style = estilo_dominios, stack = TRUE)
+    
+    r <- r + tope
+  }
+}
+
+######### Líneas Verticales
+
+estilo_columnas <- function(tabla, wb, hojas = c(3,4), estilo = verticalStyle){
+  
+  secuencia_1 <- c(-1,0,1, seq(4, ncol(tabla[[1]]), by=3))
+  
+  for (k in secuencia_1){
+    addStyle(wb = wb, sheet = hojas[1], cols = (k+2), rows = 3:(3+nrow(tabla[[1]])),
+             style = estilo, stack = TRUE)
+  }
+  secuencia_2 <- c(-2, -1, 0, seq(4, ncol(tabla[[2]]), by=4))
+  
+  for (k in secuencia_2 ) {
+    addStyle(wb = wb, sheet = hojas[2], cols = (k+3), rows = 3:(3+nrow(tabla[[1]])),
+             style = verticalStyle, stack = TRUE)
+  }
+  
+}
+
+
+
+##### Gráficas
 
 ## Tabla creada en la función estadisticas_categoricas 
 
@@ -355,7 +573,7 @@ graficas <- function(tabla, x, y, pregunta, titulo, subtitulo, leyenda,
 }
 
 
-graf <- graficas(tabla = est, x = 'P2', y = 'prop', pregunta = Lista_Preg[2],
+graf <- graficas(tabla = est, x = 'Respuesta', y = 'prop', pregunta = Lista_Preg[2],
                 titulo = 'Aquí título', subtitulo = 'Aquí subtítulo',
                 leyenda = 'Gráfica relacionada a la pregunta:',
                 y_lab = 'Aquí y_lab',
@@ -365,111 +583,162 @@ graf <- graficas(tabla = est, x = 'P2', y = 'prop', pregunta = Lista_Preg[2],
 graf
 
 
-# FORS
-
-est <- estadisticas_categoricas(diseño = disenio, pregunta = 'P2')
-  
-freq <- formatear_tabla_categorica(pregunta = 'P2', datos = dataset, tabla = est)
-  
-nacional <- total_nacional(diseño = disenio, pregunta = 'P2')
-
-prueba <- formatear_tabla_cruzada(pregunta = 'P2', datos = dataset, tabla = nacional)
-
-doms <- c('Sexo', 'Edad', 'Año_electivo', 'Ocupación_P', 'Ocupación_M')
-
-  for (d in Dominios) {
-    tc <- tablas_cruzadas_categoricas(diseño = disenio, pregunta = 'P2' , 
-                                      dominio = 'Año_electivo')
-    
-    f_tc <- formatear_tabla_cruzada(pregunta = 'P2', datos = dataset, 
-                                     tabla = tc)
-    
-    prueba[[1]] <- rbind(prueba[[1]], f_tc[[1]])
-    prueba[[2]] <- rbind(prueba[[2]], f_tc[[2]])
-    
-  }
-
-# Solo es para tabas cruzadas
-
-categorias_pregunta_formato <- function(pregunta, datos, metricas = TRUE){
-  
-  categs <- NULL
-  
-  categorias <- datos %>%
-    select(!!sym(pregunta)) %>%
-    pull()%>%
-    levels() %>% 
-    as_tibble() %>% 
-    mutate(
-      a = NA,
-      b = NA
-    )
-  
-  for (i in 1:nrow(categorias)){
-    categs <- c(categs, categorias[i,]) %>% unlist() %>% t() %>% as_tibble()
-  } 
-  
-  
-  if (metricas){
-    
-    categs <- NULL
-    
-    categorias %<>% 
-      mutate(c = NA)
-    
-    for (i in 1:nrow(categorias)){
-      categs <- c(categs, categorias[i,]) %>% unlist() %>% t() %>% as_tibble()
-    } 
-    
-  }
-  
-  return(categs)
-  
-}
-
-categorias_pregunta_formato(pregunta = 'P2', datos = dataset, metricas = TRUE)
 
 ## Estilos
 
-{headerStyle <- createStyle(
+{
+  headerStyle <- createStyle(
   fontSize = 11, fontColour = "black", halign = "center",
   border = "TopBottom", borderColour = "black",
-  borderStyle = c('thin', 'double'), textDecoration = 'bold'
-)
+  borderStyle = c('thin', 'double'), textDecoration = 'bold')
   
-  bodyStyle <- createStyle(halign = "center",
-                           border = "TopBottomLeftRight",
+  bodyStyle <- createStyle(halign = 'center', border = "TopBottomLeftRight",
                            borderColour = "black", borderStyle = 'thin',
                            valign = 'top')
   
-  verticalStyle <- createStyle(halign = "center",
-                               border = "Right",
+  verticalStyle <- createStyle(border = "Right",
                                borderColour = "black", borderStyle = 'thin',
                                valign = 'top')
   
-  bodyStyleCategs <- createStyle(fontSize = 11, fontColour = "black", halign = "center",
-                                 textDecoration = 'bold', border = "TopBottom",
-                                 borderColour = "black",
-                                 borderStyle = c('thin', 'thin'))}
+  horizontalStyle <- createStyle(border = "bottom",
+                                 borderColour = "black", borderStyle = 'thin')
+  
+  }
 
 
-## Escribir en excel
+##############################################################################
+##############################################################################
+################################ FRECUENCIAS SIMPLES #########################
+##############################################################################
+##############################################################################
 
-escribir_tabla <- function(tabla, wb, hoja, renglon, columna,
-                           bordes = 'surrounding', color_borde = 'black',
-                           estilo_borde = 'medium', filtro = FALSE,
-                           na = TRUE, reemplazo_na = '-',
-                           nombres_columnas = FALSE, estilo_encabezado = NULL){
+# Renglón 1, columna 1 siempre
+
+frecuencias_simples <- function(pregunta, num_pregunta, datos, lista_preguntas,
+                                diseño, wb, renglon, columna = 1, hojas = c(1,2),
+                                estilo_encabezado = headerStyle){
+  
+  # Título Pregunta
+  
+  np <- lista_preguntas[[num_pregunta]]
+  
+  escribir_tabla(tabla = np, wb = wb, hoja = hojas[1], renglon = renglon, columna = columna)
+  
+  escribir_tabla(tabla = np, wb = wb, hoja = hojas[2], renglon = renglon, columna = columna)
   
   
-  writeData(wb = wb, sheet = hoja, x = tabla, startRow = renglon, 
-            startCol = columna, colNames = nombres_columnas, borders = bordes,
-            borderColour = color_borde, borderStyle = estilo_borde,
-            withFilter = filtro, keepNA = na, na.string = reemplazo_na,
-            col.names = nombres_columnas, headerStyle = estilo_encabezado)
+  est <- estadisticas_categoricas(diseño = diseño, pregunta = pregunta)
+  
+  freq <- formatear_tabla_categorica(pregunta = pregunta, datos = datos, tabla = est)
+  
+  
+  formato_frecuencias_simples(tabla = freq, wb = wb, renglon = (renglon + 1), 
+                              columna = columna, estilo_encabezado = estilo_encabezado)
   
 }
 
+frecuencias_simples(pregunta = preg, num_pregunta = 2,
+                    lista_preguntas = Lista_Preg, hojas = c(1,2), datos = dataset, 
+                    diseño = disenio, wb = wb, renglon = 1)
+
+
+################################################################################
+################################################################################
+################################## TABLAS CRUZADAS #############################
+################################################################################
+################################################################################
+
+#renglón 1 columna 1 siempre
+
+tabla_cruzada <- function(pregunta, num_pregunta, lista_preguntas, dominios, 
+                          datos, diseño, wb, renglon, columna = 1, hojas = c(3,4),
+                          estilo_encabezado = headerStyle, 
+                          estilo_categorias = bodyStyle,
+                          estilo_tabla = horizontalStyle
+                          ){
+  
+  # Título pregunta
+  
+  np <- lista_preguntas[[num_pregunta]]
+  
+  escribir_tabla(tabla = np, wb = wb, hoja = hojas[1], renglon = renglon, columna = columna)
+  
+  escribir_tabla(tabla = np, wb = wb, hoja = hojas[2], renglon = renglon, columna = columna)
+  
+  # Tabla Cruzada 
+  
+  f <- tabla_cruzada_total(diseño = diseño, pregunta = pregunta, datos = datos,
+                           dominios = dominios)
+
+  # Formato Categorías empieza en el renglón 2
+  
+  formato_categorias(tabla = f, pregunta = pregunta, datos = datos, wb = wb,
+  renglon = (renglon + 1), columna = (columna + 3), hojas = hojas,
+  estilo_cuerpo = estilo_categorias)
+
+  
+  # Escribir tabla Cruzada empieza en el renglón 3
+
+  formato_tablas_cruzadas(tabla = f, wb = wb, renglon = (renglon + 2),
+                          columna = columna, hojas = hojas,
+                          estilo_encabezado = estilo_encabezado,
+                          estilo_tabla = estilo_tabla)
+  
+  # Estilo dominios empieza en el renglón 3
+  
+  estilo_dominios(tabla = f, wb = wb, columna = columna, dominios = Dominios,
+                  hojas = hojas, renglon = (renglon + 2))
+  
+  
+  # Estilo columnas 
+  
+  estilo_columnas(tabla = f, hojas = hojas ,wb = wb)
+
+  
+}
+
+
+tabla_cruzada(pregunta = preg, lista_preguntas = Lista_Preg, num_pregunta = 2,
+              dominios = Dominios, datos = dataset, hojas = c(3,4),
+              diseño = disenio, wb = wb, renglon = 1, columna = 1)
+
+
+
+################################################################################
+################################################################################
+########################## PREGUNTAS CATEGÓRICAS ###############################
+################################################################################
+################################################################################
+
+preguntas_categoricas <- function(pregunta, numero_pregunta, datos, lista_preguntas,
+                                  dominios, diseño, wb, renglon, columna,
+                                  hojas_simples = c(1,2), hojas_cruzadas = c(3,4), 
+                                  frecuencias_simples = TRUE, tablas_cruzadas = TRUE){
+  
+  if (frecuencias_simples){
+    
+    frecuencias_simples(pregunta = pregunta, num_pregunta = numero_pregunta,
+                        lista_preguntas = lista_preguntas, datos = datos,
+                        diseño = diseño, wb = wb, hojas = hojas_simples,
+                        renglon = renglon)
+    
+  }
+  
+  if (tablas_cruzadas){
+    
+    tabla_cruzada(pregunta = pregunta, lista_preguntas = lista_preguntas,
+                  num_pregunta = numero_pregunta, dominios = dominios,
+                  datos = datos, diseño = diseño, wb = wb, hojas = hojas_cruzadas,
+                  renglon = renglon, columna = columna)
+    
+  }
+  
+  
+  
+}
+
+
+###### Prueba 
 
 wb <- openxlsx::createWorkbook()
 options("openxlsx.numFmt" = "0.0")
@@ -482,121 +751,14 @@ options("openxlsx.numFmt" = "0.0")
 }
 
 
-################## PRIMERA PROPUESTA
-# Escribimos primero el nombre de la pregunta en el primer renglón primera columna
+## Dinámico: pregunta, numero de pregunta, renglon
 
-np <- Lista_Preg[2]
+preguntas_categoricas(pregunta = preg, numero_pregunta = 2, datos = dataset,
+                      lista_preguntas = Lista_Preg, dominios = Dominios,
+                      diseño = disenio, wb = wb, renglon = 1, columna = 1,
+                      frecuencias_simples = TRUE, tablas_cruzadas = TRUE)
 
-for (i in 1:4) {
-  escribir_tabla(tabla = np, wb = wb, hoja = i, renglon = 1, columna = 1, bordes = 'none')
-}
-
-# Escribimos las tablas de fecuencias simples en las hojas 1 y 2 columna 1 renglón 2
-
-escribir_tabla(tabla = freq[[1]], wb = wb, hoja = 1, renglon = 2, columna = 1, 
-               nombres_columnas = TRUE, estilo_borde = 'thin',
-               estilo_encabezado = headerStyle)
-
-mergeCells(wb = wb, sheet = 1, cols = 1:5, rows = 1)
-
-escribir_tabla(tabla = freq[[2]], wb = wb, hoja = 2, renglon = 2, columna = 1, 
-              estilo_borde = 'thin', nombres_columnas = TRUE, estilo_encabezado = headerStyle)
-
-mergeCells(wb = wb, sheet = 2, cols = 1:5, rows = 1)
-
-# Escribimos las categorías en las de la pregunta en el segundo renglón cuarta columna (tablas cruzadas)
-
-simples <- categorias_pregunta_formato(pregunta = 'P2', datos = dataset, metricas = FALSE)
-
-escribir_tabla(tabla = simples, wb = wb, hoja = 3, renglon = 2, columna = 4, 
-               bordes = 'surrounding', estilo_borde = 'thin',  na = FALSE)
-
-addStyle(wb = wb, sheet = 3, style = bodyStyleCategs, rows = 2, cols = 4:15)
-
-a <- f_tc[[1]] %>% nrow() -1 + 2 + 2
-
-mergeCells(wb = wb, sheet = 3, cols = 4:6, rows = 2 )
-addStyle(wb = wb, sheet = 3, style = bodyStyle, rows = 2, cols = 4:6, stack = TRUE)
-
-mergeCells(wb = wb, sheet = 3, cols = 7:9, rows = 2 )
-addStyle(wb = wb, sheet = 3, style = bodyStyle, rows = 2, cols = 7:9, stack = TRUE)
-
-mergeCells(wb = wb, sheet = 3, cols = 10:12, rows = 2 )
-addStyle(wb = wb, sheet = 3, style = bodyStyle, rows = 2, cols = 10:12, stack = TRUE)
-
-mergeCells(wb = wb, sheet = 3, cols = 13:15, rows = 2 )
-addStyle(wb = wb, sheet = 3, style = bodyStyle, rows = 2, cols = 13:15, stack = TRUE)
-
-
-for (k in seq(4, 15, by=3)) {
-  print(c(k, k+2))
-  
-   mergeCells(wb = wb, sheet = 3, cols = k:(k+2), rows = 2 )
-   addStyle(wb = wb, sheet = 3, style = bodyStyle, rows = 2, cols = k:(k+2), stack = TRUE)
-#   
-#   
- }
-
-metricas <- categorias_pregunta_formato(pregunta = 'P2', datos = dataset, metricas = TRUE)
-
-escribir_tabla(tabla = metricas, wb = wb, hoja = 4, renglon = 2, columna = 4, 
-               bordes = 'surrounding', estilo_borde = 'thin', na = FALSE)
-
-addStyle(wb = wb, sheet = 4, style = bodyStyleCategs, rows = 2, cols = 4:16)
-
-
-# Escribimos tablas cruzadas en hoja 3 y 4 
-
-escribir_tabla(tabla = f_tc[[1]], wb = wb, hoja = 3, renglon = 3, columna = 1,
-               bordes = 'surrounding', estilo_borde = 'thin', na = TRUE, 
-               reemplazo_na = '-', nombres_columnas = TRUE,
-               estilo_encabezado = headerStyle)
-
-
-escribir_tabla(tabla = f_tc[[2]], wb = wb, hoja = 4, renglon = 3, columna = 1,
-               bordes = 'surrounding', na = TRUE, reemplazo_na = '-', 
-               nombres_columnas = TRUE, estilo_borde = 'thin',
-               estilo_encabezado = headerStyle)
-
-
-# Mergeamos celdas repetidas de dominios y Pregunta (renglón 1)
-
-f_tc[[1]] %>% ncol() -1
-
-mergeCells(wb = wb, sheet = 3, cols = 1, rows = 4:8)
-mergeCells(wb = wb, sheet = 3, cols = 1:15, rows = 1)
-addStyle(wb = wb, sheet = 3, style = bodyStyle,  cols = 1, rows = 4:8)
-
-mergeCells(wb = wb, sheet = 4, cols = 1, rows = 4:8)
-mergeCells(wb = wb, sheet = 4, cols = 1:15, rows = 1)
-addStyle(wb = wb, sheet = 4, style = bodyStyle,  cols = 1, rows = 4:8)
-
-
-# Líneas verticales
-
-
-# Categorias 
- addStyle(wb = wb, sheet = 3, cols = 2, rows = 3:8, style = verticalStyle, stack = TRUE)
- 
- # Total
- addStyle(wb = wb, sheet = 3, cols = 3, rows = 3:8, style = verticalStyle, stack = TRUE)
- 
-# Tablas cruzadas
- 
-addStyle(wb = wb, sheet = 3, cols = 6, rows = 3:8, style = verticalStyle, stack = TRUE)
-addStyle(wb = wb, sheet = 3, cols = 9, rows = 3:8, style = verticalStyle, stack = TRUE)
-addStyle(wb = wb, sheet = 3, cols = 12, rows = 3:8, style = verticalStyle, stack = TRUE)
-addStyle(wb = wb, sheet = 3, cols = 15, rows = 3:8, style = verticalStyle, stack = TRUE)
-
-
-
-openxlsx::openXL(wb)
-
-
+openXL(wb)
 
 openxlsx::saveWorkbook(wb, "Prueba.xlsx", overwrite = TRUE)
-
-
-
-
 
