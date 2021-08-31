@@ -1,5 +1,4 @@
-#Hola
-#mundo
+#Funciones Continuas
 
 library(foreign)
 library(readxl)
@@ -8,9 +7,19 @@ library(dplyr)
 library(tidyr)
 library(xlsx)
 library(caret)
+library(srvyr)
+library(openxlsx)
+library(srvyr)
+library(reshape)
+library(tibble)
+library(stringr)
 
 base = "BASE_CONACYT_260118.sav" #base.sav
 lista = "Lista de Preguntas.xlsx" #archivo lista de variables
+
+#################### función leer_datos ##########################
+### argumentos base (string): nombre del archivo con extención ("BASE_CONACYT_260118.sav")
+# Lista de preguntas (string): nombre del archivo con extensión ("Lista de Preguntas.xlsx")             
 
 leer_datos <- function(base, lista){
   #se asume misma organización de carpetas 
@@ -42,12 +51,14 @@ leer_datos <- function(base, lista){
   #return: lista de listas de preguntas, acceder []
 }
 
-#ver etiqueta vars continuas SPSS*
+#ejemplo función leer_datos
 listaD <- leer_datos("BASE_CONACYT_260118.sav","Lista de Preguntas.xlsx")
 
-
-library(srvyr)
-
+#########################################################################################
+#################### función crea_disenio ##########################
+# función para crear diseño muestral, los argumentos con data, id, estrato, y pesos.
+#archivo <- paste0("data/", base)
+#dataset <- read.spss(archivo, to.data.frame = TRUE) 
 crea_disenio <- function(data, id, cestrato, cpesos){
   
   disenio <- data %>% 
@@ -60,45 +71,23 @@ crea_disenio <- function(data, id, cestrato, cpesos){
   return(disenio)
 }
 
+#ejemplo función crea_disenio
 mdesign <- crea_disenio(dataset, CV_ESC, ESTRATO, Pondi1)
 
-library(srvyr)
-frecuencias_continuas <- function(disenio, pregunta, na.rm = TRUE,
-                                  vartype = c("se", "ci", "cv", "var"), 
-                                  level = 0.95, proportion = FALSE, prop_method = "likelihood",
-                                  DEFF = TRUE) {
 
-  estadisticas <- {{disenio}} %>% 
-    #srvyr::group_by(!!sym(pregunta)) %>% 
-    srvyr::summarise(
-      prop = survey_mean(
-        as.numeric(!!sym(pregunta)),
-        na.rm = na.rm,
-        vartype = vartype,
-        level = level,
-        proportion = proportion,
-        prop_method = prop_method,
-        deff = DEFF
-      ),
-      #total = survey_total(
-      #  na.rm = na.rm,
-      #  vartype = vartype,
-      #  deff = DEFF
-      #)
-    ) %>% 
-      mutate(prop_low = ifelse(prop_low < 0, 0, prop_low),
-             prop_upp = ifelse(prop_upp > 1, 1, prop_upp)) %>% 
-      as.data.frame()
-  
-  return(estadisticas)
-  
-}
+#########################################################################################
+#################### función estadíticas_continuas ##########################
+# función para crear df de frecuencias para variables continuas
 
-
-#las buenas
-
+disenio <- mdesign
 cuantiles = c(0,0.25, 0.5, 0.75,1)
 pregunta <- listaD[[4]][1]
+na.rm = TRUE
+vartype = c("se", "ci", "cv", "var")
+level = 0.95
+proportion = FALSE
+prop_method = "likelihood"
+DEFF = TRUE
 
 estadisticas_continuas <- function(disenio, pregunta, na.rm = TRUE,
                                   vartype = c("se", "ci", "cv", "var"), 
@@ -133,9 +122,15 @@ estadisticas_continuas <- function(disenio, pregunta, na.rm = TRUE,
   
 }
 
+# ejemplo función estadisticas_continuas
+tf <- estadisticas_continuas(mdesign, pregunta, TRUE, vartype, level, FALSE, "likelihood",
+                             TRUE, cuantiles)
 
-library(reshape)
-df <- estadisticas
+#########################################################################################
+#################### función acomoda_frecuencias ##########################
+# función para acomodar df de frecuencias para variables continuas
+
+df <- tf
 
 acomoda_frecuencias <- function(df){
   df_t <- df %>% 
@@ -157,10 +152,16 @@ acomoda_frecuencias <- function(df){
   
 }
 
+#ejemplo acomoda_frecuencias
+tf <- acomoda_frecuencias(df)
 
-#total
-#total
-library(tibble)
+########################## Iniciamos tablas cruzadas #########################
+
+
+#########################################################################################
+#################### función total ##########################
+# función para calcular estadisticas del total poblacional, la cual es complemento de la 
+# función tabla_cruzada para generar la tabla cruzada final :3
 
 total <- function(disenio, pregunta, na.rm = TRUE,
                   vartype = c("se", "ci", "cv", "var"), 
@@ -189,12 +190,14 @@ total <- function(disenio, pregunta, na.rm = TRUE,
   
 }
 
-
-#for sobre lista de preguntas
-#for sobre dominios
-library(stringr)
+#####
 Dominios <- listaD[[5]]
 dominio = Dominios[1]
+
+
+#########################################################################################
+#################### función tabla_cruzada ##########################
+# función para cruces con dominios
 
 tabla_cruzada <- function(disenio, pregunta, dominio, na.rm = TRUE,
                           vartype = c("se", "ci", "cv", "var"), 
@@ -224,8 +227,11 @@ tabla_cruzada <- function(disenio, pregunta, dominio, na.rm = TRUE,
   return(cruce)
 }
 
-tabla <- total
 #prueba
+tabla <- total
+
+#for sobre lista de preguntas
+#for sobre dominios
 for (dom in Dominios){
   
   print(dom)
@@ -239,10 +245,8 @@ for (dom in Dominios){
   
 }
 
-
-
 #calcula totales
-#formato tabla 
+#formato tabla si se elige tabla con media o limites o si se eligen las otras variables.
 df = tabla
 
 formato_tabla <- function(df){
@@ -263,16 +267,11 @@ formato_tabla <- function(df){
 
 
 
-#####################################################################3
+#####################################################################
 #formato excel frecuencias
 
-#1. estadisticas_continuas
-#2. acomoda_frecuencias
-
-#3. resultado = nvo_df
-
-library(openxlsx)
-
+#########################################################################
+# codigo prueba
 wb <- createWorkbook()
 addWorksheet(wb, "writeData auto-formatting")
 
@@ -290,18 +289,107 @@ addStyle(wb, 1, style = s, rows = 3:14, cols = 3, stack = T)
 openXL(wb)
 #saveWorkbook(wb, "results/frecuencias.xlsx", overwrite = TRUE)
 
+#########################################################################3
+#funcion_frecuencias_excel
+wb <- createWorkbook()
+addWorksheet(wb, "writeData auto-formatting")
+#renglon y columna de inicio
+colini = 2
+rowini = 2
 
-#funcion_frecuencias
 
-tabla_frec <- function(df){
+tabla_frec_excel <- function(df, colini, rowini){
+  hs1 <- createStyle(halign = "CENTER", textDecoration = "Bold",
+                     border = "TopBottomLeftRight", fontColour = "black",
+                     borderStyle = "medium", borderColour = "black")
+  s <- createStyle(numFmt = "0", valign = "center")
+  
+  kol <- ncol(df)
+  #rnows df
+  ren <- rowini+nrow(df)
+  
+  writeData(wb, 1, df, startRow = rowini, startCol = colini, headerStyle = hs1,
+            borders = "columns", borderStyle = "medium", colNames = TRUE,
+            borderColour = "black")
+  #manipulo renglones
+  rf <- rowini+ren
+  ri <- rowini+1
+  #cols afectadas con numero y centrados
+  addStyle(wb, 1, style = s, rows = ri:rf, cols = 3, stack = T, gridExpand = T)
+  #formato interior
+  c=0
+  finicio = rowini
+  return(openXL(wb))  
+}
+
+
+
+function(df, colini, rowini){
+  
+  hs1 <- createStyle(halign = "CENTER", textDecoration = "Bold",
+                     border = "TopBottomLeftRight", fontColour = "black",
+                     borderStyle = "medium", borderColour = "black")
+  #Formato de número y centrado
+  s <- createStyle(numFmt = "0.0", halign = "center", valign = "center")
+  #centrado
+  
+  centerStyle <- createStyle(valign = "center")
+  insideBorders <- createStyle(
+    border = "bottom",
+    borderStyle = "thin"
+  )
+  
+  #ncols df
+  kol <- ncol(df)
+  #rnows df
+  ren <- rowini+nrow(df)
+  
+  writeData(wb, 1, df, startRow = rowini, startCol = colini, headerStyle = hs1,
+            borders = "columns", borderStyle = "medium", colNames = TRUE,
+            borderColour = "black")
+  #manipulo renglones
+  rf <- rowini+ren
+  ri <- rowini+1
+  #cols afectadas con numero y centrados
+  addStyle(wb, 1, style = s, rows = ri:rf, cols = (colini+2):(colini+kol-1), stack = T, gridExpand = T)
+  #formato interior
+  c=0
+  finicio = rowini
+  
+  
+  for (dom in Dominios){
+    
+    print(dom)
+    
+    for (k in finicio:ren){
+      
+      if (df[k,1]==dom){
+        c = c + 1
+      } else {
+        c = c
+      }
+      
+      i = c - 1
+    }
+    
+    mergeCells(wb, 1, cols = 2, rows = (finicio + 2): (finicio + 2 + i))
+    addStyle(wb, 1, centerStyle, rows = (finicio + 2): (finicio + 2 + i), cols = 2, stack = T, gridExpand = T)
+    addStyle(wb, 1, insideBorders, rows = finicio + 2 + i, cols = 2:(kol+1), stack = T, gridExpand = T)
+    finicio = finicio + c
+    c = 0
+  }
+  
+  return(openXL(wb))  
   
 }
 
-#####################################################################3
-#formato excel TC
 
-library(openxlsx)
 
+###############################################################################
+######################## formato excel TC #####################################
+ 
+##############################################################################
+# codigo prueba 
 wb <- createWorkbook()
 addWorksheet(wb, "writeData auto-formatting")
 
@@ -367,8 +455,11 @@ for (dom in Dominios){
 openXL(wb)
 
 
-####################################################################################
-library(openxlsx)
+#######################################################################################
+
+
+
+#tabla excel tablas cruzadas continuas 
 
 wb <- createWorkbook()
 addWorksheet(wb, "writeData auto-formatting")
