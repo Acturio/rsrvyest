@@ -1,3 +1,4 @@
+
 {
 library(tidyverse)
 library(srvyr)
@@ -134,7 +135,7 @@ est
 ################## Función formatear tabla
 # Necesitamos pensar en el nombre de esta función
 
-formatear_tabla_categorica <- function(pregunta, datos, tabla){
+formatear_tabla_categorica <- function(tabla){
   
   # row.names(tabla) <- datos %>% 
   #   pull(!!sym(pregunta)) %>% 
@@ -168,12 +169,12 @@ formatear_tabla_categorica <- function(pregunta, datos, tabla){
             "Coef. Var." = prop_cv,
             "DEFF" = prop_deff
      ) %>% 
-     select(Respuesta, "Err. Est." , "Var.", "Coef. Var.", "DEFF") 
+     select(Respuesta, "Err. Est." , "Coef. Var.", "Var.","DEFF") 
 
   return(list(tabla1, tabla2))
 }
 
-freq <- formatear_tabla_categorica(pregunta = 'P2', datos = dataset, tabla = est)
+freq <- formatear_tabla_categorica(tabla = est)
 freq
 
 
@@ -434,40 +435,40 @@ tabla_cruzada_total <- function(diseño, pregunta, datos, dominios = Dominios){
 
 #######  Formato Categorías
 
-formato_categorias <- function(tabla, pregunta, datos, wb, renglon, columna = 4,
-                               hojas = c(3,4), estilo_cuerpo){
-  
-  # Renglón 2 columna 4
-  
-  simples <- categorias_pregunta_formato(pregunta = pregunta, datos = datos,
-                                         metricas = FALSE)
-  
-  escribir_tabla(tabla = simples, wb = wb, hoja = hojas[1], renglon = renglon,
-                 columna = columna, bordes = 'surrounding', estilo_borde = 'thin',
-                 na = FALSE)
-  
-  for (k in seq(columna, ncol(tabla[[1]]), by=3)){
-    
-    mergeCells(wb = wb, sheet = hojas[1], cols = k:(k+2), rows = renglon)
-    addStyle(wb = wb, sheet = hojas[1], style = estilo_cuerpo, rows = renglon,
-             cols = k:(k+2), stack = TRUE)
-  }
-  
-  
-  metricas <- categorias_pregunta_formato(pregunta = pregunta, datos = datos,
-                                          metricas = TRUE)
-  
-  escribir_tabla(tabla = metricas, wb = wb, hoja = hojas[2], renglon = renglon,
-                 columna = columna, bordes = 'surrounding', estilo_borde = 'thin',
-                 na = FALSE)
-  
-  for (k in seq(columna, ncol(tabla[[2]]), by=4)) {
-    mergeCells(wb = wb, sheet = hojas[2], cols = k:(k+3), rows = renglon)
-    addStyle(wb = wb, sheet = hojas[2], style = estilo_cuerpo, rows = renglon,
-             cols = k:(k+3), stack = TRUE)
-  }
-  
-}
+        formato_categorias <- function(tabla, pregunta, datos, wb, renglon, columna = 4,
+                                       hojas = c(3,4), estilo_cuerpo){
+          
+          # Renglón 2 columna 4
+          
+          simples <- categorias_pregunta_formato(pregunta = pregunta, datos = datos,
+                                                 metricas = FALSE)
+          
+          escribir_tabla(tabla = simples, wb = wb, hoja = hojas[1], renglon = renglon,
+                         columna = columna, bordes = 'surrounding', estilo_borde = 'thin',
+                         na = FALSE)
+          
+          for (k in seq(columna, ncol(tabla[[1]]), by=3)){
+            
+            mergeCells(wb = wb, sheet = hojas[1], cols = k:(k+2), rows = renglon)
+            addStyle(wb = wb, sheet = hojas[1], style = estilo_cuerpo, rows = renglon,
+                     cols = k:(k+2), stack = TRUE)
+          }
+          
+          
+          metricas <- categorias_pregunta_formato(pregunta = pregunta, datos = datos,
+                                                  metricas = TRUE)
+          
+          escribir_tabla(tabla = metricas, wb = wb, hoja = hojas[2], renglon = renglon,
+                         columna = columna, bordes = 'surrounding', estilo_borde = 'thin',
+                         na = FALSE)
+          
+          for (k in seq(columna, ncol(tabla[[2]]), by=4)) {
+            mergeCells(wb = wb, sheet = hojas[2], cols = k:(k+3), rows = renglon)
+            addStyle(wb = wb, sheet = hojas[2], style = estilo_cuerpo, rows = renglon,
+                     cols = k:(k+3), stack = TRUE)
+          }
+          
+        }
 
 # Formato Tablas Cruzadas 
 
@@ -603,6 +604,8 @@ graf
   horizontalStyle <- createStyle(border = "bottom",
                                  borderColour = "black", borderStyle = 'thin')
   
+  totalStyle <- createStyle(numFmt = "###,###,###")
+
   }
 
 
@@ -624,12 +627,13 @@ frecuencias_simples <- function(pregunta, num_pregunta, datos, lista_preguntas,
   
   escribir_tabla(tabla = np, wb = wb, hoja = hojas[1], renglon = renglon, columna = columna)
   
+
   escribir_tabla(tabla = np, wb = wb, hoja = hojas[2], renglon = renglon, columna = columna)
   
   
   est <- estadisticas_categoricas(diseño = diseño, pregunta = pregunta)
   
-  freq <- formatear_tabla_categorica(pregunta = pregunta, datos = datos, tabla = est)
+  freq <- formatear_tabla_categorica(tabla = est)
   
   
   formato_frecuencias_simples(tabla = freq, wb = wb, renglon = (renglon + 1), 
@@ -637,10 +641,9 @@ frecuencias_simples <- function(pregunta, num_pregunta, datos, lista_preguntas,
   
 }
 
-frecuencias_simples(pregunta = preg, num_pregunta = 2,
+frecuencias_simples(pregunta = 'P2', num_pregunta = 2,
                     lista_preguntas = Lista_Preg, hojas = c(1,2), datos = dataset, 
                     diseño = disenio, wb = wb, renglon = 1)
-
 
 ################################################################################
 ################################################################################
@@ -753,10 +756,18 @@ options("openxlsx.numFmt" = "0.0")
 
 ## Dinámico: pregunta, numero de pregunta, renglon
 
-preguntas_categoricas(pregunta = preg, numero_pregunta = 2, datos = dataset,
+preguntas_categoricas(pregunta = 'P2', numero_pregunta = 2, datos = dataset,
                       lista_preguntas = Lista_Preg, dominios = Dominios,
                       diseño = disenio, wb = wb, renglon = 1, columna = 1,
                       frecuencias_simples = TRUE, tablas_cruzadas = TRUE)
+
+# Estilo columna total 
+
+addStyle(wb = wb, sheet = 1, style = totalStyle, rows = 3:100000, cols = 2 ,
+         gridExpand = TRUE, stack = TRUE)
+
+addStyle(wb = wb, sheet = 3, style = totalStyle, rows = 3:100000, cols = 3,
+         gridExpand = TRUE, stack = TRUE)
 
 openXL(wb)
 
