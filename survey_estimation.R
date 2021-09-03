@@ -1,4 +1,4 @@
-## PRUEBA PREGUNTAS NUMÉRICAS Y CATEGÓRICAS
+# PRUEBA PREGUNTAS NUMÉRICAS Y CATEGÓRICAS
 source("~/Desktop/UNAM/DIAO/rsrvyest/src/utils.R")
  
  # Lectura de datos
