@@ -161,7 +161,12 @@ estadisticas_categoricas <- function(diseño, datos, pregunta, na.rm = TRUE,
 # FUNCIÓN FORMATEAR TABLA DE FRECUENCIAS SIMPLES
 
 formatear_tabla_categorica <- function(tabla){
+
   
+  # row.names(tabla) <- datos %>% 
+  #   pull(!!sym(pregunta)) %>% 
+  #   levels()
+
   tabla1 <-  tabla %>%
     map_at(c('prop', 'prop_low', 'prop_upp', 'prop_se'), ~.x*100) %>%
     as_tibble() %>% 
@@ -193,10 +198,11 @@ formatear_tabla_categorica <- function(tabla){
      ) %>% 
      select(Respuesta, 'Total', "Err. Est." , "Coef. Var.", "Var.","DEFF")
    
-
   return(list(tabla1, tabla2))
 }
 
+freq <- formatear_tabla_categorica(tabla = est)
+freq
 
 # FUNCIÓN ESCRIBIR FRECUENCIAS SIMPLES EN EXCEL (UTILIZA FUNCIÓN escribir_tabla)
 
@@ -535,7 +541,17 @@ formato_categorias <- function(tabla, pregunta, datos, diseño, wb, renglon, col
   
           simples <- categorias_pregunta_formato(pregunta = pregunta, datos = datos,
                                                  diseño = diseño, metricas = FALSE)
+
+#######  Formato Categorías
+
+        formato_categorias <- function(tabla, pregunta, datos, wb, renglon, columna = 4,
+                                       hojas = c(3,4), estilo_cuerpo){
           
+          # Renglón 2 columna 4
+          
+          simples <- categorias_pregunta_formato(pregunta = pregunta, datos = datos,
+                                                 metricas = FALSE)
+
           escribir_tabla(tabla = simples, wb = wb, hoja = hojas[1], renglon = renglon,
                          columna = columna, bordes = 'surrounding', estilo_borde = 'thin',
                          na = FALSE)
@@ -550,7 +566,8 @@ formato_categorias <- function(tabla, pregunta, datos, diseño, wb, renglon, col
           
           metricas <- categorias_pregunta_formato(pregunta = pregunta, datos = datos,
                                                   diseño = diseño, metricas = TRUE)
-          
+                                                  metricas = TRUE)
+
           escribir_tabla(tabla = metricas, wb = wb, hoja = hojas[2], renglon = renglon,
                          columna = columna, bordes = 'surrounding', estilo_borde = 'thin',
                          na = FALSE)
@@ -564,6 +581,7 @@ formato_categorias <- function(tabla, pregunta, datos, diseño, wb, renglon, col
         }
 
 # FUNCIÓN FORMATO TABLAS CRUZADAS, ESCRIBE LAS TABLAS CRUZADAS EN LAS HOJAS INDICADAS
+# Formato Tablas Cruzadas 
 
 formato_tablas_cruzadas <- function(tabla, wb, renglon, columna = 1, hojas = c(3,4),
                                     estilo_encabezado = headerStyle,
@@ -666,6 +684,47 @@ graficas <- function(tabla, x, y, pregunta, titulo, subtitulo, leyenda,
 
 # FUNCIÓN FRECUENCIAS SIMPLES, DESDE CREAR LA TABLA, FORMATEARLA, HASTA INSERTARLA EN EXCEL
 
+graf <- graficas(tabla = est, x = 'Respuesta', y = 'prop', pregunta = Lista_Preg[2],
+                titulo = 'Aquí título', subtitulo = 'Aquí subtítulo',
+                leyenda = 'Gráfica relacionada a la pregunta:',
+                y_lab = 'Aquí y_lab',
+                x_lab = 'Aquí x_lab')
+
+
+graf
+
+
+
+## Estilos
+
+{
+  headerStyle <- createStyle(
+  fontSize = 11, fontColour = "black", halign = "center",
+  border = "TopBottom", borderColour = "black",
+  borderStyle = c('thin', 'double'), textDecoration = 'bold')
+  
+  bodyStyle <- createStyle(halign = 'center', border = "TopBottomLeftRight",
+                           borderColour = "black", borderStyle = 'thin',
+                           valign = 'top')
+  
+  verticalStyle <- createStyle(border = "Right",
+                               borderColour = "black", borderStyle = 'thin',
+                               valign = 'top')
+  
+  horizontalStyle <- createStyle(border = "bottom",
+                                 borderColour = "black", borderStyle = 'thin')
+  
+  totalStyle <- createStyle(numFmt = "###,###,###")
+
+  }
+
+
+##############################################################################
+##############################################################################
+################################ FRECUENCIAS SIMPLES #########################
+##############################################################################
+##############################################################################
+
 # Renglón 1, columna 1 siempre
 
 frecuencias_simples <- function(pregunta, num_pregunta, datos, lista_preguntas,
@@ -678,7 +737,11 @@ frecuencias_simples <- function(pregunta, num_pregunta, datos, lista_preguntas,
   
   escribir_tabla(tabla = np, wb = wb, hoja = hojas[1], renglon = renglon,
                  columna = columna,  bordes = 'none')
+
+  escribir_tabla(tabla = np, wb = wb, hoja = hojas[1], renglon = renglon, columna = columna)
   
+
+  escribir_tabla(tabla = np, wb = wb, hoja = hojas[2], renglon = renglon, columna = columna)
 
   escribir_tabla(tabla = np, wb = wb, hoja = hojas[2], renglon = renglon,
                  columna = columna, bordes = 'none')
@@ -697,6 +760,16 @@ frecuencias_simples <- function(pregunta, num_pregunta, datos, lista_preguntas,
 
 
 # FUNCIÓN TABLAS CRUZADAS, DESDE CREAR LA TABLA CRUZADA, FORMATEARLA, HASTA INSERTARLA EN EXCEL
+
+frecuencias_simples(pregunta = 'P2', num_pregunta = 2,
+                    lista_preguntas = Lista_Preg, hojas = c(1,2), datos = dataset, 
+                    diseño = disenio, wb = wb, renglon = 1)
+
+################################################################################
+################################################################################
+################################## TABLAS CRUZADAS #############################
+################################################################################
+################################################################################
 
 #renglón 1 columna 1 siempre
 
