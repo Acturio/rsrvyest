@@ -311,7 +311,7 @@ tablas_cruzadas_multiples <- function(pregunta, frecuencias_simples, dominio, DB
 }
 
 a = tablas_cruzadas_multiples(pregunta = 'P1',dominio = "Edad",frecuencias_simples = a, DB_Mult=DB_Mult, 
-                              disenio=disenio, datos = dataset,
+                              disenio=disenio_mult, datos = dataset,
                                   na.rm = TRUE, estadisticas = c("se","ci","cv", "var"), 
                                   significancia = 0.95, proporcion = FALSE,
                                   metodo_prop = "likelihood", DEFF = TRUE)
@@ -404,7 +404,7 @@ formatear_tabla_cruzada <- function(tabla, datos, dominio, DB_Mult, pregunta){
   return(list(tabla_final_1,tabla_final_2))
   }
   
-b <-formatear_tabla_cruzada(a, datos = dataset, dominio = "Edad", DB_Mult = DB_Mult, pregunta = "P1")
+b <-formatear_tabla_cruzada_multiples(a, datos = dataset, dominio = "Edad", DB_Mult = DB_Mult, pregunta = "P1")
 
 
 ### Funciones para crear renglón nacional para tablas cruzddas
@@ -496,7 +496,7 @@ tabla_cruzada_por_pregunta <- function(disenio, pregunta, datos, dominios = Domi
                                   significancia = 0.95, proporcion = FALSE,
                                   metodo_prop = "likelihood", DEFF = TRUE)
     
-    tabla_cruzada_formato <-formatear_tabla_cruzada(tabla_cruzada, datos = datos, dominio = d, DB_Mult = DB_Mult, pregunta = pregunta)
+    tabla_cruzada_formato <-formatear_tabla_cruzada_multiples(tabla_cruzada, datos = datos, dominio = d, DB_Mult = DB_Mult, pregunta = pregunta)
     
     estimaciones_generales <- rbind(estimaciones_generales, tabla_cruzada_formato[[1]])
     errores_generales <- rbind(errores_generales, tabla_cruzada_formato[[2]])
@@ -505,7 +505,7 @@ tabla_cruzada_por_pregunta <- function(disenio, pregunta, datos, dominios = Domi
 }
 
 
-tabla_cruzada_final <- tabla_cruzada_por_pregunta(disenio = disenio, pregunta = "P1", 
+tabla_cruzada_final <- tabla_cruzada_por_pregunta(disenio = disenio_mult, pregunta = "P1", 
                                            datos = dataset, dominios = Dominios,
                                            DB_Mult = DB_Mult)
 
@@ -788,7 +788,7 @@ preguntas_multiples <- function(pregunta, numero_pregunta, datos, lista_pregunta
 
 
 
-preguntas_multiples(pregunta = preg, numero_pregunta = 1, datos = dataset, lista_preguntas = Lista_Preg,
+preguntas_multiples(pregunta = 'P1', numero_pregunta = 1, datos = dataset, lista_preguntas = Lista_Preg,
                                 dominios = Dominios, disenio = disenio, wb = wb, renglon_tc =1, renglon_fs =1, DB_Mult,
                                 columna = 1, hojas_simples = c(1,2), hojas_cruzadas = c(3,4),
                                 estilo_cuerpo = bodyStyle, 

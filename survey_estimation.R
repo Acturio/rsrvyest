@@ -34,6 +34,9 @@ source("~/Desktop/UNAM/DIAO/rsrvyest/src/utils.R")
   disenio_cat <- disenio_categorico(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1,
                                reps=FALSE, datos = dataset)
   mdesign <- crea_disenio(dataset, CV_ESC, ESTRATO, Pondi1)
+  
+  disenio_mult <- disenio_multiples(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1,
+                               reps=FALSE, datos = dataset)
 }
 
 # Inicializar workoob
@@ -75,15 +78,25 @@ source("~/Desktop/UNAM/DIAO/rsrvyest/src/utils.R")
  
 # For
 
-for (p in Lista) {
+for (p in Lista[1:10]) {
   
   print(paste0("Estimando resultado de pregunta: ",p))
   dataset$Pondi1 <- Ponderador
   
   if (p %in% Multiples){
-    print('Iván')
     
+    multiples <- preguntas_multiples(pregunta = p, numero_pregunta = np, datos = dataset,
+                        lista_preguntas = Lista_Preg, dominios = Dominios,
+                        disenio = disenio_mult, wb = wb, renglon_fs = k1, 
+                        renglon_tc = k2, DB_Mult = DB_Mult, columna = 1,
+                        hojas_simples = c(1,2), hojas_cruzadas = c(3,4),
+                        estilo_cuerpo = bodyStyle, estilo_columnas = verticalStyle,
+                        frecuencias_simples = TRUE, tablas_cruzadas = TRUE)
+    
+    k1=k1 + 1 + nrow(multiples[[1]][[1]]) + 4
+    k2=k2 + 1 + nrow(multiples[[2]][[2]]) + 4
     np=np + 1
+    
   }
   else if (p %in% Lista_Cont){
     print('Cin')
@@ -127,56 +140,3 @@ addStyle(wb = wb, sheet = 4, style = totalStyle, rows = 3:100000, cols = 3,
          gridExpand = TRUE, stack = TRUE)
 }
 
-openXL(wb)
-
-openxlsx::saveWorkbook(wb, "Prueba.xlsx", overwrite = TRUE)
-
-
-total_nacional <- function(diseño, pregunta, na.rm = TRUE,
-                           estadisticas = c("se","ci","cv", "var"), significancia = 0.95, proporcion = FALSE, 
-                           metodo_prop = "likelihood", DEFF = TRUE){
-  
-  estadisticas <- {{diseño}} %>% 
-    srvyr::group_by(!!sym(pregunta)) %>% 
-    srvyr::summarize(
-      prop = survey_mean(
-        na.rm = na.rm, 
-        vartype = estadisticas,
-        level = significancia,
-        proportion = proporcion,
-        prop_method = metodo_prop,
-        deff = DEFF
-      ),
-      total = round(survey_total(
-        na.rm = na.rm
-      ),0)
-    ) %>% 
-    mutate(prop_low = ifelse(prop_low < 0, 0, prop_low),
-           prop_upp = ifelse(prop_upp > 1, 1, prop_upp),
-           !!sym(pregunta) := str_trim(!!sym(pregunta), side = 'both')) 
-  
-  estadisticas_wide <- estadisticas %>%
-    mutate(Dominio = 'General',
-           Categorias = 'Total') %>% 
-    pivot_wider(
-      names_from = !!sym(pregunta),
-      values_from = c(
-        total,
-        total_se,
-        prop, 
-        prop_low,
-        prop_upp,
-        prop_se,
-        prop_cv,
-        prop_var,
-        prop_deff),
-      names_glue = sprintf("{%s}_{.value}", {{pregunta}}))
-  
-  return(estadisticas_wide)
-}
-
-nacional <- total_nacional(diseño = disenio_cat, pregunta = 'P3_1a_1')
-
-nac <- formatear_tabla_cruzada(pregunta = 'P3_1a_1', datos = dataset, tabla = nacional)
-
-rbind(nacional)
