@@ -1,6 +1,6 @@
 #Funciones Continuas
 
-library(foreign)
+{library(foreign)
 library(readxl)
 library(survey)
 library(dplyr)
@@ -12,7 +12,7 @@ library(openxlsx)
 library(srvyr)
 library(reshape)
 library(tibble)
-library(stringr)
+library(stringr)}
 
 base = "BASE_CONACYT_260118.sav" #base.sav
 lista = "Lista de Preguntas.xlsx" #archivo lista de variables
@@ -24,7 +24,7 @@ lista = "Lista de Preguntas.xlsx" #archivo lista de variables
 leer_datos <- function(base, lista){
   #se asume misma organización de carpetas 
   archivo <- paste0("data/", base)
-  archivo2 <- paste0("lista/", lista)
+  archivo2 <- paste0("aux/", lista)
   
   # Lectura de datos de spss
   dataset <- read.spss(archivo, to.data.frame = TRUE) 
@@ -134,7 +134,7 @@ df <- tf
 
 acomoda_frecuencias <- function(df){
   df_t <- df %>% 
-    melt()
+    reshape2::melt()
   names(df_t) <- c("stat", "valor")
   
   lvars <- c("media", "lim_inf", "lim_sup", "mín", "Q25", "mediana", "Q75", "máx", 
@@ -191,7 +191,7 @@ total <- function(disenio, pregunta, na.rm = TRUE,
 }
 
 #####
-Dominios <- listaD[[5]]
+Dominios <- Lista_Cont[[5]]
 dominio = Dominios[1]
 
 
@@ -390,8 +390,9 @@ function(df, colini, rowini){
  
 ##############################################################################
 # codigo prueba 
-wb <- createWorkbook()
-addWorksheet(wb, "writeData auto-formatting")
+wb <- openxlsx::createWorkbook()
+
+openxlsx::addWorksheet(wb, "writeData auto-formatting")
 
 hs1 <- createStyle(halign = "CENTER", textDecoration = "Bold",
                    border = "TopBottomLeftRight", fontColour = "black",
@@ -527,26 +528,26 @@ return(openXL(wb))
 }
 
 #ejemplo funcion tabla_excel
-tabla_excel(df, 2, 2)
+tabla_excel(a, 2, 2)
 
 ######################3
-Lista_Cont <- listaD[[4]]
-pregunta <- listaD[[4]][1]
-p <- listaD[[4]][2]
+Lista_Cont <- Lista_Cont[[4]]
+pregunta <- Lista_Preg[[4]][1]
+p <- Lista_Cont[[4]][2]
 formato = 1
 #for sobre todas las preguntas
-wb <- createWorkbook()
-addWorksheet(wb, "writeData auto-formatting")
+wb <- openxlsx::createWorkbook()
+openxlsx::addWorksheet(wb , "writeData auto-formatting")
 #renglon y columna de inicio
 colini = 2
 rowini = 2
-
+formato = 1
 for (p in Lista) {
   
   if (p %in% Lista_Cont) {
     
     print(p)
-    t <- total(disenio, p, na.rm = TRUE,
+    t <- total(mdesign, p, na.rm = TRUE,
               vartype = c("se", "ci", "cv", "var"), 
               level = 0.95, proportion = FALSE, prop_method = "likelihood",
               DEFF = TRUE, cuantiles) 
@@ -560,17 +561,19 @@ for (p in Lista) {
       tabla <- bind_rows(tabla, cruce)
       
     }
-    print(tabla)
+    #print(tabla)
     #formato df
+    
     ltabla <- formato_tabla(tabla)
     if (formato == 1) {
       tablaf <- as.data.frame(ltabla[1])
     } else {
       tablaf <- as.data.frame(ltabla[2])
     }
+    print(tablaf)
     
     #escribo el excel
-      tabla_excel(tablaf, colini, rowini)
+    tabla_excel(tablaf, colini, rowini)
     
     #recalculo renglones
     rowini <- rowini + nrow(tablaf) +5
