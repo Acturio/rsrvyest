@@ -663,11 +663,6 @@ formato_categorias <- function(tabla, pregunta, diseño = diseño, datos, wb,
     escribir_tabla(tabla = np, wb = wb, hoja = hojas[1], renglon = renglon,
                    columna = columna,  bordes = 'none')
     
-    escribir_tabla(tabla = np, wb = wb, hoja = hojas[1], renglon = renglon, columna = columna)
-    
-    
-    escribir_tabla(tabla = np, wb = wb, hoja = hojas[2], renglon = renglon, columna = columna)
-    
     escribir_tabla(tabla = np, wb = wb, hoja = hojas[2], renglon = renglon,
                    columna = columna, bordes = 'none')
     

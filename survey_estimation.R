@@ -140,3 +140,7 @@ addStyle(wb = wb, sheet = 4, style = totalStyle, rows = 3:100000, cols = 3,
          gridExpand = TRUE, stack = TRUE)
 }
 
+openxlsx::openXL(wb)
+
+openxlsx::saveWorkbook(wb, "Prueba.xlsx", overwrite = TRUE)
+
