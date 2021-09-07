@@ -163,7 +163,7 @@ tf <- acomoda_frecuencias(df)
 # función para calcular estadisticas del total poblacional, la cual es complemento de la 
 # función tabla_cruzada para generar la tabla cruzada final :3
 
-total <- function(disenio, pregunta, na.rm = TRUE,
+ftotal <- function(disenio, pregunta, na.rm = TRUE,
                   vartype = c("se", "ci", "cv", "var"), 
                   level = 0.95, proportion = FALSE, prop_method = "likelihood",
                   DEFF = TRUE, cuantiles) {
@@ -194,6 +194,11 @@ total <- function(disenio, pregunta, na.rm = TRUE,
 Dominios <- Lista_Cont[[5]]
 dominio = Dominios[1]
 
+#ejemplo función ftotal
+total <- ftotal(mdesign, pregunta, na.rm = TRUE,
+                vartype = c("se", "ci", "cv", "var"), 
+                level = 0.95, proportion = FALSE, prop_method = "likelihood",
+                DEFF = TRUE, cuantiles)
 
 #########################################################################################
 #################### función tabla_cruzada ##########################
@@ -245,7 +250,7 @@ for (dom in Dominios){
   
 }
 
-#calcula totales
+
 #formato tabla si se elige tabla con media o limites o si se eligen las otras variables.
 df = tabla
 
@@ -278,7 +283,7 @@ addWorksheet(wb, "writeData auto-formatting")
 hs1 <- createStyle(halign = "CENTER", textDecoration = "Bold",
                    border = "TopBottomLeftRight", fontColour = "black",
                    borderStyle = "medium", borderColour = "black")
-writeData(wb, 1, nvo_df, startRow = 2, startCol = 2, headerStyle = hs1,
+writeData(wb, 1, tf, startRow = 2, startCol = 2, headerStyle = hs1,
           borders = "columns", borderStyle = "medium", colNames = TRUE,
           borderColour = "black")
 #writeData(wb, 1, df)
@@ -322,6 +327,16 @@ tabla_frec_excel <- function(df, colini, rowini){
   return(openXL(wb))  
 }
 
+################################################################################
+# ejemplo tabla_frec_excel
+wb <- createWorkbook()
+addWorksheet(wb, "writeData auto-formatting")
+colini = 2
+rowini = 2
+
+tabla_frec_excel(tf, colini, rowini)
+
+#################################################################################
 
 
 function(df, colini, rowini){
@@ -486,7 +501,8 @@ tabla_excel <- function(df, colini, rowini){
   #ncols df
   kol <- ncol(df)
   #rnows df
-  ren <- rowini+nrow(df)
+  #ren <- rowini+nrow(df)
+  ren <- nrow(df)
   
   writeData(wb, 1, df, startRow = rowini, startCol = colini, headerStyle = hs1,
             borders = "columns", borderStyle = "medium", colNames = TRUE,
@@ -498,7 +514,7 @@ tabla_excel <- function(df, colini, rowini){
   addStyle(wb, 1, style = s, rows = ri:rf, cols = (colini+2):(colini+kol-1), stack = T, gridExpand = T)
   #formato interior
   c=0
-  finicio = rowini
+  finicio = 2
   
   
   for (dom in Dominios){
@@ -516,24 +532,36 @@ tabla_excel <- function(df, colini, rowini){
       i = c - 1
     }
     
-    mergeCells(wb, 1, cols = 2, rows = (finicio + 2): (finicio + 2 + i))
-    addStyle(wb, 1, centerStyle, rows = (finicio + 2): (finicio + 2 + i), cols = 2, stack = T, gridExpand = T)
-    addStyle(wb, 1, insideBorders, rows = finicio + 2 + i, cols = 2:(kol+1), stack = T, gridExpand = T)
-    finicio = finicio + c
+    print('termine for')
+    
+    mergeCells(wb, 1, cols = 2, rows = (rowini + 2): (rowini + 2 + i))
+    print('pase merge')
+    addStyle(wb, 1, centerStyle, rows = (rowini + 2): (rowini + 2 + i), cols = 2, stack = T, gridExpand = T)
+    print('addstyle1')
+    addStyle(wb, 1, insideBorders, rows = rowini + 2 + i, cols = 2:(kol+1), stack = T, gridExpand = T)
+    print('addstyle2')
+    rowini = rowini + c
+    print('cuento')
     c = 0
   }
   
-return(openXL(wb))  
+#return(openXL(wb))  
   
 }
 
 #ejemplo funcion tabla_excel
-tabla_excel(a, 2, 2)
+wb <- createWorkbook()
+addWorksheet(wb, "writeData auto-formatting")
+tabla_excel(df, 2, 2)
 
-######################3
-Lista_Cont <- Lista_Cont[[4]]
-pregunta <- Lista_Preg[[4]][1]
-p <- Lista_Cont[[4]][2]
+###############################################################################################
+######################## Implementación (For sobre Lista de preguntas) ########################
+
+Lista <- listaD[[1]]
+fraseo <- listaD[[2]]
+Lista_Cont <- listaD[[4]]
+pregunta <- listaD[[4]][1]
+p <- listaD[[4]][2]
 formato = 1
 #for sobre todas las preguntas
 wb <- openxlsx::createWorkbook()
@@ -541,13 +569,14 @@ openxlsx::addWorksheet(wb , "writeData auto-formatting")
 #renglon y columna de inicio
 colini = 2
 rowini = 2
-formato = 1
+f=1
+
 for (p in Lista) {
   
   if (p %in% Lista_Cont) {
     
     print(p)
-    t <- total(mdesign, p, na.rm = TRUE,
+    t <- ftotal(disenio, p, na.rm = TRUE,
               vartype = c("se", "ci", "cv", "var"), 
               level = 0.95, proportion = FALSE, prop_method = "likelihood",
               DEFF = TRUE, cuantiles) 
@@ -574,12 +603,18 @@ for (p in Lista) {
     
     #escribo el excel
     tabla_excel(tablaf, colini, rowini)
+      
+    #escribo la pregunta  en rowini-1
+    writeData(wb, 1, fraseo[f], startRow = rowini-1, startCol = colini)
     
     #recalculo renglones
     rowini <- rowini + nrow(tablaf) +5
     
   }
   
+  f = f+1
+  
 }
 
+openXL(wb)
 
