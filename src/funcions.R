@@ -123,8 +123,7 @@ estadisticas_continuas <- function(disenio, pregunta, na.rm = TRUE,
 }
 
 # ejemplo función estadisticas_continuas
-tf <- estadisticas_continuas(mdesign, pregunta, TRUE, vartype, level, FALSE, "likelihood",
-                             TRUE, cuantiles)
+tf <- estadisticas_continuas(mdesign, pregunta)
 
 #########################################################################################
 #################### función acomoda_frecuencias ##########################
@@ -153,7 +152,7 @@ acomoda_frecuencias <- function(df){
 }
 
 #ejemplo acomoda_frecuencias
-tf <- acomoda_frecuencias(df)
+tf <- acomoda_frecuencias(tf)
 
 ########################## Iniciamos tablas cruzadas #########################
 
@@ -304,6 +303,7 @@ rowini = 2
 
 
 tabla_frec_excel <- function(df, colini, rowini){
+  
   hs1 <- createStyle(halign = "CENTER", textDecoration = "Bold",
                      border = "TopBottomLeftRight", fontColour = "black",
                      borderStyle = "medium", borderColour = "black")
