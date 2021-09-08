@@ -80,7 +80,7 @@ source("~/Desktop/UNAM/DIAO/rsrvyest/src/utils.R")
 # For
 
 for (p in Lista[133:151]) {
-  
+
   print(paste0("Estimando resultado de pregunta: ",p))
   dataset$Pondi1 <- Ponderador
   
@@ -88,6 +88,7 @@ for (p in Lista[133:151]) {
     
     print('múltiple')
     
+
     multiples <- preguntas_multiples(pregunta = p, numero_pregunta = np, datos = dataset,
                         lista_preguntas = Lista_Preg, dominios = Dominios,
                         disenio = disenio_mult, wb = wb, renglon_fs = k1, 
@@ -179,15 +180,16 @@ for (p in Lista[133:151]) {
 # Estilo columna total 
 
 {
+
   addStyle(wb = wb, sheet = 1, style = totalStyle, rows = 3:100000, cols = 2 ,
            gridExpand = TRUE, stack = TRUE)
   
   addStyle(wb = wb, sheet = 2, style = totalStyle, rows = 3:100000, cols = 2 ,
            gridExpand = TRUE, stack = TRUE)
-  
+
   addStyle(wb = wb, sheet = 3, style = totalStyle, rows = 3:100000, cols = 3,
            gridExpand = TRUE, stack = TRUE)
-  
+
   addStyle(wb = wb, sheet = 4, style = totalStyle, rows = 3:100000, cols = 3,
            gridExpand = TRUE, stack = TRUE)
 }

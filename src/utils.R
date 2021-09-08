@@ -206,7 +206,8 @@ formatear_tabla_categorica <- function(tabla){
 formato_frecuencias_simples <- function(tabla, wb, hojas = c(1,2) ,renglon, columna,
                                         estilo_encabezado, 
                                         estilo_horizontal){
-  
+
+
   # Primera Página renglón 2 columna 1
   
   escribir_tabla(tabla = tabla[[1]], wb = wb, hoja = hojas[1], renglon = renglon,
@@ -236,7 +237,11 @@ formato_frecuencias_simples <- function(tabla, wb, hojas = c(1,2) ,renglon, colu
   addStyle(wb = wb, sheet = hojas[2], style = estilo_horizontal, 
            rows = (renglon + nrow(tabla[[2]])), cols = columna:(ncol(tabla[[2]])),
            gridExpand = TRUE, stack = TRUE)  
-  
+
+  escribir_tabla(tabla = tabla[[2]], wb = wb, hoja = hojas[2], renglon = renglon,
+                 columna = columna, estilo_borde = 'thin', nombres_columnas = TRUE,
+                 estilo_encabezado = estilo_encabezado)
+
 }
 
 
@@ -392,7 +397,6 @@ formatear_tabla_cruzada <- function(pregunta, datos, tabla){
   names(tabla2) <- nombres2
   
   return(list(tabla1, tabla2))
-  
   
 }
 
@@ -648,11 +652,12 @@ formato_categorias <- function(tabla, pregunta, diseño = diseño, datos, wb,
       
       r <- r + tope
     }
-    
+
     # Merge primeras tres columnas
     
     mergeCells(wb = wb, sheet = hojas[1], cols = 1:3, rows = (renglon - 1))
     mergeCells(wb = wb, sheet = hojas[2], cols = 1:3, rows = (renglon - 1))
+
   }
   
   # FUNCIÓN ESTILO COLUMNAS, DIVIDE LAS MÉTRICAS DE LAS TABLAS CRUZADAS POR CATEGORÍAS RESPUESTAS
@@ -689,20 +694,21 @@ formato_categorias <- function(tabla, pregunta, diseño = diseño, datos, wb,
       addStyle(wb = wb, sheet = hojas[2], cols = (k+3), 
                rows = (renglon + 1):(renglon + 1 + nrow(tabla[[2]])),
                style = verticalStyle, stack = TRUE)
+
     }
     
   }
   
+
 # FUNCIÓN FRECUENCIAS SIMPLES DESDE CREAR TABLA DE FRECUENCIAS, FORMATEARLA Y PONERLA EN EXCEL
   
-# Renglón 1, columna 1 siempre
+  # Renglón 1, columna 1 siempre
   
   frecuencias_simples_cat <- function(pregunta, num_pregunta, datos, lista_preguntas,
                                   diseño, wb, renglon, columna = 1, hojas = c(1,2),
-                                  estilo_encabezado = headerStyle,
-                                  estilo_total = totalStyle,
+                                  estilo_encabezado = headerStyle, 
                                   estilo_horizontal = horizontalStyle){
-    
+
     # Título Pregunta
     
     np <- lista_preguntas[[num_pregunta]]
@@ -721,7 +727,7 @@ formato_categorias <- function(tabla, pregunta, diseño = diseño, datos, wb,
     formato_frecuencias_simples(tabla = freq, wb = wb, renglon = (renglon + 1), 
                                 columna = columna, estilo_encabezado = estilo_encabezado,
                                 estilo_horizontal = estilo_horizontal)
-    
+
     return(freq)
     
   }
@@ -730,14 +736,14 @@ formato_categorias <- function(tabla, pregunta, diseño = diseño, datos, wb,
 # FUNCIÓN TABLAS CRUZADAS, DESDE CREAR LA TABLA CRUZADA, FORMATEARLA, HASTA INSERTARLA EN EXCEL
   #renglón 1 columna 1 siempre
   
+  
   tabla_cruzada_cat <- function(pregunta, num_pregunta, lista_preguntas, dominios, 
                             datos, diseño, wb, renglon, columna = 1, hojas = c(3,4),
                             estilo_encabezado = headerStyle, 
                             estilo_categorias = bodyStyle,
                             estilo_tabla = horizontalStyle,
-                            estilo_columnas = verticalStyle,
-                            estilo_total = totalStyle){
-    
+                            estilo_columnas = verticalStyle){
+
     # Título pregunta
     
     np <- lista_preguntas[[num_pregunta]]
@@ -825,7 +831,6 @@ leer_datos <- function(base, lista){
     #se asume misma organización de carpetas 
     archivo <- paste0("data/", base)
     archivo2 <- paste0("aux/", lista)
-    
     # Lectura de datos de spss
     dataset <- read.spss(archivo, to.data.frame = TRUE) 
     
@@ -857,7 +862,7 @@ leer_datos <- function(base, lista){
   # archivo <- paste0("data/", base)
   # dataset <- read.spss(archivo, to.data.frame = TRUE) 
   
-crea_disenio <- function(data, id, cestrato, cpesos){
+  crea_disenio <- function(data, id, cestrato, cpesos){
     
     disenio <- data %>% 
       as_survey_design(
@@ -1112,7 +1117,6 @@ tabla_excel <- function(df, colini, rowini){
   
 }
 
-  
   ################################################################################
   ################################################################################
   ########################### PREGUNTAS MÚLTIPLES ################################
@@ -1122,7 +1126,8 @@ tabla_excel <- function(df, colini, rowini){
   
   # FUNCIÓN DISEÑO
   disenio_multiples <- function(id, estrato, pesos, datos, pps = "brewer",
-                                varianza = "HT", reps = TRUE, metodo = "subbootstrap", B=50, semilla=1234){
+                                varianza = "HT", reps = TRUE, metodo = "subbootstrap",
+                                B=50, semilla=1234){
     
     disenio <- datos %>% 
       as_survey_design(
@@ -1264,9 +1269,8 @@ tabla_excel <- function(df, colini, rowini){
   frecuencias_simples_mult <- function(pregunta, num_pregunta, datos, lista_preguntas,
                                        DB_Mult, diseño, wb, renglon, columna = 1, hojas = c(1,2),
                                        estilo_encabezado = headerStyle,
-                                       estilo_total = totalStyle,
                                        estilo_horizontal = horizontalStyle){
-    
+
     # Título Pregunta
     
     np <- lista_preguntas[[num_pregunta]]
@@ -1276,8 +1280,7 @@ tabla_excel <- function(df, colini, rowini){
     
     escribir_tabla(tabla = np, wb = wb, hoja = hojas[2], renglon = renglon,
                    columna = columna, bordes = 'none')
-    
-    
+
     # Frecuencias Simples
     
     estimaciones <- frecuencias_simples_multiples(pregunta, DB_Mult, diseño, datos = datos)
@@ -1289,7 +1292,7 @@ tabla_excel <- function(df, colini, rowini){
     formato_frecuencias_simples(tabla = frecuencias_simples_formato, wb = wb, renglon = (renglon + 1), 
                                 columna = columna, estilo_encabezado = estilo_encabezado,
                                 estilo_horizontal = estilo_horizontal)
-    
+
     return(frecuencias_simples_formato)
     
   }
@@ -1465,8 +1468,8 @@ tabla_excel <- function(df, colini, rowini){
   
   # FUNCIONES TOTAL NACIONAL
   
-  desagregar_frecuencias_simples_tabla_estimaciones <- function(frecuencias_simples){
-    
+  desagregar_frecuencias_simples_tabla_estimaciones<- function(frecuencias_simples){
+
     categorias<-frecuencias_simples[[1]] %>% dplyr::pull(Respuesta)
     
     nombres_tabla_desagregada <- c('Dominio', 'Categorías', 'Total', rep(c('Media', 'Lim. inf.', 'Lim. sup.'),
@@ -1602,9 +1605,10 @@ tabla_excel <- function(df, colini, rowini){
   
   # FORMATO CATEGORÍAS MÚLTIPLES
   
+
   formato_categorias_multiples <- function(tabla, pregunta, datos, DB_Mult, wb,
-                                           renglon = 2, columna = 4, hojas = c(3,4), estilo_cuerpo){
-    
+                                           renglon = 2, columna = 4, hojas = c(3,4),
+                                           estilo_cuerpo){
     
     simples <- categorias_multiples_formato(pregunta = pregunta, DB_Mult = DB_Mult,
                                             datos = datos, metricas = FALSE)
@@ -1614,6 +1618,7 @@ tabla_excel <- function(df, colini, rowini){
                    na = FALSE)
     
     for (k in seq(columna, ncol(tabla[[1]]), by=3)){
+      
       mergeCells(wb = wb, sheet = hojas[1], cols = k:(k+2), rows = renglon)
       addStyle(wb = wb, sheet = hojas[1], style = estilo_cuerpo, rows = renglon,
                cols = k:(k+2), stack = TRUE)
@@ -1628,6 +1633,7 @@ tabla_excel <- function(df, colini, rowini){
                    na = FALSE)
     
     for (k in seq(columna, ncol(tabla[[2]]), by=4)) {
+
       mergeCells(wb = wb, sheet = hojas[2], cols = k:(k+3), rows = renglon)
       addStyle(wb = wb, sheet = hojas[2], style = estilo_cuerpo, rows = renglon,
                cols = k:(k+3), stack = TRUE)
@@ -1641,9 +1647,7 @@ tabla_excel <- function(df, colini, rowini){
                                    dominios, DB_Mult, lista_preguntas, 
                                    disenio, wb = wb, renglon = 1, columna = 1,
                                    estilo_cuerpo = estilo_cuerpo, 
-                                   estilo_columnas = estilo_columnas,
-                                   estilo_total = totalStyle){
-    
+                                   estilo_columnas = estilo_columnas){
     
     # Nombre de pregunta
     nombre_pregunta <- lista_preguntas[[num_pregunta]]
@@ -1664,6 +1668,7 @@ tabla_excel <- function(df, colini, rowini){
                                  datos = datos, DB_Mult = DB_Mult, wb = wb,
                                  renglon = (renglon+1), columna = (columna+3),
                                  hojas = hojas, estilo_cuerpo = estilo_cuerpo)
+
     
     # Escribir tabla cruzada en excel
     formato_tablas_cruzadas(tabla = tabla_cruzada_final, wb=wb, renglon = (renglon+2))
