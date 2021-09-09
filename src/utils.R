@@ -126,7 +126,6 @@ estadisticas_categoricas <- function(diseño, datos, pregunta, na.rm = TRUE,
                                      significancia = 0.95, proporcion = FALSE, 
                                      metodo_prop = "likelihood", DEFF = TRUE){
   
-  
   categorias <- datos %>% 
     pull(!!sym(pregunta)) %>% 
     levels() %>% 
@@ -236,12 +235,7 @@ formato_frecuencias_simples <- function(tabla, wb, hojas = c(1,2) ,renglon, colu
   # Ultimo renglón
   addStyle(wb = wb, sheet = hojas[2], style = estilo_horizontal, 
            rows = (renglon + nrow(tabla[[2]])), cols = columna:(ncol(tabla[[2]])),
-           gridExpand = TRUE, stack = TRUE)  
-
-  escribir_tabla(tabla = tabla[[2]], wb = wb, hoja = hojas[2], renglon = renglon,
-                 columna = columna, estilo_borde = 'thin', nombres_columnas = TRUE,
-                 estilo_encabezado = estilo_encabezado)
-
+           gridExpand = TRUE, stack = TRUE) 
 }
 
 
@@ -677,7 +671,7 @@ formato_categorias <- function(tabla, pregunta, diseño = diseño, datos, wb,
     
     for (k in secuencia_1_b){
       addStyle(wb = wb, sheet = hojas[1], cols = (k+2),
-               rows = (renglon + 1):(renglon + 1 + nrow(tabla[[1]])),
+               rows = (renglon + 1):(renglon + 2 + nrow(tabla[[1]])),
                style = estilo, stack = TRUE)
     }
     secuencia_2_a <- c(-2, -1, 0)
@@ -692,7 +686,7 @@ formato_categorias <- function(tabla, pregunta, diseño = diseño, datos, wb,
     
     for (k in secuencia_2_b) {
       addStyle(wb = wb, sheet = hojas[2], cols = (k+3), 
-               rows = (renglon + 1):(renglon + 1 + nrow(tabla[[2]])),
+               rows = (renglon + 1):(renglon + 2 + nrow(tabla[[2]])),
                style = verticalStyle, stack = TRUE)
 
     }
@@ -901,8 +895,8 @@ estadisticas_continuas <- function(disenio, pregunta, na.rm = TRUE,
         na.rm = na.rm
       )
     ) %>% 
-    mutate(prop_low = ifelse(prop_low < 0, 0, prop_low),
-           prop_upp = ifelse(prop_upp > 1, 1, prop_upp)) %>% 
+    #mutate(prop_low = ifelse(prop_low < 0, 0, prop_low),
+    #       prop_upp = ifelse(prop_upp > 1, 1, prop_upp)) %>% 
     as.data.frame() %>% 
     select(prop, prop_low, prop_upp, cuantiles_q00, cuantiles_q25, cuantiles_q50,
            cuantiles_q75, cuantiles_q100, prop_se, prop_var, prop_cv, prop_deff)
@@ -1049,7 +1043,7 @@ tabla_frec_excel <- function(df, colini, rowini){
   
 # TABLA EXCEL TABLAS CRUZADAS CONTINUAS
   
-tabla_excel <- function(df, colini, rowini){
+tabla_excel <- function(df, colini, rowini, hoja){
   
   hs1 <- createStyle(halign = "CENTER", textDecoration = "Bold",
                      border = "TopBottomLeftRight", fontColour = "black",
@@ -1070,7 +1064,7 @@ tabla_excel <- function(df, colini, rowini){
   #ren <- rowini+nrow(df)
   ren <- nrow(df)
   
-  writeData(wb, 3, df, startRow = rowini, startCol = colini, headerStyle = headerStyle,
+  writeData(wb, sheet = hoja, df, startRow = rowini, startCol = colini, headerStyle = headerStyle,
             #borders = "columns", borderStyle = "medium", 
             colNames = TRUE
             #borderColour = "black"
@@ -1079,7 +1073,7 @@ tabla_excel <- function(df, colini, rowini){
   rf <- rowini+ren
   ri <- rowini+1
   #cols afectadas con numero y centrados
-  addStyle(wb, 3, style = s, rows = ri:rf, cols = (colini+2):(colini+kol-1), stack = T, gridExpand = T)
+  addStyle(wb, hoja, style = s, rows = ri:rf, cols = (colini+2):(colini+kol-1), stack = T, gridExpand = T)
   #formato interior
   c=0
   finicio = 2
@@ -1102,11 +1096,11 @@ tabla_excel <- function(df, colini, rowini){
     
     #print('termine for')
     
-    mergeCells(wb, 3, cols = 1, rows = (rowini + 2): (rowini + 2 + i))
+    mergeCells(wb, hoja, cols = 1, rows = (rowini + 2): (rowini + 2 + i))
     #print('pase merge')
-    addStyle(wb, 3, centerStyle, rows = (rowini + 2): (rowini + 2 + i), cols = 1, stack = T, gridExpand = T)
+    addStyle(wb, hoja, centerStyle, rows = (rowini + 2): (rowini + 2 + i), cols = 1, stack = T, gridExpand = T)
     #print('addstyle1')
-    addStyle(wb, 3, insideBorders, rows = rowini + 2 + i, cols = 1:(kol), stack = T, gridExpand = T)
+    addStyle(wb, hoja, insideBorders, rows = rowini + 2 + i, cols = 1:(kol), stack = T, gridExpand = T)
     #print('addstyle2')
     rowini = rowini + c
     #print('cuento')
@@ -1164,7 +1158,7 @@ tabla_excel <- function(df, colini, rowini){
       dplyr::pull(!!sym(pregunta))
     
     df <- datos %>% 
-      select(ps)
+      select(all_of(ps))
     
     categorias <- df %>% 
       pull() %>% 
@@ -1347,7 +1341,7 @@ tabla_excel <- function(df, colini, rowini){
       disenio %<>% srvyr::mutate(!!sym(i) := variable)
     }
     
-    tablas_cruzadas = data_frame()
+    tablas_cruzadas = tibble()
     
     for (categ in categorias){
       Dominios_tabla <- disenio %>% 

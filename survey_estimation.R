@@ -48,6 +48,9 @@ source("~/Desktop/UNAM/DIAO/rsrvyest/src/utils.R")
   k2 <- 1
   np <- 133
   
+  fuente <- 'Tabla correspondiente a la pregunta de la encuesta'
+  nombre_proyecto <- 'Conacyt 2018'
+  
   openxlsx::addWorksheet(wb, sheetName = 'General 1')
   openxlsx::addWorksheet(wb, sheetName = 'General 2')
   openxlsx::addWorksheet(wb, sheetName = 'Dominios 1')
@@ -76,6 +79,8 @@ source("~/Desktop/UNAM/DIAO/rsrvyest/src/utils.R")
   
   totalStyle <- createStyle(numFmt = "###,###,###")
 }
+
+## PIXELES 30, 45
  
 # For
 
@@ -88,7 +93,6 @@ for (p in Lista[133:151]) {
     
     print('múltiple')
     
-
     multiples <- preguntas_multiples(pregunta = p, numero_pregunta = np, datos = dataset,
                         lista_preguntas = Lista_Preg, dominios = Dominios,
                         disenio = disenio_mult, wb = wb, renglon_fs = k1, 
@@ -106,7 +110,7 @@ for (p in Lista[133:151]) {
     
     print('continua')
     
-    formato = 1
+    #formato = 1
     
     # frecuencias simples
     
@@ -135,23 +139,24 @@ for (p in Lista[133:151]) {
     }
 
     ltabla <- formato_tabla(tabla)
-    if (formato == 1) {
-      tablaf <- as.data.frame(ltabla[1])
-    } else {
-      tablaf <- as.data.frame(ltabla[2])
-    }
-    print(tablaf)
+    #if (formato == 1) {
+    #  tablaf <- as.data.frame(ltabla[1])
+    #} else {
+     # tablaf <- as.data.frame(ltabla[2])
+    #}
+   # print(tablaf)
     
     #escribo el excel
-    tabla_excel(tablaf, 1, k2)
+    tabla_excel(df = ltabla[[1]] , colini = 1, rowini = k2, hoja = 3)
+    tabla_excel(df = ltabla[[2]] , colini = 1, rowini = k2, hoja = 4)
     
     #escribo la pregunta  en rowini-1
     writeData(wb, 3, Lista_Preg[np], startRow = k2-1, startCol = 1)
+    writeData(wb, 4, Lista_Preg[np], startRow = k2-1, startCol = 1)
     
     #recalculo renglones
-    
     k1=k1+nrow(tf) + 5
-    k2=k2 + nrow(tablaf) + 5
+    k2=k2 + nrow(ltabla[[1]]) + 5
     np=np + 1
     
   } 
@@ -180,7 +185,6 @@ for (p in Lista[133:151]) {
 # Estilo columna total 
 
 {
-
   addStyle(wb = wb, sheet = 1, style = totalStyle, rows = 3:100000, cols = 2 ,
            gridExpand = TRUE, stack = TRUE)
   
