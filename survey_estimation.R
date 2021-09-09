@@ -34,7 +34,7 @@ source("~/Desktop/UNAM/DIAO/rsrvyest/src/utils.R")
   disenio_cat <- disenio_categorico(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1,
                                reps=FALSE, datos = dataset)
   mdesign <- crea_disenio(dataset, CV_ESC, ESTRATO, Pondi1)
-  
+
   disenio_mult <- disenio_multiples(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1,
                                reps=FALSE, datos = dataset)
 }
@@ -47,7 +47,7 @@ source("~/Desktop/UNAM/DIAO/rsrvyest/src/utils.R")
   k1 <- 1
   k2 <- 1
   np <- 133
-  
+
   fuente <- 'Tabla correspondiente a la pregunta de la encuesta'
   nombre_proyecto <- 'Conacyt 2018'
   
@@ -55,7 +55,7 @@ source("~/Desktop/UNAM/DIAO/rsrvyest/src/utils.R")
   openxlsx::addWorksheet(wb, sheetName = 'General 2')
   openxlsx::addWorksheet(wb, sheetName = 'Dominios 1')
   openxlsx::addWorksheet(wb, sheetName = 'Dominios 2')
-  
+
 }
 
 # Estilos
@@ -81,7 +81,7 @@ source("~/Desktop/UNAM/DIAO/rsrvyest/src/utils.R")
 }
 
 ## PIXELES 30, 45
- 
+
 # For
 
 for (p in Lista[133:151]) {
@@ -90,52 +90,51 @@ for (p in Lista[133:151]) {
   dataset$Pondi1 <- Ponderador
   
   if (p %in% Multiples){
-    
+
     print('múltiple')
     
     multiples <- preguntas_multiples(pregunta = p, numero_pregunta = np, datos = dataset,
                         lista_preguntas = Lista_Preg, dominios = Dominios,
-                        disenio = disenio_mult, wb = wb, renglon_fs = k1, 
+                        disenio = disenio_mult, wb = wb, renglon_fs = k1,
                         renglon_tc = k2, DB_Mult = DB_Mult, columna = 1,
                         hojas_simples = c(1,2), hojas_cruzadas = c(3,4),
                         estilo_cuerpo = bodyStyle, estilo_columnas = verticalStyle,
                         frecuencias_simples = TRUE, tablas_cruzadas = TRUE)
-    
+
     k1=k1 + 1 + nrow(multiples[[1]][[1]]) + 5
     k2=k2 + 1 + nrow(multiples[[2]][[2]]) + 5
     np=np + 1
-    
   }
   else if (p %in% Lista_Cont){
-    
+
     print('continua')
-    
+
     #formato = 1
-    
+
     # frecuencias simples
-    
+
     tf <- estadisticas_continuas(mdesign, p)
-    
+
     tf <- acomoda_frecuencias(tf)
-    
+
     writeData(wb, 1, Lista_Preg[np], startRow = k1-1, startCol = 1)
     tabla_frec_excel(tf, 1, k1)
-    
+
     # tablas cruzadas
     t <- ftotal(mdesign, p, na.rm = TRUE,
-                vartype = c("se", "ci", "cv", "var"), 
+                vartype = c("se", "ci", "cv", "var"),
                 level = 0.95, proportion = FALSE, prop_method = "likelihood",
-                DEFF = TRUE, cuantiles) 
+                DEFF = TRUE, cuantiles)
     print(t)
-    
-    
+
+
     tabla <- t
     for (dom in Dominios){
       cruce <- tabla_cruzada(mdesign, p, dom, na.rm = TRUE,
-                             vartype = c("se", "ci", "cv", "var"), 
+                             vartype = c("se", "ci", "cv", "var"),
                              level = 0.95, DEFF = TRUE)
       tabla <- bind_rows(tabla, cruce)
-      
+
     }
 
     ltabla <- formato_tabla(tabla)
@@ -145,21 +144,20 @@ for (p in Lista[133:151]) {
      # tablaf <- as.data.frame(ltabla[2])
     #}
    # print(tablaf)
-    
+
     #escribo el excel
     tabla_excel(df = ltabla[[1]] , colini = 1, rowini = k2, hoja = 3)
     tabla_excel(df = ltabla[[2]] , colini = 1, rowini = k2, hoja = 4)
-    
+
     #escribo la pregunta  en rowini-1
     writeData(wb, 3, Lista_Preg[np], startRow = k2-1, startCol = 1)
     writeData(wb, 4, Lista_Preg[np], startRow = k2-1, startCol = 1)
-    
+
     #recalculo renglones
     k1=k1+nrow(tf) + 5
     k2=k2 + nrow(ltabla[[1]]) + 5
     np=np + 1
-    
-  } 
+  }
   else({
     
     print('categórica')
@@ -187,7 +185,7 @@ for (p in Lista[133:151]) {
 {
   addStyle(wb = wb, sheet = 1, style = totalStyle, rows = 3:100000, cols = 2 ,
            gridExpand = TRUE, stack = TRUE)
-  
+
   addStyle(wb = wb, sheet = 2, style = totalStyle, rows = 3:100000, cols = 2 ,
            gridExpand = TRUE, stack = TRUE)
 
