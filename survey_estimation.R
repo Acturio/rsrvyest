@@ -39,27 +39,28 @@ source("~/Desktop/UNAM/DIAO/rsrvyest/src/utils.R")
 {
   wb <- openxlsx::createWorkbook()
   options("openxlsx.numFmt" = "0.0")
-
-  k1 <- 1
-  k2 <- 1
-  k3 <- 1
-  k4 <- 1
+# Empezamos en el renglón 5
+  
+  k1 <- 5
+  k2 <- 5
+  k3 <- 5
+  k4 <- 5
   np <- 133
 
   organismo <- 'Ciudadanía mexicana'
   nombre_proyecto <- 'Conacyt 2018'
   
   openxlsx::addWorksheet(wb, sheetName = 'Frecuencias simples')
-  showGridLines(wb, sheet, showGridLines = FALSE)
+  showGridLines(wb, sheet = 'Frecuencias simples', showGridLines = FALSE)
   
   openxlsx::addWorksheet(wb, sheetName = 'Tablas cruzadas')
-  showGridLines(wb, sheet, showGridLines = FALSE)
+  showGridLines(wb, sheet='Tablas cruzadas', showGridLines = FALSE)
   
-  openxlsx::addWorksheet(wb, sheetName = 'Dominios 1')
-  showGridLines(wb, sheet, showGridLines = FALSE)
+  openxlsx::addWorksheet(wb, sheetName = 'Frecuencias (dispersión)')
+  showGridLines(wb, sheet = 'Frecuencias (dispersión)', showGridLines = FALSE)
   
-  openxlsx::addWorksheet(wb, sheetName = 'Dominios 2')
-  showGridLines(wb, sheet, showGridLines = FALSE)
+  openxlsx::addWorksheet(wb, sheetName = 'Tablas cruzadas (dispersión)')
+  showGridLines(wb, sheet = 'Tablas cruzadas (dispersión)', showGridLines = FALSE)
   
 
 }
@@ -86,7 +87,6 @@ source("~/Desktop/UNAM/DIAO/rsrvyest/src/utils.R")
                                  borderColour = "black", borderStyle = 'thin',
                                  valign = 'center')
   
-  totalStyle <- createStyle(numFmt = "###,###,###")
   
 }
 
@@ -106,8 +106,8 @@ for (p in Lista[133:151]) {
                            DB_Mult = DB_Mult, dominios = Dominios, 
                            lista_preguntas=Lista_Preg,
                            diseño = disenio_mult, wb = wb, renglon_fs = c(k1, k2),
-                           renglon_tc = c(k3, k4), columna = 1, hojas_fs = c(1,2),
-                           hojas_tc = c(3,4), fuente = nombre_proyecto, 
+                           renglon_tc = c(k3, k4), columna = 1, hojas_fs = c(1,3),
+                           hojas_tc = c(2,4), fuente = nombre_proyecto, 
                            tipo_pregunta = 'multiple',
                            organismo_participacion = organismo,
                            estilo_encabezado = headerStyle,
@@ -136,8 +136,8 @@ for (p in Lista[133:151]) {
                            DB_Mult = DB_Mult, dominios = Dominios, 
                            lista_preguntas=Lista_Preg, diseño = disenio_cont,
                            wb = wb, renglon_fs = c(k1, k2), renglon_tc = c(k3, k4),
-                           columna = 1, hojas_fs = c(1,2),
-                           hojas_tc = c(3,4), fuente = nombre_proyecto,
+                           columna = 1, hojas_fs = c(1,3),
+                           hojas_tc = c(2,4), fuente = nombre_proyecto,
                            tipo_pregunta = 'continua',
                            organismo_participacion = organismo,
                            estilo_encabezado = headerStyle,
@@ -166,7 +166,7 @@ for (p in Lista[133:151]) {
                              DB_Mult = DB_Mult, dominios = Dominios,
                              lista_preguntas=Lista_Preg, diseño = disenio_cat, 
                              wb = wb, renglon_fs = c(k1, k2), renglon_tc = c(k3, k4),
-                             columna = 1, hojas_fs = c(1,2), hojas_tc = c(3,4),
+                             columna = 1, hojas_fs = c(1,3), hojas_tc = c(2,4),
                              fuente = nombre_proyecto,
                              tipo_pregunta = 'categorica',
                              organismo_participacion = organismo,
