@@ -10,32 +10,62 @@ source("~/Desktop/UNAM/DIAO/rsrvyest/src/utils.R")
    # Nombre de estimación global (Puede ser nacional, cdmx, etc. Depende de la representatividad del estudio)
    General <- "Nacional" 
    
-   Lista <- read_xlsx("aux/Lista de Preguntas.xlsx", 
-                      sheet = "Lista Preguntas")$Pregunta %>% as.vector()
-   Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx", 
-                           sheet = "Lista Preguntas")$Nombre %>% as.vector()
-   DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx", 
-                        sheet = "Múltiple") %>% as.data.frame()
-   Lista_Cont <- read_xlsx("aux/Lista de Preguntas.xlsx", 
-                           sheet = "Continuas")$VARIABLE %>% as.vector()
-   Dominios <- read_xlsx("aux/Lista de Preguntas.xlsx", 
-                         sheet = "Dominios")$Dominios %>% as.vector()
+   Lista <- read_xlsx(
+     path = "aux/Lista de Preguntas.xlsx",
+     sheet = "Lista Preguntas"
+     ) %>% pull(Pregunta) 
+   
+   Lista_Preg <- read_xlsx(
+     path = "aux/Lista de Preguntas.xlsx", 
+     sheet = "Lista Preguntas"
+     ) %>% pull(Nombre)
+   
+   DB_Mult <- read_xlsx(
+     path = "aux/Lista de Preguntas.xlsx", 
+     sheet = "Múltiple"
+     ) %>% as.data.frame()
+   
+   Lista_Cont <- read_xlsx(
+     path = "aux/Lista de Preguntas.xlsx",
+     sheet = "Continuas"
+     ) %>% path(VARIABLE)
+   
+   Dominios <- read_xlsx(
+     path = "aux/Lista de Preguntas.xlsx",
+     sheet = "Dominios"
+     ) %>% pull(Dominios)
    
    Multiples <- names(DB_Mult)
-   Ponderador <- dataset$Pondi1
+   Ponderador <- pull(dataset, Pondi1)
    save = ""
  }
  
 # Diseños
  
 {
-  disenio_cat <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1,
-                               reps=FALSE, datos = dataset)
-  disenio_cont <- disenio( id = CV_ESC, estrato = ESTRATO, pesos = Pondi1,
-                      reps = FALSE, datos = dataset)
+  disenio_cat <- disenio(
+    id = c(CV_ESC, ID_DIAO), 
+    estrato = ESTRATO, 
+    pesos = Pondi1,
+    reps = FALSE, 
+    datos = dataset
+    )
   
-  disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1,
-                               reps=FALSE, datos = dataset)
+  disenio_cont <- disenio(
+    id = CV_ESC, 
+    estrato = ESTRATO, 
+    pesos = Pondi1,
+    reps = FALSE, 
+    datos = dataset
+    )
+  
+  disenio_mult <- disenio(
+    id = c(CV_ESC, ID_DIAO), 
+    estrato = ESTRATO, 
+    pesos = Pondi1,
+    reps = FALSE, 
+    datos = dataset
+    )
 }
 
 # Inicializar workbook
@@ -68,7 +98,6 @@ source("~/Desktop/UNAM/DIAO/rsrvyest/src/utils.R")
 }
 
 # Estilos
-
 {
   headerStyle <- createStyle(
     fontSize = 11, 
@@ -111,12 +140,12 @@ source("~/Desktop/UNAM/DIAO/rsrvyest/src/utils.R")
 
 for (p in Lista[133:151]) {
 
-  print(paste0("Estimando resultado de pregunta: ",p))
-  dataset$Pondi1 <- Ponderador
+  print(paste0("Estimando resultado de pregunta: ", p))
+  dataset %<>% mutate(Pondi1 = Ponderador)
   
   if (p %in% Multiples){
 
-    print('múltiple')
+    print(paste('Estimación de pregunta múltiple:', p))
     
     multiples <- preguntas(
       pregunta = p, 
@@ -156,7 +185,7 @@ for (p in Lista[133:151]) {
   }
   else if (p %in% Lista_Cont){
 
-    print('continua')
+    print(paste('Estimación de pregunta continua:', p))
     
    continuas <-  preguntas(
      pregunta = p, 
@@ -196,7 +225,7 @@ for (p in Lista[133:151]) {
   }
   else({
     
-    print('categórica')
+    print(paste('Estimación de pregunta categórica:', p))
   
     categoricas <- preguntas(
       pregunta = p, 
@@ -234,7 +263,6 @@ for (p in Lista[133:151]) {
   })
   
 }
-
 
 openxlsx::openXL(wb)
 
