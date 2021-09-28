@@ -44,9 +44,7 @@ disenio <- function(id, estrato, pesos, datos, pps = "brewer",
 }
 
 #################################################################################
-#################################################################################
 ############################# FRECUENCIAS SIMPLES ##############################
-#################################################################################
 #################################################################################
 
 # FUNCIÓN FRECUENCIAS SIMPLES SEGÚN TIPO DE PREGUNTA
@@ -1325,17 +1323,15 @@ categorias_pregunta_formato <- function(
       
     }
   }
-  
   return(categs)
-  
 }
 
 
 # FUNCIÓN FORMATO CATEGORÍAS PARA PREGUNTAS CATEGÓRICAS Y MÚLTIPLES
 #ANA
-formato_categorias <- function(tabla, pregunta, diseño, datos, DB_Mult, wb,
-                               renglon = c(1,1), columna = 4, hojas = c(3,4),
-                               estilo_cuerpo, tipo_pregunta = 'categorica'){
+formato_categorias <- function(
+  tabla, pregunta, diseño, datos, DB_Mult, wb, renglon = c(1,1), columna = 4, 
+  hojas = c(3,4), estilo_cuerpo, tipo_pregunta = 'categorica'){
   
   # Renglón 2 columna 4
   
@@ -1414,10 +1410,9 @@ formato_categorias <- function(tabla, pregunta, diseño, datos, DB_Mult, wb,
 
 # FUNCIÓN FORMATO TABLAS CRUZADAS EXCEL
 # IVÄN
-formato_tablas_cruzadas <- function(tabla, wb, renglon = c(1,1), columna = 1,
-                                    hojas = c(3,4),
-                                    estilo_encabezado = headerStyle,
-                                    estilo_total = totalStyle){
+formato_tablas_cruzadas <- function(
+  tabla, wb, renglon = c(1,1), columna = 1, hojas = c(3,4), 
+  estilo_encabezado = headerStyle, estilo_total = totalStyle){
   
   
   # renglón 3 columna 1
@@ -1541,16 +1536,12 @@ estilo_columnas <- function(tabla, wb, hojas = c(3,4), estilo = verticalStyle,
 
 # FUNCIÓN TABLAS CRUZADAS EN EXCEL
 # ANA
-tablas_cruzadas_excel <- function(pregunta, num_pregunta, dominios, datos,
-                                  DB_Mult, lista_preguntas, diseño, wb,
-                                  renglon = c(1,1), columna = 1, hojas = c(3,4),
-                                  tipo_pregunta = 'categorica', fuente,
-                                  organismo_participacion,
-                                  estilo_encabezado = headerStyle,
-                                  estilo_columnas = verticalStyle,
-                                  estilo_categorias = bodyStyle,
-                                  estilo_horizontal = horizontalStyle,
-                                  estilo_total = totalStyle){
+tablas_cruzadas_excel <- function(
+  pregunta, num_pregunta, dominios, datos, DB_Mult, lista_preguntas, diseño, wb,
+  renglon = c(1,1), columna = 1, hojas = c(3,4), tipo_pregunta = 'categorica', 
+  fuente, organismo_participacion, estilo_encabezado = headerStyle,
+  estilo_columnas = verticalStyle, estilo_categorias = bodyStyle,
+  estilo_horizontal = horizontalStyle, estilo_total = totalStyle){
   
   # Título pregunta
   
@@ -1944,18 +1935,13 @@ tablas_cruzadas_excel <- function(pregunta, num_pregunta, dominios, datos,
 
 
 #ANA
-preguntas <- function(pregunta, num_pregunta, datos, DB_Mult, dominios,
-                      lista_preguntas, diseño, wb, renglon_fs, renglon_tc,
-                      columna = 1, hojas_fs = c(1,2),
-                      hojas_tc = c(3,4),
-                      fuente = 'fuente',
-                      organismo_participacion = 'organismo',
-                      tipo_pregunta,
-                      estilo_encabezado = headerStyle,
-                      estilo_categorias = bodyStyle,
-                      estilo_horizontal = horizontalStyle,
-                      estilo_total = totalStyle,
-                      frecuencias_simples = TRUE, tablas_cruzadas = TRUE){
+preguntas <- function(
+  pregunta, num_pregunta, datos, DB_Mult, dominios, lista_preguntas, diseño, wb, 
+  renglon_fs, renglon_tc, columna = 1, hojas_fs = c(1,2), hojas_tc = c(3,4),
+  fuente = 'fuente', organismo_participacion = 'organismo', tipo_pregunta,
+  estilo_encabezado = headerStyle, estilo_categorias = bodyStyle,
+  estilo_horizontal = horizontalStyle, estilo_total = totalStyle,
+  frecuencias_simples = TRUE, tablas_cruzadas = TRUE){
   
   
   if(frecuencias_simples){
