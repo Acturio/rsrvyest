@@ -4,8 +4,11 @@ source("~/Desktop/UNAM/DIAO/rsrvyest/src/utils.R")
  # Lectura de datos
 
  {
-   dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE) # Lectura de datos de spss
-   General <- "Nacional" # Nombre de estimación global (Puede ser nacional, cdmx, etc. Depende de la representatividad del estudio)
+   # Lectura de datos de spss
+   dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE) 
+
+   # Nombre de estimación global (Puede ser nacional, cdmx, etc. Depende de la representatividad del estudio)
+   General <- "Nacional" 
    
    Lista <- read_xlsx("aux/Lista de Preguntas.xlsx", 
                       sheet = "Lista Preguntas")$Pregunta %>% as.vector()
@@ -62,32 +65,45 @@ source("~/Desktop/UNAM/DIAO/rsrvyest/src/utils.R")
   openxlsx::addWorksheet(wb, sheetName = 'Tablas cruzadas (dispersión)')
   showGridLines(wb, sheet = 'Tablas cruzadas (dispersión)', showGridLines = FALSE)
   
-
 }
 
 # Estilos
 
 {
   headerStyle <- createStyle(
-    fontSize = 11, fontColour = "black", halign = "center",
-    border = "TopBottom", borderColour = "black",
-    borderStyle = c('thin', 'double'), textDecoration = 'bold')
+    fontSize = 11, 
+    fontColour = "black", 
+    halign = "center",
+    border = "TopBottom", 
+    borderColour = "black",
+    borderStyle = c('thin', 'double'), 
+    textDecoration = 'bold'
+    )
   
-  bodyStyle <- createStyle(halign = 'center', border = "TopBottomLeftRight",
-                           borderColour = "black", borderStyle = 'thin',
-                           valign = 'center', wrapText = TRUE)
+  bodyStyle <- createStyle(
+    halign = 'center', 
+    border = "TopBottomLeftRight",
+    borderColour = "black", 
+    borderStyle = 'thin',
+    valign = 'center', 
+    wrapText = TRUE
+    )
   
-  verticalStyle <- createStyle(border = "Right",
-                               borderColour = "black", borderStyle = 'thin',
-                               valign = 'center')
+  verticalStyle <- createStyle(
+    border = "Right",
+    borderColour = "black", 
+    borderStyle = 'thin',
+    valign = 'center'
+    )
   
   totalStyle <-  createStyle(numFmt = "###,###,###.0")
   
-  horizontalStyle <- createStyle(border = "bottom",
-                                 borderColour = "black", borderStyle = 'thin',
-                                 valign = 'center')
-  
-  
+  horizontalStyle <- createStyle(
+    border = "bottom",
+    borderColour = "black", 
+    borderStyle = 'thin',
+    valign = 'center'
+    )
 }
 
 
@@ -102,20 +118,30 @@ for (p in Lista[133:151]) {
 
     print('múltiple')
     
-    multiples <- preguntas(pregunta = p, num_pregunta = np, datos=dataset,
-                           DB_Mult = DB_Mult, dominios = Dominios, 
-                           lista_preguntas=Lista_Preg,
-                           diseño = disenio_mult, wb = wb, renglon_fs = c(k1, k2),
-                           renglon_tc = c(k3, k4), columna = 1, hojas_fs = c(1,3),
-                           hojas_tc = c(2,4), fuente = nombre_proyecto, 
-                           tipo_pregunta = 'multiple',
-                           organismo_participacion = organismo,
-                           estilo_encabezado = headerStyle,
-                           estilo_categorias = bodyStyle,
-                           estilo_horizontal = horizontalStyle,
-                           estilo_total = totalStyle,
-                           frecuencias_simples = TRUE, tablas_cruzadas = TRUE)
-    
+    multiples <- preguntas(
+      pregunta = p, 
+      num_pregunta = np, 
+      datos=dataset,
+      DB_Mult = DB_Mult, 
+      dominios = Dominios,
+      lista_preguntas = Lista_Preg,
+      diseño = disenio_mult, 
+      wb = wb, 
+      renglon_fs = c(k1, k2),
+      renglon_tc = c(k3, k4), 
+      columna = 1, 
+      hojas_fs = c(1,3),
+      hojas_tc = c(2,4), 
+      fuente = nombre_proyecto,
+      tipo_pregunta = 'multiple',
+      organismo_participacion = organismo,
+      estilo_encabezado = headerStyle,
+      estilo_categorias = bodyStyle,
+      estilo_horizontal = horizontalStyle,
+      estilo_total = totalStyle,
+      frecuencias_simples = TRUE, 
+      tablas_cruzadas = TRUE
+      )
     
     # Frecuencias simples
     k1=k1 + 1 + nrow(multiples[[1]][[1]]) + 7
@@ -132,20 +158,30 @@ for (p in Lista[133:151]) {
 
     print('continua')
     
-   continuas <-  preguntas(pregunta = p, num_pregunta = np, datos=dataset, 
-                           DB_Mult = DB_Mult, dominios = Dominios, 
-                           lista_preguntas=Lista_Preg, diseño = disenio_cont,
-                           wb = wb, renglon_fs = c(k1, k2), renglon_tc = c(k3, k4),
-                           columna = 1, hojas_fs = c(1,3),
-                           hojas_tc = c(2,4), fuente = nombre_proyecto,
-                           tipo_pregunta = 'continua',
-                           organismo_participacion = organismo,
-                           estilo_encabezado = headerStyle,
-                           estilo_categorias = bodyStyle,
-                           estilo_horizontal = horizontalStyle,
-                           estilo_total = totalStyle,
-                           frecuencias_simples = TRUE, tablas_cruzadas = TRUE)
-   
+   continuas <-  preguntas(
+     pregunta = p, 
+     num_pregunta = np, 
+     datos=dataset, 
+     DB_Mult = DB_Mult, 
+     dominios = Dominios, 
+     lista_preguntas=Lista_Preg, 
+     diseño = disenio_cont,
+     wb = wb, 
+     renglon_fs = c(k1, k2), 
+     renglon_tc = c(k3, k4),
+     columna = 1, 
+     hojas_fs = c(1,3),
+     hojas_tc = c(2,4), 
+     fuente = nombre_proyecto,
+     tipo_pregunta = 'continua',
+     organismo_participacion = organismo,
+     estilo_encabezado = headerStyle,
+     estilo_categorias = bodyStyle,
+     estilo_horizontal = horizontalStyle,
+     estilo_total = totalStyle,
+     frecuencias_simples = TRUE, 
+     tablas_cruzadas = TRUE
+     )
    
    # Frecuencias simples
    k1=k1 + 1 + nrow(continuas[[1]][[1]]) + 7
@@ -162,20 +198,29 @@ for (p in Lista[133:151]) {
     
     print('categórica')
   
-    categoricas <- preguntas(pregunta = p, num_pregunta = np, datos=dataset,
-                             DB_Mult = DB_Mult, dominios = Dominios,
-                             lista_preguntas=Lista_Preg, diseño = disenio_cat, 
-                             wb = wb, renglon_fs = c(k1, k2), renglon_tc = c(k3, k4),
-                             columna = 1, hojas_fs = c(1,3), hojas_tc = c(2,4),
-                             fuente = nombre_proyecto,
-                             tipo_pregunta = 'categorica',
-                             organismo_participacion = organismo,
-                             estilo_encabezado = headerStyle,
-                             estilo_categorias = bodyStyle,
-                             estilo_horizontal = horizontalStyle,
-                             estilo_total = totalStyle,
-                             frecuencias_simples = TRUE, 
-                             tablas_cruzadas = TRUE)
+    categoricas <- preguntas(
+      pregunta = p, 
+      num_pregunta = np, 
+      datos = dataset,
+      DB_Mult = DB_Mult, 
+      dominios = Dominios,
+      lista_preguntas = Lista_Preg, 
+      diseño = disenio_cat, 
+      wb = wb, 
+      renglon_fs = c(k1, k2), 
+      renglon_tc = c(k3, k4),
+      columna = 1, 
+      hojas_fs = c(1, 3), 
+      hojas_tc = c(2, 4),
+      fuente = nombre_proyecto,
+      tipo_pregunta = 'categorica',
+      organismo_participacion = organismo,
+      estilo_encabezado = headerStyle,
+      estilo_categorias = bodyStyle,
+      estilo_horizontal = horizontalStyle,
+      estilo_total = totalStyle,
+      frecuencias_simples = TRUE, 
+      tablas_cruzadas = TRUE)
     
     # Frecuencias simples
     k1=k1 + 1 + nrow(categoricas[[1]][[1]]) + 7
