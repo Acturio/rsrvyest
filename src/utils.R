@@ -19,7 +19,7 @@
 }
 
 # FUNCIÓN DISEÑO DE MUESTREO 
-  
+
 disenio <- function(id, estrato, pesos, datos, pps = "brewer",
                       varianza = "HT", reps = TRUE, metodo = "subbootstrap",
                       B=50, semilla=1234){
@@ -49,6 +49,41 @@ disenio <- function(id, estrato, pesos, datos, pps = "brewer",
 #################################################################################
 
 # FUNCIÓN FRECUENCIAS SIMPLES SEGÚN TIPO DE PREGUNTA
+
+#' Crea tabla frecuencias simples
+#' @description Se crean las frecuencias simples según tipo de pregunta (categórica, múltiple o continua)
+#' @usage frecuencias_simples(
+#' diseño,
+#' datos,
+#' pregunta,
+#' DB_Mult,
+#' na.rm = TRUE,
+#' estadisticas =  c("se","ci","cv", "var"), 
+#' cuantiles = c(0,0.25, 0.5, 0.75,1),
+#' significancia = 0.95, 
+#' proporcion = FALSE, 
+#' metodo_prop = "likelihood", DEFF = TRUE,
+#' tipo_pregunta = "categorica"
+#' )
+#' @param diseño Diseño muestral que se ocupará según el tipo de pregunta
+#' @param datos Conjunto de datos en formato .sav
+#' @param pregunta Pregunta de la cual se quieren obtener las frecuencias simples, por ejemplo, 'P_1'
+#' @param DB_Mult Data frame con las preguntas múltiples
+#' @param na.rm Valor lógico que indica si se deben de omitir valores faltantes
+#' @param estadisticas Métricas de variabilidad: error estándar ("se"), intervalo de confianza ("ci"), varianza ("var") o coeficiente de variación ("cv")
+#' @param cuantiles Vector de cuantiles a calcular
+#' @param significancia Nivel de confianza: 0.95 por default
+#' @param proporcion Valor lógico que indica si se desen usar métodos para calcular la proporción que puede tener intervalos de confianza más precisos cerca de 0 y 1
+#' @param metodo_prop  Si proporcion = TRUE; tipo de método de proporción que se desea usar: "logit", "likelihood", "asin", "beta", "mean"
+#' @param DEFF Valor lógico que indica si se desea calcular el efecto de diseño
+#' @param tipo_pregunta Tipo de pregunta: 'categorica', 'multiple', 'continua'
+#' @return Tabla tipo tibble con las estadísticas especificadas en el parámetro estadisticas por respuestas pertenecientes a la pregunta especificada en el parámetro pregunta
+#' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
+#' @seealso \code{\link{survey_mean}}
+#' @example \dontrun{
+#' frecuencias_simples(diseño = disenio_cat, datos = dataset, pregunta = 'P1',
+#'  DB_Mult = DB_Mult, tipo_pregunta = 'categorica')
+#' } 
 
 frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE, 
                                  estadisticas = c("se","ci","cv", "var"), 
@@ -196,7 +231,29 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
 
 # FUNCIÓN FORMATEAR TABLA FRECUENCIAS SIMPLES SEGÚN TIPO DE PREGUNTA 
 
-formatear_frecuencias_simples <- function(tabla, tipo_pregunta = 'categorica'){
+#'  Formatea tabla frecuencias simples 
+#'  
+#' @description Se formatea la tabla de frecuencias simples según tipo de pregunta 
+#' @usage formatear_frecuencias_simples(
+#' tabla,
+#' tipo_pregunta = "categorica"
+#' )
+#' @param tabla Tabla de frecuencias simples creada con la función frecuencias_simples()
+#' @param tipo_pregunta Tipo de pregunta: 'categorica', 'multiple', 'continua'
+#' @return Lista de dos tibbles: en la primera tibble se encuentra el total estimado y las métricas media, límite inferior y superior; 
+#' en la segunda tibble se encuentra el total y las métricas error estándar, varianza, coeficiente de variación y el efecto de diseño (si es que DEFF = TRUE en la función frecuencias_simples)
+#' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
+#' @seealso \code{\link{survey_mean}}
+#' @example \dontrun{
+#' freq_simples <- frecuencias_simples(diseño = disenio_cat, datos = dataset, pregunta = 'P1',
+#'  DB_Mult = DB_Mult, tipo_pregunta = 'categorica') 
+#'  
+#' frecuencias_simples(tabla = freq_simples, tipo_pregunta = 'categorica')
+#' } 
+
+
+formatear_frecuencias_simples <- function(tabla,
+                                          tipo_pregunta = 'categorica'){
   
   if (tipo_pregunta == 'categorica' || tipo_pregunta == 'multiple'){
     
@@ -268,6 +325,60 @@ formatear_frecuencias_simples <- function(tabla, tipo_pregunta = 'categorica'){
 
 # FUNCIÓN ESCRIBIR FRECUENCIAS SIMPLES EN EXCEL (UTILIZA FUNCIÓN escribir_tabla)
 
+#' Escribe frecuencias simples en dos hojas de Excel  
+#'
+#' @description Escribe la tabla de frecuencias simples formateadas en dos hojas de Excel
+#' @usage formato_frecuencias_simples(
+#' tabla,
+#' wb,
+#' hojas,
+#' renglon,
+#' columna,
+#' estilo_encabezado,
+#' estilo_horizontal,
+#' estilo_total,
+#' tipo_pregunta
+#' )
+#' @param tabla lista de las tibbles creadas por la función formatear_frecuencias_simples
+#' @param wb Workbook de Excel que contiene al menos dos hojas 
+#' @param hojas vector de número de hojas en el cual se desea insertar las tablas
+#' @param renglon vetor tamaño 2 especificando el número de renglon en el cual se desea empezar a escribir la tabla 1 y tabla 2 respectivamente
+#' @param columna columna en la cual se desea empezar a escribir las tablas 
+#' @param estilo_encabezado estilo el cual se desea usar para los nombres de las columnas
+#' @param estilo_horizontal estilo último renglón horizontal
+#' @param estilo_total estilo el cual se desea usar para la columna total
+#' @param tipo_pregunta tipo de pregunta_ 'categorica', 'multiple', 'continua'
+#' @details Ambas tablas se escribirán en la misma columna pero en diferentes hojas (especificadas en el parámetro hojas).
+#' @details El estilo_total se recomienda crear un estilo con la función createStyle de openxlsx con el formato que se desea, por ejemplo "###,###,###.0"
+#' @details El estilo_horizontal hace referencia al tipo de lineado horizontal se desea en el úntimo renglón de la tabla
+#' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
+#' @seealso \code{\link{writeData}} \code{\link{createStyle}} 
+#' @examples \dontrun{
+#' # Creación del workbook
+#' wb <- createWorkbook()
+#' addWorksheet(wb, "Frecuencias simples")
+#' addWorksheet(wb, "Frecuencias simples (dispersión)")
+#' 
+#' # Estilos 
+#' headerStyle <- createStyle(fontSize = 11, fontColour = "black", halign = "center",
+#' border = "TopBottom", borderColour = "black",
+#' borderStyle = c('thin', 'double'), textDecoration = 'bold')
+#' 
+#' totalStyle <-  createStyle(numFmt = "###,###,###.0")
+#' 
+#' horizontalStyle <- createStyle(border = "bottom", borderColour = "black", borderStyle = 'thin', valign = 'center')
+#' 
+#' freq_simples <- frecuencias_simples(diseño = disenio_cat, datos = dataset, pregunta = 'P1',
+#'  DB_Mult = DB_Mult, tipo_pregunta = 'categorica') 
+#'  
+#' freq_simples_format <- frecuencias_simples(tabla = freq_simples, tipo_pregunta = 'categorica')
+#' 
+#' formato_frecuencias_simples(tabla = freq_simples_format , wb = wb, hojas = c(1,2), 
+#' renglon = c(1,1), columna = 1 , estilo_encabezado = headerStyle , 
+#' estilo_horizontal = horizontalStyle , estilo_total = totalStyle, tipo_pregunta = 'categorica')
+#' }
+#' 
+
 formato_frecuencias_simples <- function(tabla, wb, hojas = c(1,2), renglon = c(1,1),
                                         columna, estilo_encabezado, 
                                         estilo_horizontal, estilo_total,
@@ -329,10 +440,13 @@ formato_frecuencias_simples <- function(tabla, wb, hojas = c(1,2), renglon = c(1
 
 # FUNCIÓN FRECUENCIAS SIMPLES EN EXCEL 
 
+#' Función frecuencias simples en Excel
+#' 
 frecuencias_simples_excel <- function(pregunta, num_pregunta, datos, DB_Mult,
                                     lista_preguntas, diseño, wb, renglon = c(1,1),
                                     columna = 1, hojas = c(1,2),
                                     tipo_pregunta = 'categorica', fuente,
+                                    logo_path = '~/Desktop/UNAM/DIAO/rsrvyest/img/logo_unam.png',
                                     organismo_participacion,
                                     estilo_encabezado = headerStyle,
                                     estilo_horizontal = horizontalStyle,
@@ -370,7 +484,8 @@ frecuencias_simples_excel <- function(pregunta, num_pregunta, datos, DB_Mult,
   
   # Pegar logo UNAM renglón 1, columna 1
   
-  logo <- '~/Desktop/UNAM/DIAO/rsrvyest/img/logo_unam.png'
+
+  logo <- logo_path
   
   insertImage(wb = wb, sheet = hojas[1],
               file = logo, startRow = 1, startCol = 1, 
@@ -380,6 +495,7 @@ frecuencias_simples_excel <- function(pregunta, num_pregunta, datos, DB_Mult,
               file = logo, startRow = 1, startCol = 1, 
               width = 2.08, height = 2.2, units = 'cm')
   
+
   # Título Pregunta
   
   np <- lista_preguntas[[num_pregunta]]
