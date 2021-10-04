@@ -441,7 +441,93 @@ formato_frecuencias_simples <- function(tabla, wb, hojas = c(1,2), renglon = c(1
 # FUNCIÓN FRECUENCIAS SIMPLES EN EXCEL 
 
 #' Función frecuencias simples en Excel
+#'
+#' @description Escribe los títulos 'Frecuencias simples' y 'Frecuencias simples (dispersión)', logo indicado, título de la pregunta, tabla de frecuencias simples formateada y pie de tabla en las hojas y renglones mencionados por el usuario
+#' @usage frecuencias_simples_excel <- function(
+#' pregunta,
+#' num_pregunta,
+#' datos,
+#' DB_Mult,
+#' lista_preguntas,
+#' diseño,
+#' wb,
+#' renglon = c(1,1),
+#' columna = 1,
+#' hojas = c(1,2),
+#' tipo_pregunta = 'categorica', 
+#' fuente,
+#' logo_path,
+#' organismo_participacion,
+#' estilo_encabezado = headerStyle,
+#' estilo_horizontal = horizontalStyle,
+#' estilo_total = totalStyle
+#'  )
+#' @param pregunta Nombre de la pregunta sobre la cual se desea obtener frecuencias simples e incluirlas en un workbook de Excel
+#' @param num_pregunta Número de pregunta
+#' @param datos Conjunto de datos en formato .sav
+#' @param DB_Mult Data frame con las preguntas múltiples
+#' @param lista_preguntas Data frame que contiene los títulos de las pregunta
+#' @param diseño Diseño muestral que se ocupará según el tipo de pregunta
+#' @param wb Workbook de Excel que contiene al menos dos hojas 
+#' @param renglon Vector tamaño 2 especificando el número de renglon en el cual se desea empezar a escribir la tabla 1 y tabla 2 respectivamente
+#' @param columna Columna en la cual se desea empezar a escribir las tablas 
+#' @param hojas Vector de número de hojas en el cual se desea insertar las tablas
+#' @param tipo_pregunta Tipo de pregunta_ 'categorica', 'multiple', 'continua'
+#' @param fuente Nombre del proyecto
+#' @param logo_path Path del logo de la UNAM 
+#' @param organismo_participacion Organismos que participaron en el proyecto, por ejemplo, 'Ciudadanía Mexicana'
+#' @param estilo_encabezado estilo el cual se desea usar para los nombres de las columnas
+#' @param estilo_horizontal estilo último renglón horizontal
+#' @param estilo_total estilo el cual se desea usar para la columna total
 #' 
+#' @details Esta función envuelve todas las funciones creadas para obtener las frecuencias simples, por lo que esta función es la única que se deberá llamar para crear las frecuencias simples de las preguntas deseadas e insertarlas en ciertas hojas de Excel
+#' @details Es necesario crear al menos dos hojas de excel con la función addWorksheet de la paquetería openxlsx
+#' @details El estilo_total se recomienda crear un estilo con la función createStyle de openxlsx con el formato que se desea, por ejemplo "###,###,###.0"
+#' @details El estilo_horizontal hace referencia al tipo de lineado horizontal se desea en el úntimo renglón de la tabla
+#' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
+#' @seealso \code{\link{writeData}} \code{\link{createStyle}}  \code{\link(setRowHeights)} \code{\link{insertImage}} \code{\link{mergeCells}}
+#' @examples \dontrun{
+#' # Creación del workbook
+#' wb <- createWorkbook()
+#' addWorksheet(wb, "Frecuencias simples")
+#' addWorksheet(wb, "Frecuencias simples (dispersión)")
+#' 
+#' # Estilos 
+#' headerStyle <- createStyle(fontSize = 11, fontColour = "black", halign = "center",
+#' border = "TopBottom", borderColour = "black",
+#' borderStyle = c('thin', 'double'), textDecoration = 'bold')
+#' totalStyle <-  createStyle(numFmt = "###,###,###.0")
+#' horizontalStyle <- createStyle(border = "bottom",
+#' borderColour = "black", borderStyle = 'thin', valign = 'center')
+#' 
+#' # Carga de datos
+#'  dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
+#'  Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx", 
+#'  sheet = "Lista Preguntas")$Nombre %>% as.vector()
+#'   DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx", 
+#'   sheet = "Múltiple") %>% as.data.frame()
+#'
+#' #Diseño
+#'  disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
+#'  
+#' frecuencias_simples_excel(pregunta = 'P1',
+#' num_pregunta = 1,
+#' datos = dataset,
+#' DB_Mult = DB_Mult,
+#' lista_preguntas = Lista_Preg,
+#' diseño = disenio_mult,
+#' wb = wb,
+#' renglon = c(1,1),
+#' columna = 1, 
+#' hojas = c(1,2),
+#' tipo_pregunta = 'multiple',
+#' fuente =  'Conacyt 2018',
+#' organismo_participacion = 'Ciudadanía mexicana',
+#' estilo_encabezado = headerStyle,
+#' estilo_horizontal = horizontalStyle,
+#' estilo_total = totalStyle
+#' )
+#' }
 frecuencias_simples_excel <- function(pregunta, num_pregunta, datos, DB_Mult,
                                     lista_preguntas, diseño, wb, renglon = c(1,1),
                                     columna = 1, hojas = c(1,2),
@@ -657,6 +743,54 @@ frecuencias_simples_excel <- function(pregunta, num_pregunta, datos, DB_Mult,
 
 # FUNCIÓN TABLAS CRUZADAS SEGÚN TIPO PREGUNTA
 
+#' Función tablas cruzadas según tipo de pregunta y dominio
+#' @description Se crea la tabla cruzada según dominio tipo de pregunta (categórica, múltiple o continua) 
+#' @usage tablas_cruzadas(
+#' diseño,
+#' pregunta,
+#' dominio,
+#' datos,
+#' DB_Mult,
+#' na.rm,
+#' vartype = c("ci","se","var","cv"),
+#' cuantiles = c(0,0.25, 0.5, 0.75,1),
+#' significancia = 0.95
+#' proporcion = FALSE,
+#' metodo_prop = 'likelihood',
+#' DEFF = TRUE,
+#' tipo_pregunta = 'categorica'
+#' )
+#' @param diseño Diseño muestral que se ocupará según el tipo de pregunta
+#' @param pregunta Pregunta de la cual se quieren obtener las frecuencias simples, por ejemplo, 'P_1'
+#' @param dominio Nombre del dominio del cual se desea obtener la tabla cruzada
+#' @param datos Conjunto de datos en formato .sav
+#' @param DB_Mult Data frame con las preguntas múltiples
+#' @param na.rm Valor lógico que indica si se deben de omitir valores faltantes
+#' @param vartype Métricas de variabilidad: error estándar ("se"), intervalo de confianza ("ci"), varianza ("var") o coeficiente de variación ("cv")
+#' @param cuantiles Vector de cuantiles a calcular
+#' @param significancia Nivel de confianza: 0.95 por default
+#' @param proporcion Valor lógico que indica si se desen usar métodos para calcular la proporción que puede tener intervalos de confianza más precisos cerca de 0 y 1
+#' @param metodo_prop  Si proporcion = TRUE; tipo de método de proporción que se desea usar: "logit", "likelihood", "asin", "beta", "mean"
+#' @param DEFF Valor lógico que indica si se desea calcular el efecto de diseño
+#' @param tipo_pregunta Tipo de pregunta: 'categorica', 'multiple', 'continua'
+#' @return Tabla tipo tibble con las estadísticas especificadas en el parámetro estadisticas por respuestas pertenecientes a la pregunta y al dominio especificados
+#' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
+#' @seealso \code{\link{survey_mean}} \code{\link{srvyr::group_by}}
+#' @example \dontrun{
+#'  dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE) 
+#'  Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
+#'                        sheet = "Lista Preguntas")$Nombre %>% as.vector()
+#'  DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",  sheet = "Múltiple") %>% as.data.frame()
+#'  Lista_Cont <- read_xlsx("aux/Lista de Preguntas.xlsx", 
+#'   sheet = "Continuas")$VARIABLE %>% as.vector()
+#'  Dominios <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Dominios")$Dominios %>% as.vector()
+#' 
+#'  disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
+#'  
+#'  tablas_cruzadas(diseño = disenio_mult, pregunta = 'P1', dominio = 'Sexo', datos = dataset,
+#'  DB_Mult = DB_Mult, tipo_pregunta = 'multiple')
+#'  }
+
 tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
                             na.rm = TRUE, vartype = c("ci","se","var","cv"),
                             cuantiles = c(0,0.25, 0.5, 0.75,1),
@@ -834,6 +968,44 @@ tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
 }
 
 # FUNCIÓN FORMATEAR TABLA CRUZADA
+
+#'  Formatea tabla cruzada 
+#'  
+#' @description Se formatea la tabla cruzada según tipo de pregunta y dominio
+#' @usage formatear_tabla_cruzada(
+#' pregunta,
+#' datos,
+#' dominio,
+#' tabla, 
+#' DB_Mult,
+#' tipo_pregunta
+#' )
+#' @param pregunta Nombre de la pregunta sobre la cual se desea obtener la tabla cruzada
+#' @param datos Conjunto de datos en formato .sav
+#' @param dominio Dominio sobre el cual se desea desagregar la tabla cruzada de cierta pregunta
+#' @param tabla Tabla cruzada creada con la función tablas_cruzadas()
+#' @param tipo_pregunta Tipo de pregunta: 'categorica', 'multiple', 'continua'
+#' @return Lista de dos tibbles: en la primera tibble se encuentra el total estimado y las métricas media, límite inferior y superior; 
+#' en la segunda tibble se encuentra el total y las métricas error estándar, varianza, coeficiente de variación y el efecto de diseño (si es que DEFF = TRUE)
+#' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
+#' @seealso \code{\link{survey_mean}}
+#' @example \dontrun{
+#'  dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE) 
+#'  Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
+#'                        sheet = "Lista Preguntas")$Nombre %>% as.vector()
+#'  DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",  sheet = "Múltiple") %>% as.data.frame()
+#'  Lista_Cont <- read_xlsx("aux/Lista de Preguntas.xlsx", 
+#'   sheet = "Continuas")$VARIABLE %>% as.vector()
+#'  Dominios <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Dominios")$Dominios %>% as.vector()
+#' 
+#'  disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
+#'  
+#'  tc <-  tablas_cruzadas(diseño = disenio_mult, pregunta = 'P1', dominio = 'Sexo', datos = dataset,
+#'  DB_Mult = DB_Mult, tipo_pregunta = 'multiple')
+#'  
+#'  formatear_tabla_cruzada(pregunta = 'P1', datos = dataset, dominio = 'Sexo', tabla = tc, DB_Mult = DB_Mult, tipo_pregunta = 'multiple')
+#' } 
+
 
 formatear_tabla_cruzada <- function(pregunta, datos, dominio, tabla, DB_Mult,
                                     tipo_pregunta = 'categorica'){
@@ -1023,6 +1195,57 @@ formatear_tabla_cruzada <- function(pregunta, datos, dominio, tabla, DB_Mult,
 
 # FUNCIÓN TOTAL NACIONAL 
 
+#' Función total nacional
+#' @description  Esta función transforma la tabla de frecuencias simples de cierta pregunta especificada por el usuario en un formato similar al de tablas cruzadas (1 rengón)
+#' @usage total_general(
+#' diseño,
+#' pregunta,
+#' DB_Mult,
+#' datos,
+#' dominio = 'General',
+#' tipo_pregunta,
+#' na.rm = TRUE, 
+#' vartype = c("se","ci","cv", "var"),
+#' cuantiles =  c(0,0.25, 0.5, 0.75,1),
+#' significancia = 0.95,
+#' proporcion = FALSE, 
+#' metodo_prop = "likelihood", 
+#' DEFF = TRUE
+#' )
+#' @param diseño Diseño muestral que se ocupará según el tipo de pregunta
+#' @param pregunta Nombre de la pregunta sobre la cual se desea obtener la tabla general
+#' @param DB_Mult  Data frame con las preguntas múltiples
+#' @param datos Conjunto de datos en formato .sav
+#' @param dominio Nombre al cual se desea nombrar al total estimado, por ejemplo 'General', 'Total Nacional', etc.
+#' @param tipo_pregunta Tipo de pregunta: 'categorica', 'multiple', 'continua'
+#' @param na.rm Valor lógico que indica si se deben de omitir valores faltantes
+#' @param vartype Métricas de variabilidad: error estándar ("se"), intervalo de confianza ("ci"), varianza ("var") o coeficiente de variación ("cv")
+#' @param cuantiles Vector de cuantiles a calcular
+#' @param significancia Nivel de confianza: 0.95 por default
+#' @param proporcion Valor lógico que indica si se desen usar métodos para calcular la proporción que puede tener intervalos de confianza más precisos cerca de 0 y 1
+#' @param metodo_prop  Si proporcion = TRUE; tipo de método de proporción que se desea usar: "logit", "likelihood", "asin", "beta", "mean"
+#' @param DEFF Valor lógico que indica si se desea calcular el efecto de diseño
+#' @return  Lista de dos tibbles: en la primera tibble se encuentra el total estimado y las métricas media, límite inferior y superior; 
+#' en la segunda tibble se encuentra el total y las métricas error estándar, varianza, coeficiente de variación y el efecto de diseño (si es que DEFF = TRUE)
+#' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
+#' @seealso \code{\link{survey_mean}}
+#' @example \dontrun{
+#' # Lectura de datos
+#'  dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE) 
+#'  Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
+#'                        sheet = "Lista Preguntas")$Nombre %>% as.vector()
+#'  DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",  sheet = "Múltiple") %>% as.data.frame()
+#'  Lista_Cont <- read_xlsx("aux/Lista de Preguntas.xlsx", 
+#'   sheet = "Continuas")$VARIABLE %>% as.vector()
+#'  Dominios <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Dominios")$Dominios %>% as.vector()
+#' 
+#' # Diseño
+#'  disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
+#'  
+#'  total_general (diseño = disenio_mult,  pregunta = 'P1', dominio = 'General', datos = dataset,
+#'  DB_Mult = DB_Mult, tipo_pregunta = 'multiple')
+#' }
+
 total_general <- function(diseño, pregunta, DB_Mult, datos, dominio = 'General',
                            tipo_pregunta = 'categorica', na.rm = TRUE, 
                            vartype = c("se","ci","cv", "var"),
@@ -1179,6 +1402,41 @@ total_general <- function(diseño, pregunta, DB_Mult, datos, dominio = 'General'
 
 # FUNCIÓN TABLA CRUZADA TOTAL NACIONAL Y POR DOMINIOS 
 
+#' Función tabla cruzada total y por dominios
+#' @description Esta función une la tabla cruzada general y las tablas cruzadas por dominios generadas por las funciones total_general() y tablas_cruzadas()
+#' @usage tabla_cruzada_total(
+#' diseño,
+#' pregunta,
+#' datos,
+#' dominios,
+#' tipo_pregunta
+#' )
+#' @param diseño Diseño muestral que se ocupará según el tipo de pregunta
+#' @param pregunta Nombre de la pregunta sobre la cual se desea obtener la tabla general,
+#' @param datos Conjunto de datos en formato .sav
+#' @param dominios Vector el cual contiene los nombres de los dominios sobre los cuales se desean obtener las tablas cruzadas
+#' @param tipo_pregunta Tipo de pregunta: 'categorica', 'multiple', 'continua'
+#' @return Lista de dos tibbles: en la primera tibble se encuentra el total estimado y las métricas media, límite inferior y superior; 
+#' en la segunda tibble se encuentra el total y las métricas error estándar, varianza, coeficiente de variación y el efecto de diseño (si es que DEFF = TRUE en la función tablas_cruzadas)
+#' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
+#' @seealso \code{\link{survey_mean}}
+#' @example \dontrun{
+#'  # Lectura de datos
+#'  dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE) 
+#'  Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
+#'                        sheet = "Lista Preguntas")$Nombre %>% as.vector()
+#'  DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",  sheet = "Múltiple") %>% as.data.frame()
+#'  Lista_Cont <- read_xlsx("aux/Lista de Preguntas.xlsx", 
+#'   sheet = "Continuas")$VARIABLE %>% as.vector()
+#'  Dominios <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Dominios")$Dominios %>% as.vector()
+#' 
+#' # Diseño
+#'  disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
+#'  
+#'  tabla_cruzada_total (diseño = disenio_mult,  pregunta = 'P1', dominios = Dominios, datos = dataset,
+#'  DB_Mult = DB_Mult, tipo_pregunta = 'multiple')
+#' }
+
 tabla_cruzada_total <- function(diseño, pregunta, datos, DB_Mult,
                                 dominios = Dominios, 
                                 tipo_pregunta = 'categorica'){
@@ -1208,6 +1466,7 @@ tabla_cruzada_total <- function(diseño, pregunta, datos, DB_Mult,
 }
 
 # FORMATO CATEGORIAS RESPUESTAS (TABLAS CRUZADAS) 
+
 
 categorias_pregunta_formato <- function(pregunta, diseño, datos, DB_Mult,
                                         tipo_pregunta = 'categorica',
