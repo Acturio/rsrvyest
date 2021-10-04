@@ -1412,7 +1412,7 @@ total_general <- function(diseño, pregunta, DB_Mult, datos, dominio = 'General'
 #' tipo_pregunta
 #' )
 #' @param diseño Diseño muestral que se ocupará según el tipo de pregunta
-#' @param pregunta Nombre de la pregunta sobre la cual se desea obtener la tabla general,
+#' @param pregunta Nombre de la pregunta sobre la cual se desea obtener la tabla cruzada total,
 #' @param datos Conjunto de datos en formato .sav
 #' @param dominios Vector el cual contiene los nombres de los dominios sobre los cuales se desean obtener las tablas cruzadas
 #' @param tipo_pregunta Tipo de pregunta: 'categorica', 'multiple', 'continua'
@@ -1467,6 +1467,38 @@ tabla_cruzada_total <- function(diseño, pregunta, datos, DB_Mult,
 
 # FORMATO CATEGORIAS RESPUESTAS (TABLAS CRUZADAS) 
 
+#' Formato categorías respuestas para preguntas múltiples y categóricas
+#' @description Crea un vector para las respuestas de las preguntas múltiples y categóricas.
+#' @usage categorias_pregunta_formato(
+#' pregunta,
+#' diseño,
+#' datos,
+#' DB_Mult,
+#' tipo_pregunta,
+#' metricas = TRUE
+#' )
+#' @param pregunta Nombre de la pregunta sobre la cual se desea obtener las categorías 
+#' @param diseño Diseño muestral que se ocupará según el tipo de pregunta
+#' @param datos Conjunto de datos en formato .sav
+#' @param DB_Mult Data frame con las preguntas múltiples
+#' @param tipo_pregunta Tipo de pregunta: 'categorica', 'multiple', 'continua'
+#' @param metricas Valor lógica que indica si se desean las categorías de las respuestas para las métricas media,ímite inferior, límite superior o para las métricas error estándar, varianza, coeficiente de variación y el efecto de diseño
+#' @return Vector con las categorías de las respuestas de la pregunta mecionada por el usuario, si métricas = TRUE se regresa un vector con las categorías y entre cada categoría se encuentran dos NA's, 
+#' @return si metricas = FALSE se regresa un vector con las categorías de las respuestas y entre cada categoría se encuentran 3 NA's
+#' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
+#' @example \dontrun{
+#'  # Carga de datos
+#'  dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
+#'  Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx", 
+#'  sheet = "Lista Preguntas")$Nombre %>% as.vector()
+#'   DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx", 
+#'   sheet = "Múltiple") %>% as.data.frame()
+#'
+#' #Diseño
+#'  disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
+#' 
+#' categorias_pregunta_formato(pregunta = 'P1', diseño = disenio_mult, datos = dataset, DB_Mult = DB_Mult, tipo_pregunta = 'multiple', metricas = TRUE)
+#' }
 
 categorias_pregunta_formato <- function(pregunta, diseño, datos, DB_Mult,
                                         tipo_pregunta = 'categorica',
@@ -1563,6 +1595,67 @@ categorias_pregunta_formato <- function(pregunta, diseño, datos, DB_Mult,
 
 # FUNCIÓN FORMATO CATEGORÍAS PARA PREGUNTAS CATEGÓRICAS Y MÚLTIPLES
 
+#' Función formato categorías para preguntas categóricas y múltiples 
+#' @description El vector obtenido con la función categorias_pregunta_formato() se escribe en un workbook de Excel
+#' @usage formato_categorias(
+#' tabla,
+#' pregunta,
+#' diseño,
+#' datos,
+#' DB_Mult,
+#' wb,
+#' renglon,
+#' columna = 4,
+#' hojas,
+#' estilo_cuerpo,
+#' tipo_pregunta
+#' )
+#' @param tabla Tabla cruzada creada por la función total_general()
+#' @param pregunta  Nombre de la pregunta sobre la cual se creo la tabla
+#' @param diseño Diseño muestral que se ocupará según el tipo de pregunta
+#' @param datos Conjunto de datos en formato .sav
+#' @param DB_Mult Data frame con las preguntas múltiples
+#' @param wb Workbook de Excel que contiene al menos dos hojas 
+#' @param renglon Vector tamaño 2 especificando el número de renglon en el cual se desea empezar a escribir el vector de categorías
+#' @param columna Columna en la cual se desea empezar a escribir las tablas. SIEMPRE EN LA CUARTA COLUMNA
+#' @param hojas Vector de número de hojas en el cual se desea insertar los vectores
+#' @param estilo_cuerpo Estilo que indica cómo se desea formatear el vector en las hojas de excel
+#' @param tipo_pregunta Tipo de pregunta_ 'categorica', 'multiple', 'continua'
+#' @details Una vez escrito el vector colapsa celdas (3 o 4)
+#' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
+#' @seealso \code{\link{mergeCells}} \code{\link{addStyle}} \code{\link{createStyle}} 
+#' @examples \dontrun{
+#' # Creación del workbook
+#' wb <- createWorkbook()
+#' addWorksheet(wb, "Tablas cruzadas")
+#' addWorksheet(wb, "Tablas cruzadas (dispersión)")
+#' 
+#' # Estilos
+#'   bodyStyle <- createStyle(halign = 'center', border = "TopBottomLeftRight",
+#'   borderColour = "black", borderStyle = 'thin',
+#'   valign = 'center', wrapText = TRUE)
+#'   
+#' # Carga de datos   
+#'  dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE) 
+#'  Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
+#'                        sheet = "Lista Preguntas")$Nombre %>% as.vector()
+#'  DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",  sheet = "Múltiple") %>% as.data.frame()
+#'  Lista_Cont <- read_xlsx("aux/Lista de Preguntas.xlsx", 
+#'   sheet = "Continuas")$VARIABLE %>% as.vector()
+#'  Dominios <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Dominios")$Dominios %>% as.vector()
+#' 
+#'  disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
+#'  
+#'  total <- total_general (diseño = disenio_mult,  pregunta = 'P1', dominio = 'General', datos = dataset,
+#'  DB_Mult = DB_Mult, tipo_pregunta = 'multiple')
+#'  
+#'  formato_categorias(tabla = total, pregunta = 'P1', diseño = disenio_mult, datos = dataset,
+#'  DB_Mult = DB_Mult, wb = wb, renglon = c(1,1), columna = 4, hojas = c(1,2), estilo_cuerpo = bodyStyle, tipo_pregunta = 'multiple')
+#'  
+#'  openxlsx::openXL(wb) 
+#'  }
+#'
+#'
 formato_categorias <- function(tabla, pregunta, diseño, datos, DB_Mult, wb,
                                renglon = c(1,1), columna = 4, hojas = c(3,4),
                                estilo_cuerpo, tipo_pregunta = 'categorica'){
@@ -1605,6 +1698,8 @@ formato_categorias <- function(tabla, pregunta, diseño, datos, DB_Mult, wb,
 }
 
 # FUNCIÓN FORMATO TABLAS CRUZADAS EXCEL
+
+
 
 formato_tablas_cruzadas <- function(tabla, wb, renglon = c(1,1), columna = 1,
                                     hojas = c(3,4),
@@ -1731,11 +1826,107 @@ estilo_columnas <- function(tabla, wb, hojas = c(3,4), estilo = verticalStyle,
 
 # FUNCIÓN TABLAS CRUZADAS EN EXCEL
 
+#' Función tablas cruzadas en Excel
+#' @description Escribe los títulos 'Tablas cruzadas' y 'Tablas cruzadas (dispersión)', logo indicado, título de la pregunta, tabla crzada total y pie de tabla en las hojas y renglones mencionados por el usuario
+#' @usage tablas_cruzadas_excel(
+#' pregunta,
+#' num_pregunta,
+#' dominios,
+#' datos,
+#' DB_Mult, 
+#' lista_preguntas,
+#' diseño,
+#' wb,
+#' renglon,
+#' columna,
+#' hojas ,
+#' tipo_pregunta,
+#' fuente,
+#' organismo_participacion,
+#' logo_path,
+#' estilo_encabezado = headerStyle,
+#' estilo_columnas = verticalStyle,
+#' estilo_categorias = bodyStyle,
+#' estilo_horizontal = horizontalStyle,
+#' estilo_total = totalStyle
+#' )
+#' @param pregunta  Nombre de la pregunta sobre la cual se desea obtener la tabla cruzada e incluirla en un workbook de Excel
+#' @param num_pregunta Número de pregunta
+#' @param dominios Vector el cual contiene los nombres de los dominios sobre los cuales se desean obtener sus respectivas tablas cruzadas
+#' @param DB_Mult Data frame con las preguntas múltiples
+#' @param lista_preguntas Data frame que contiene los títulos de las pregunta
+#' @param diseño Diseño muestral que se ocupará según el tipo de pregunta
+#' @param wb Workbook de Excel que contiene al menos dos hojas 
+#' @param renglon Vector tamaño 2 especificando el número de renglon en el cual se desea empezar a escribir la tabla 1 y tabla 2 respectivamente
+#' @param columna Columna en la cual se desea empezar a escribir las tablas 
+#' @param hojas Vector de número de hojas en el cual se desea insertar las tablas
+#' @param tipo_pregunta Tipo de pregunta_ 'categorica', 'multiple', 'continua'
+#' @param fuente Nombre del proyecto
+#' @param organismo_participacion Organismos que participaron en el proyecto, por ejemplo, 'Ciudadanía Mexicana'
+#' @param logo_path Path del logo de la UNAM 
+#' @param estilo_encabezado estilo el cual se desea usar para los nombres de las columnas
+#' @param estilo_horizontal estilo último renglón horizontal
+#' @param estilo_total estilo el cual se desea usar para la columna total
+#' 
+#' @details Esta función envuelve todas las funciones creadas para obtener las tablas cruzadas, por lo que esta función es la única que se deberá llamar para crear las tablas cruzadas de las preguntas deseadas e insertarlas en ciertas hojas de Excel
+#' @details Es necesario crear al menos dos hojas de excel con la función addWorksheet de la paquetería openxlsx
+#' @details El estilo_total se recomienda crear un estilo con la función createStyle de openxlsx con el formato que se desea, por ejemplo "###,###,###.0"
+#' @details El estilo_horizontal hace referencia al tipo de lineado horizontal se desea en el úntimo renglón de la tabla
+#' @details El estilo_encabezado hace referencia al tipo de bordes, alineación, color, etc. que se desea obtener en el nombre de las columnas de la tabla cruzada final
+#' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
+#' @seealso \code{\link{writeData}} \code{\link{createStyle}}  \code{\link(setRowHeights)} \code{\link{insertImage}} \code{\link{mergeCells}}
+#' @examples \dontrun{
+#' # Creación del workbook
+#' wb <- createWorkbook()
+#' addWorksheet(wb, "Tablas cruzadas")
+#' addWorksheet(wb, "Tablas cruzadas (dispersión)")
+#' 
+#' # Estilos 
+#' headerStyle <- createStyle(fontSize = 11, fontColour = "black", halign = "center",
+#' border = "TopBottom", borderColour = "black",
+#' borderStyle = c('thin', 'double'), textDecoration = 'bold')
+#' totalStyle <-  createStyle(numFmt = "###,###,###.0")
+#' horizontalStyle <- createStyle(border = "bottom",
+#' borderColour = "black", borderStyle = 'thin', valign = 'center')
+#' 
+#' # Carga de datos
+#'  dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
+#'  Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx", 
+#'  sheet = "Lista Preguntas")$Nombre %>% as.vector()
+#'   DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx", 
+#'   sheet = "Múltiple") %>% as.data.frame()
+#'
+#' #Diseño
+#'  disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
+#'  
+#' tablas_cruzadas_excel(
+#' pregunta = 'P1',
+#' num_pregunta = 1,
+#' dominios = Dominios,
+#' datos = dataset,
+#' DB_Mult = DB_Mult,
+#' lista_preguntas = Lista_Preg,
+#' diseño = disenio_mult,
+#' wb = wb,
+#' renglon = c(1,1),
+#' columna = 1, 
+#' hojas = c(1,2),
+#' tipo_pregunta = 'multiple',
+#' fuente =  'Conacyt 2018',
+#' organismo_participacion = 'Ciudadanía mexicana',
+#' logo_path = '~/Desktop/UNAM/DIAO/rsrvyest/img/logo_unam.png'
+#' estilo_encabezado = headerStyle,
+#' estilo_horizontal = horizontalStyle,
+#' estilo_total = totalStyle
+#' )
+#' openxlsx::openXL(wb)
+#' }
+#' 
 tablas_cruzadas_excel <- function(pregunta, num_pregunta, dominios, datos,
                                   DB_Mult, lista_preguntas, diseño, wb,
                                   renglon = c(1,1), columna = 1, hojas = c(3,4),
                                   tipo_pregunta = 'categorica', fuente,
-                                  organismo_participacion,
+                                  organismo_participacion, logo_path = '~/Desktop/UNAM/DIAO/rsrvyest/img/logo_unam.png',
                                   estilo_encabezado = headerStyle,
                                   estilo_columnas = verticalStyle,
                                   estilo_categorias = bodyStyle,
@@ -1776,7 +1967,7 @@ tablas_cruzadas_excel <- function(pregunta, num_pregunta, dominios, datos,
   
   # Pegar logo UNAM renglón 1, columna 1
   
-  logo <- '~/Desktop/UNAM/DIAO/rsrvyest/img/logo_unam.png'
+  logo <- logo_path
   
   insertImage(wb = wb, sheet = hojas[1],
               file = logo, startRow = 1, startCol = 1, 
@@ -1801,7 +1992,7 @@ tablas_cruzadas_excel <- function(pregunta, num_pregunta, dominios, datos,
   setRowHeights(wb = wb, sheet = hojas[2], rows = (renglon[2] + 1), heights = 35)
   
   
-  # Tabla
+  # Tabla título 
   
   tabla_titulo <- paste0('Tabla ', num_pregunta, '*')
   
@@ -2094,14 +2285,123 @@ tablas_cruzadas_excel <- function(pregunta, num_pregunta, dominios, datos,
   
 }
 
+#' Función preguntas 
+#' @description Función envolvente de las funciones frecuencias_simples_excel() y tablas_cruzadas_excel
+#' @usage preguntas(
+#' pregunta,
+#' num_pregunta,
+#' datos,
+#' DB_Mult,
+#' dominios,
+#' lista_preguntas,
+#' diseño,
+#' wb,
+#' renglon_fs,
+#' renglon_tc,
+#' columna = 1,
+#' hojas_fs,
+#' hojas_tc,
+#' fuente,
+#' organismo_participacion,
+#' logo_path,
+#' tipo_pregunta,
+#' estilo_encabezado = headerStyle,
+#' estilo_categorias = bodyStyle,
+#' estilo_horizontal = horizontalStyle,
+#' estilo_total = totalStyle,
+#' frecuencias_simples = TRUE,
+#' tablas_cruzadas = TRUE
+#' )
+#' @param pregunta  Nombre de la pregunta sobre la cual se desea obtener las frecuencias simples y/o tabla cruzada
+#' @param num_pregunta Número de pregunta
+#' @param datos Conjunto de datos en formato .sav
+#' @param DB_Mult Data frame con las preguntas múltiples
+#' @param dominios Vector de dominios sobre los cuales se desea obtener sus respectivas tablas cruzadas
+#' @param lista_preguntas Data frame que contiene los títulos de las pregunta
+#' @param diseño Diseño muestral que se ocupará según el tipo de pregunta
+#' @param wb Workbook de Excel que contiene al menos dos hojas 
+#' @param renglon_fs Vector tamaño 2 especificando el número de renglon en el cual se desea empezar a escribir las tablas de frecuencias simples formateadas
+#' @param renglon_tc Vector tamaño 2 especificando el número de tenglón el cual se desea empezar a escribir la tabla cruzada formateada
+#' @param columna Columna en la cual se desea empezar a escribir las tablas 
+#' @param hojas_fs Vector de número de hojas en el cual se desea insertar las tablas de frecuencias simples
+#' @param hojas_tc Vector de número de hojas en el cual se desea insertar la tabla cruzada
+#' @param fuente Nombre del proyecto
+#' @param organismo_participacion Organismos que participaron en el proyecto, por ejemplo, 'Ciudadanía Mexicana'
+#' @param logo_path Path del logo de la UNAM 
+#' @param tipo_pregunta Tipo de pregunta_ 'categorica', 'multiple', 'continua'
+#' @param estilo_encabezado Estilo el cual se desea usar para los nombres de las columnas
+#' @param estilo_categorias Estilo el cual se desea usar para formatear las categorías de las tablas cruzadas para preguntas categóricas y múltiples
+#' @param estilo_horizontal Estilo último renglones horizontales (último renglón para frecuencias simples)
+#' @param estilo_total Estilo el cual se desea usar para la columna total
+#' @param frecuencias_simples Valor lógico que indica si se desean realizar las frecuencias simples de la pregunta indicada
+#' @param tablas_cruzadas Valor lógico que indica si se desean realizar las tablas cruzadas de la pregunta indicada
+#' @details El estilo_total se recomienda crear un estilo con la función createStyle de openxlsx con el formato que se desea, por ejemplo "###,###,###.0"
+#' @details El estilo_horizontal hace referencia al tipo de lineado horizontal se desea en el úntimo renglón de la tabla
+#' @details El estilo_categoris hace referencia al tipo de bordes, fuente y alineación que se desea aplicar en las celdas de Excel donde se encuentra el vector de categorías
+#' @details El estilo_encabezado hace referencia al tipo de formato que se desea conseguir para el nombre de las columnas de las tablas
+#' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
+#' @seealso \code{\link{openxlsx}}
+#' @example \dontrun{ 
+#' # Creación del workbook
+#'   organismo <- 'Ciudadanía mexicana'
+#'   nombre_proyecto <- 'Conacyt 2018'
 
+#' openxlsx::addWorksheet(wb, sheetName = 'Frecuencias simples')
+#' showGridLines(wb, sheet = 'Frecuencias simples', showGridLines = FALSE)
 
+#' openxlsx::addWorksheet(wb, sheetName = 'Tablas cruzadas')
+#' showGridLines(wb, sheet='Tablas cruzadas', showGridLines = FALSE)
+
+#' openxlsx::addWorksheet(wb, sheetName = 'Frecuencias (dispersión)')
+#' showGridLines(wb, sheet = 'Frecuencias (dispersión)', showGridLines = FALSE)
+
+#' openxlsx::addWorksheet(wb, sheetName = 'Tablas cruzadas (dispersión)')
+#' showGridLines(wb, sheet = 'Tablas cruzadas (dispersión)', showGridLines = FALSE)
+
+#' 
+#' # Estilos 
+#'   headerStyle <- createStyle(fontSize = 11, fontColour = "black", halign = "center", border = "TopBottom", borderColour = "black", borderStyle = c('thin', 'double'), textDecoration = 'bold')
+#'   bodyStyle <- createStyle(halign = 'center', border = "TopBottomLeftRight", borderColour = "black", borderStyle = 'thin', valign = 'center', wrapText = TRUE)
+  
+#'   verticalStyle <- createStyle(border = "Right", borderColour = "black", borderStyle = 'thin', valign = 'center')
+  
+#'  totalStyle <-  createStyle(numFmt = "###,###,###.0")
+  
+#'  horizontalStyle <- createStyle(border = "bottom", borderColour = "black", borderStyle = 'thin', valign = 'center')
+#' 
+#' # Carga de datos
+#'  dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
+#'  Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx", 
+#'  sheet = "Lista Preguntas")$Nombre %>% as.vector()
+#'   DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx", 
+#'   sheet = "Múltiple") %>% as.data.frame()
+#'
+#' #Diseño
+#'  disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
+#'  
+#'   preguntas(pregunta = 'P1', num_pregunta = 1, datos=dataset,
+#'   DB_Mult = DB_Mult, dominios = Dominios, 
+#'   lista_preguntas=Lista_Preg,
+#'   diseño = disenio_mult, wb = wb, renglon_fs = c(1,1),
+#'   renglon_tc = c(1, 1), columna = 1, hojas_fs = c(1,3),
+#'   hojas_tc = c(2,4), fuente = nombre_proyecto, 
+#'   tipo_pregunta = 'multiple',
+#'   organismo_participacion = organismo,
+#'   estilo_encabezado = headerStyle,
+#'   estilo_categorias = bodyStyle,
+#'   estilo_horizontal = horizontalStyle,
+#'   estilo_total = totalStyle,
+#'   frecuencias_simples = TRUE, tablas_cruzadas = TRUE)
+#'   
+#'   openxlsx::openXL(wb)
+#' }
+#' 
 preguntas <- function(pregunta, num_pregunta, datos, DB_Mult, dominios,
                       lista_preguntas, diseño, wb, renglon_fs, renglon_tc,
                       columna = 1, hojas_fs = c(1,2),
                       hojas_tc = c(3,4),
                       fuente = 'fuente',
-                      organismo_participacion = 'organismo',
+                      organismo_participacion = 'organismo', logo_path = '~/Desktop/UNAM/DIAO/rsrvyest/img/logo_unam.png',
                       tipo_pregunta,
                       estilo_encabezado = headerStyle,
                       estilo_categorias = bodyStyle,
@@ -2121,6 +2421,7 @@ preguntas <- function(pregunta, num_pregunta, datos, DB_Mult, dominios,
                                          columna = columna, hojas = hojas_fs,
                                          tipo_pregunta = tipo_pregunta, fuente = fuente,
                                          organismo_participacion = organismo_participacion,
+                                         logo_path = logo_path,
                                          estilo_encabezado = estilo_encabezado,
                                          estilo_horizontal = estilo_horizontal,
                                          estilo_total = estilo_total)
@@ -2143,6 +2444,7 @@ preguntas <- function(pregunta, num_pregunta, datos, DB_Mult, dominios,
                                      tipo_pregunta = tipo_pregunta, 
                                      fuente = fuente,
                                      organismo_participacion = organismo_participacion,
+                                     logo_path = logo_path,
                                      estilo_encabezado = estilo_encabezado,
                                      estilo_categorias = estilo_categorias,
                                      estilo_horizontal = estilo_horizontal,
