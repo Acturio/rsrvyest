@@ -1699,7 +1699,37 @@ formato_categorias <- function(tabla, pregunta, diseño, datos, DB_Mult, wb,
 
 # FUNCIÓN FORMATO TABLAS CRUZADAS EXCEL
 
-
+#' Escribe y da formato a la tablas cruzadas en el workbook
+#' @description Función para escribir y dar formato a las tablas cruzadas en el workbook
+#' @usage formato_tablas_cruzadas(
+#' tabla,
+#' wb,
+#' renglon = c(1,1),
+#' columna = 1,
+#' hojas = c(3,4),
+#' estilo_encabezado = headerStyle,
+#' estilo_total = totalStyle
+#' )
+#' @param tabla Lista con las tablas cruzadas formateadas
+#' @param wb Workbook en el que escribirán las tablas
+#' @param renglon Renglón donde iniciará la tabla, un renglón por tipo de tabla cruzada
+#' @param columna Columna en la que se iniciará la tabla
+#' @param hojas Hojas del workbook en donde se ecribirán las tablas
+#' @param estilo_encabezado Estilo para el ancabezado de la tabla
+#' @param estilo_total Estilo para el resto de la tabla
+#' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
+#' @seealso \code{\link{survey_mean}}
+#' @example \dontrun{
+#' # Estilos 
+#'  headerStyle <- createStyle( fontSize = 11, fontColour = "black", halign = "center",
+#'  border = "TopBottom", borderColour = "black",
+#'  borderStyle = c('thin', 'double'), textDecoration = 'bold')
+#'  
+#'  totalStyle <-  createStyle(numFmt = "###,###,###.0")
+#' formato_tablas_cruzadas(tabla = tabla_cruzada, wb = wb, renglon = c(1,1),
+#' columna = 1, hojas = c(3,4), estilo_encabezado = headerStyle, 
+#' estilo_total = totalStyle)
+#' }
 
 formato_tablas_cruzadas <- function(tabla, wb, renglon = c(1,1), columna = 1,
                                     hojas = c(3,4),
@@ -1723,6 +1753,37 @@ formato_tablas_cruzadas <- function(tabla, wb, renglon = c(1,1), columna = 1,
 
 # FUNCIÓN ESTILO DOMINIOS, DA FORMATO A LA COLUMNA DE DOMINIOS
 
+#' Da formato a la columna de dominios de las tablas cruzadas en el workbook
+#' @description Función para unir las celdas donde se encuentran los nombres de los dominios es las hojas solicitadas.
+#' @usage estilo_dominios(
+#' tabla,
+#' wb, 
+#' columna = 1,
+#' hojas = c(3,4),
+#' dominios,
+#' renglon = c(1,1),
+#' estilo_dominios = horizontalStyle,
+#' estilo_merge_dominios = bodyStyle,
+#' tipo_pregunta
+#' )
+#' @param tabla Lista con las tablas cruzadas formateadas
+#' @param wb Workbook en el que aplicará el formato
+#' @param columna Columna en la que se aplicará el formato
+#' @param hojas Hojas del workbook a las que se aplicará el formato, una por tabla
+#' @param dominios Vector con los dominios
+#' @param renglon Renglón donde se iniciará el formato, uno por tipo de tabla, uno por tabla
+#' @param estilo_dominios Estilo previamente definido con el borde en la parte inferior de la tabla
+#' @param estilo_merge_dominios Estilo previamente definido con bordes en toda la tabla
+#' @param tipo_pregunta Tipo de pregunta ("categorica", "multiple")
+#' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
+#' @seealso \code{\link{survey_mean}}
+#' @example \dontrun{
+#' estilo_dominios(tabla = tabla_cruzada, wb = wb, columna = 1, hojas = c(3,4), 
+#' dominios = dominios, renglon = c(1,1), estilo_dominios = horizontalStyle,
+#' estilo_merge_dominios = bodyStyle, tipo_pregunta = 'categorica')
+#' }
+#' 
+#' 
 estilo_dominios <- function(tabla, wb, columna = 1, hojas = c(3,4), dominios,
                             renglon = c(1,1), estilo_dominios = horizontalStyle,
                             estilo_merge_dominios = bodyStyle, tipo_pregunta){
