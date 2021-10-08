@@ -20,7 +20,7 @@
 #' en la segunda tibble se encuentra el total y las métricas error estándar, varianza, coeficiente de variación y el efecto de diseño (si es que DEFF = TRUE)
 #' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
 #' @seealso \code{\link{survey_mean}}
-#' @example \dontrun{
+#' @examples \dontrun{
 #'  dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
 #'  Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
 #'                        sheet = "Lista Preguntas")$Nombre %>% as.vector()

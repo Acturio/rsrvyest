@@ -27,7 +27,7 @@
 #' @return Objeto del tipo tbl_svy
 #' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
 #' @seealso \code{\link{as_survey_design, as_survey_rep}}
-#' @example \dontrun{
+#' @examples \dontrun{
 #' disenio(id = id_estrato, estrato = estrato, pesos = ponderador, datos = dataset,
 #'   pps = "brewer", varianza = "HT", reps = TRUE, metodo = "subbootstrap",
 #'   B = 50, semilla = 1234)

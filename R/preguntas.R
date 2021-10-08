@@ -54,7 +54,7 @@
 #' @details El estilo_encabezado hace referencia al tipo de formato que se desea conseguir para el nombre de las columnas de las tablas
 #' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
 #' @seealso \code{\link{openxlsx}}
-#' @example \dontrun{
+#' @examples \dontrun{
 #' # Creación del workbook
 #'   organismo <- 'Ciudadanía mexicana'
 #'   nombre_proyecto <- 'Conacyt 2018'

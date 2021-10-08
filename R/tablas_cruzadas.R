@@ -33,7 +33,7 @@
 #' @return Tabla tipo tibble con las estadísticas especificadas en el parámetro estadisticas por respuestas pertenecientes a la pregunta y al dominio especificados
 #' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
 #' @seealso \code{\link{survey_mean}} \code{\link{srvyr::group_by}}
-#' @example \dontrun{
+#' @examples \dontrun{
 #'  dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
 #'  Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
 #'                        sheet = "Lista Preguntas")$Nombre %>% as.vector()

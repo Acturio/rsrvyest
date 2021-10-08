@@ -48,7 +48,7 @@
 #' @details El estilo_horizontal hace referencia al tipo de lineado horizontal se desea en el úntimo renglón de la tabla
 #' @details El estilo_encabezado hace referencia al tipo de bordes, alineación, color, etc. que se desea obtener en el nombre de las columnas de la tabla cruzada final
 #' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
-#' @seealso \code{\link{writeData}} \code{\link{createStyle}}  \code{\link(setRowHeights)} \code{\link{insertImage}} \code{\link{mergeCells}}
+#' @seealso \code{\link{writeData}} \code{\link{createStyle}}  \code{\link{setRowHeights}} \code{\link{insertImage}} \code{\link{mergeCells}}
 #' @examples \dontrun{
 #' # Creación del workbook
 #' wb <- createWorkbook()

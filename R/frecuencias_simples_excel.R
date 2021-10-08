@@ -45,7 +45,7 @@
 #' @details El estilo_total se recomienda crear un estilo con la función createStyle de openxlsx con el formato que se desea, por ejemplo "###,###,###.0"
 #' @details El estilo_horizontal hace referencia al tipo de lineado horizontal se desea en el úntimo renglón de la tabla
 #' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
-#' @seealso \code{\link{writeData}} \code{\link{createStyle}}  \code{\link(setRowHeights)} \code{\link{insertImage}} \code{\link{mergeCells}}
+#' @seealso \code{\link{writeData}} \code{\link{createStyle}}  \code{\link{setRowHeights}} \code{\link{insertImage}} \code{\link{mergeCells}}
 #' @examples \dontrun{
 #' # Creación del workbook
 #' wb <- createWorkbook()

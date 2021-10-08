@@ -20,7 +20,7 @@
 #' @param estilo_total Estilo para el resto de la tabla
 #' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
 #' @seealso \code{\link{survey_mean}}
-#' @example \dontrun{
+#' @examples \dontrun{
 #' # Estilos
 #'  headerStyle <- createStyle( fontSize = 11, fontColour = "black", halign = "center",
 #'  border = "TopBottom", borderColour = "black",

@@ -20,7 +20,7 @@
 #' @param tipo_pregunta Tipo de pregunta: 'categorica', 'multiple', 'continua'
 #' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
 #' @seealso \code{\link{createStyle}} \code{\link{addStyle}}
-#' @example \dontrun{
+#' @examples \dontrun{
 #' tabla_cruzada <- tablas_cruzadas(
 #'   diseño = disenio_mult,
 #'   pregunta = 'P1',

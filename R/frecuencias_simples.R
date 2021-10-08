@@ -30,7 +30,7 @@
 #' @return Tabla tipo tibble con las estadísticas especificadas en el parámetro estadisticas por respuestas pertenecientes a la pregunta especificada en el parámetro pregunta
 #' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
 #' @seealso \code{\link{survey_mean}}
-#' @example \dontrun{
+#' @examples \dontrun{
 #' frecuencias_simples(diseño = disenio_cat, datos = dataset, pregunta = 'P1',
 #'  DB_Mult = DB_Mult, tipo_pregunta = 'categorica')
 #' }

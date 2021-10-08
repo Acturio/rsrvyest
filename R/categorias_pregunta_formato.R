@@ -19,7 +19,7 @@
 #' @return Vector con las categorías de las respuestas de la pregunta mecionada por el usuario, si métricas = TRUE se regresa un vector con las categorías y entre cada categoría se encuentran dos NA's,
 #' @return si metricas = FALSE se regresa un vector con las categorías de las respuestas y entre cada categoría se encuentran 3 NA's
 #' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
-#' @example \dontrun{
+#' @examples \dontrun{
 #'  # Carga de datos
 #'  dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
 #'  Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",

@@ -13,7 +13,7 @@
 #' en la segunda tibble se encuentra el total y las métricas error estándar, varianza, coeficiente de variación y el efecto de diseño (si es que DEFF = TRUE en la función frecuencias_simples)
 #' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
 #' @seealso \code{\link{survey_mean}}
-#' @example \dontrun{
+#' @examples \dontrun{
 #' freq_simples <- frecuencias_simples(diseño = disenio_cat, datos = dataset, pregunta = 'P1',
 #'  DB_Mult = DB_Mult, tipo_pregunta = 'categorica')
 #'
