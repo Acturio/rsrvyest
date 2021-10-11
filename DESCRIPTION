@@ -2,8 +2,8 @@ Package: rsrvyest
 Type: Package
 Title: Realiza estimaciones estadísticas de encuestas probabilísticas
 Version: 0.1.0
-Author: Arturo Bringas
-Maintainer: The package maintainer <yourself@somewhere.net>
+Author: Arturo Bringas, Ana Torres, Cinthia Rosales, Iván Salgado
+Maintainer: Arturo Bringas <act.arturo@ciencias.unam.mx>, Ana Torres <anaetorresr@ciencias.unam.mx>, Iván Salgado <ivan.salgado@ciencias.unam.mx>, Cinthia Rosales <cinthia_jazz@ciencias.unam.mx>
 Description: A partir de los datos de encuestas realizadas mediante muestreo 
     aleatorio, se calculan las estimaciones de frecuencias simples y tablas cruzadas.
     Las estimaciones se realizan de manera puntual y con intervalos de confianza. 
