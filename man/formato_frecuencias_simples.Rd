@@ -70,7 +70,6 @@ formato_frecuencias_simples(tabla = freq_simples_format , wb = wb, hojas = c(1,2
 renglon = c(1,1), columna = 1 , estilo_encabezado = headerStyle ,
 estilo_horizontal = horizontalStyle , estilo_total = totalStyle, tipo_pregunta = 'categorica')
 }
-
 }
 \seealso{
 \code{\link{writeData}} \code{\link{createStyle}}

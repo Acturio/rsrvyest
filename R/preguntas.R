@@ -108,7 +108,7 @@
 #'
 #'   openxlsx::openXL(wb)
 #' }
-#'
+#' @export
 preguntas <- function(pregunta, num_pregunta, datos, DB_Mult, dominios,
                       lista_preguntas, diseño, wb, renglon_fs, renglon_tc,
                       columna = 1, hojas_fs = c(1,2),

@@ -39,6 +39,7 @@
 #'   tipo_pregunta = 'categorica'
 #'   )
 #' }
+#' @export
 estilo_columnas <- function(tabla, wb, hojas = c(3,4), estilo = verticalStyle,
                             renglon = c(1,1), tipo_pregunta){
 

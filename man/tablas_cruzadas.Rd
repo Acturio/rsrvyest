@@ -68,6 +68,7 @@ Se crea la tabla cruzada según dominio tipo de pregunta (categórica, múltiple
  tablas_cruzadas(diseño = disenio_mult, pregunta = 'P1', dominio = 'Sexo', datos = dataset,
  DB_Mult = DB_Mult, tipo_pregunta = 'multiple')
  }
+ @export
 }
 \seealso{
 \code{\link{survey_mean}} \code{\link{srvyr::group_by}}

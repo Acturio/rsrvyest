@@ -32,6 +32,7 @@
 #'   pps = "brewer", varianza = "HT", reps = TRUE, metodo = "subbootstrap",
 #'   B = 50, semilla = 1234)
 #' }
+#' @export
 disenio <- function(id, estrato, pesos, datos, pps = "brewer",
                     varianza = "HT", reps = TRUE, metodo = "subbootstrap",
                     B=50, semilla=1234){
@@ -53,3 +54,4 @@ disenio <- function(id, estrato, pesos, datos, pps = "brewer",
   }
   return(disenio)
 }
+

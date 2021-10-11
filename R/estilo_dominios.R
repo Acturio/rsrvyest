@@ -29,6 +29,7 @@
 #' dominios = dominios, renglon = c(1,1), estilo_dominios = horizontalStyle,
 #' estilo_merge_dominios = bodyStyle, tipo_pregunta = 'categorica')
 #' }
+#' @export
 estilo_dominios <- function(tabla, wb, columna = 1, hojas = c(3,4), dominios,
                             renglon = c(1,1), estilo_dominios = horizontalStyle,
                             estilo_merge_dominios = bodyStyle, tipo_pregunta){

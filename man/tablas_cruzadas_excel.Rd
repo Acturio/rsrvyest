@@ -123,7 +123,6 @@ estilo_total = totalStyle
 )
 openxlsx::openXL(wb)
 }
-
 }
 \seealso{
 \code{\link{writeData}} \code{\link{createStyle}}  \code{\link{setRowHeights}} \code{\link{insertImage}} \code{\link{mergeCells}}

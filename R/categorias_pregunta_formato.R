@@ -32,6 +32,7 @@
 #'
 #' categorias_pregunta_formato(pregunta = 'P1', diseño = disenio_mult, datos = dataset, DB_Mult = DB_Mult, tipo_pregunta = 'multiple', metricas = TRUE)
 #' }
+#' @export
 
 categorias_pregunta_formato <- function(pregunta, diseño, datos, DB_Mult,
                                         tipo_pregunta = 'categorica',

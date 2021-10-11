@@ -36,6 +36,7 @@
 #'
 #'  formatear_tabla_cruzada(pregunta = 'P1', datos = dataset, dominio = 'Sexo', tabla = tc, DB_Mult = DB_Mult, tipo_pregunta = 'multiple')
 #' }
+#' @export
 formatear_tabla_cruzada <- function(pregunta, datos, dominio, tabla, DB_Mult,
                                     tipo_pregunta = 'categorica'){
 

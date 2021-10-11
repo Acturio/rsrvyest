@@ -34,6 +34,7 @@
 #' frecuencias_simples(diseño = disenio_cat, datos = dataset, pregunta = 'P1',
 #'  DB_Mult = DB_Mult, tipo_pregunta = 'categorica')
 #' }
+#' @export
 frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE,
                                  estadisticas = c("se","ci","cv", "var"),
                                  cuantiles = c(0,0.25, 0.5, 0.75,1),

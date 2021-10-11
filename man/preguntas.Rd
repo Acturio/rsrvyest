@@ -136,7 +136,6 @@ showGridLines(wb, sheet = 'Tablas cruzadas (dispersión)', showGridLines = FALSE
 
   openxlsx::openXL(wb)
 }
-
 }
 \seealso{
 \code{\link{openxlsx}}

@@ -50,6 +50,7 @@
 #'  total_general (diseño = disenio_mult,  pregunta = 'P1', dominio = 'General', datos = dataset,
 #'  DB_Mult = DB_Mult, tipo_pregunta = 'multiple')
 #' }
+#' @export
 
 total_general <- function(diseño, pregunta, DB_Mult, datos, dominio = 'General',
                           tipo_pregunta = 'categorica', na.rm = TRUE,

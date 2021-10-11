@@ -95,7 +95,7 @@
 #' )
 #' openxlsx::openXL(wb)
 #' }
-#'
+#' @export
 tablas_cruzadas_excel <- function(pregunta, num_pregunta, dominios, datos,
                                   DB_Mult, lista_preguntas, diseño, wb,
                                   renglon = c(1,1), columna = 1, hojas = c(3,4),

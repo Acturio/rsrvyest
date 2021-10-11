@@ -88,6 +88,7 @@
 #' estilo_total = totalStyle
 #' )
 #' }
+#' @export
 frecuencias_simples_excel <- function(pregunta, num_pregunta, datos, DB_Mult,
                                       lista_preguntas, diseño, wb, renglon = c(1,1),
                                       columna = 1, hojas = c(1,2),

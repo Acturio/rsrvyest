@@ -31,6 +31,7 @@
 #' columna = 1, hojas = c(3,4), estilo_encabezado = headerStyle,
 #' estilo_total = totalStyle)
 #' }
+#' @export
 formato_tablas_cruzadas <- function(tabla, wb, renglon = c(1,1), columna = 1,
                                     hojas = c(3,4),
                                     estilo_encabezado = headerStyle,

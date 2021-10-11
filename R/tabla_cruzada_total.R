@@ -34,6 +34,7 @@
 #'  tabla_cruzada_total (diseño = disenio_mult,  pregunta = 'P1', dominios = Dominios, datos = dataset,
 #'  DB_Mult = DB_Mult, tipo_pregunta = 'multiple')
 #' }
+#' @export
 tabla_cruzada_total <- function(diseño, pregunta, datos, DB_Mult,
                                 dominios = Dominios,
                                 tipo_pregunta = 'categorica'){
