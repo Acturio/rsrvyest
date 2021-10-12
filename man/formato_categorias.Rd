@@ -78,6 +78,7 @@ addWorksheet(wb, "Tablas cruzadas (dispersión)")
 
  openxlsx::openXL(wb)
  }
+ @import openxlsx
 }
 \seealso{
 \code{\link{mergeCells}} \code{\link{addStyle}} \code{\link{createStyle}}

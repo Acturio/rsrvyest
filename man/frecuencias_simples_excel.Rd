@@ -4,7 +4,7 @@
 \alias{frecuencias_simples_excel}
 \title{Función frecuencias simples en Excel}
 \usage{
-frecuencias_simples_excel <- function(
+frecuencias_simples_excel(
 pregunta,
 num_pregunta,
 datos,
@@ -51,13 +51,13 @@ estilo_total = totalStyle
 
 \item{organismo_participacion}{Organismos que participaron en el proyecto, por ejemplo, 'Ciudadanía Mexicana'}
 
+\item{logo_path}{Path del logo de la UNAM}
+
 \item{estilo_encabezado}{estilo el cual se desea usar para los nombres de las columnas}
 
 \item{estilo_horizontal}{estilo último renglón horizontal}
 
 \item{estilo_total}{estilo el cual se desea usar para la columna total}
-
-\item{logo_path}{Path del logo de la UNAM}
 }
 \description{
 Escribe los títulos 'Frecuencias simples' y 'Frecuencias simples (dispersión)', logo indicado, título de la pregunta, tabla de frecuencias simples formateada y pie de tabla en las hojas y renglones mencionados por el usuario
@@ -109,6 +109,7 @@ hojas = c(1,2),
 tipo_pregunta = 'multiple',
 fuente =  'Conacyt 2018',
 organismo_participacion = 'Ciudadanía mexicana',
+logo_path = 'img/logo_unam.png',
 estilo_encabezado = headerStyle,
 estilo_horizontal = horizontalStyle,
 estilo_total = totalStyle

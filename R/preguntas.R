@@ -16,7 +16,7 @@
 #' hojas_tc,
 #' fuente,
 #' organismo_participacion,
-#' logo_path,
+#' logo,
 #' tipo_pregunta,
 #' estilo_encabezado = headerStyle,
 #' estilo_categorias = bodyStyle,
@@ -40,7 +40,7 @@
 #' @param hojas_tc Vector de número de hojas en el cual se desea insertar la tabla cruzada
 #' @param fuente Nombre del proyecto
 #' @param organismo_participacion Organismos que participaron en el proyecto, por ejemplo, 'Ciudadanía Mexicana'
-#' @param logo_path Path del logo de la UNAM
+#' @param logo Path del logo de la UNAM
 #' @param tipo_pregunta Tipo de pregunta_ 'categorica', 'multiple', 'continua'
 #' @param estilo_encabezado Estilo el cual se desea usar para los nombres de las columnas
 #' @param estilo_categorias Estilo el cual se desea usar para formatear las categorías de las tablas cruzadas para preguntas categóricas y múltiples
@@ -109,20 +109,13 @@
 #'   openxlsx::openXL(wb)
 #' }
 #' @export
-#'
-preguntas <- function(pregunta, num_pregunta, datos, DB_Mult, dominios,
-                      lista_preguntas, diseño, wb, renglon_fs, renglon_tc,
-                      columna = 1, hojas_fs = c(1,2),
-                      hojas_tc = c(3,4),
-                      fuente = 'fuente',
-                      organismo_participacion = 'organismo',
-                      logo_path = 'imagen.png',
-                      tipo_pregunta,
-                      estilo_encabezado = headerStyle,
-                      estilo_categorias = bodyStyle,
-                      estilo_horizontal = horizontalStyle,
-                      estilo_total = totalStyle,
-                      frecuencias_simples = TRUE, tablas_cruzadas = TRUE){
+preguntas <- function(
+  pregunta, num_pregunta, datos, DB_Mult, dominios, lista_preguntas, diseño, wb,
+  renglon_fs, renglon_tc, columna = 1, hojas_fs = c(1,2), hojas_tc = c(3,4),
+  fuente = 'fuente', organismo_participacion = 'organismo',
+  logo = NULL, tipo_pregunta, estilo_encabezado = headerStyle,
+  estilo_categorias = bodyStyle, estilo_horizontal = horizontalStyle,
+  estilo_total = totalStyle, frecuencias_simples = TRUE, tablas_cruzadas = TRUE){
 
 
   if(frecuencias_simples){
@@ -136,7 +129,7 @@ preguntas <- function(pregunta, num_pregunta, datos, DB_Mult, dominios,
                                          columna = columna, hojas = hojas_fs,
                                          tipo_pregunta = tipo_pregunta, fuente = fuente,
                                          organismo_participacion = organismo_participacion,
-                                         logo_path = logo_path,
+                                         logo_path = logo,
                                          estilo_encabezado = estilo_encabezado,
                                          estilo_horizontal = estilo_horizontal,
                                          estilo_total = estilo_total)
@@ -158,7 +151,7 @@ preguntas <- function(pregunta, num_pregunta, datos, DB_Mult, dominios,
                                      tipo_pregunta = tipo_pregunta,
                                      fuente = fuente,
                                      organismo_participacion = organismo_participacion,
-                                     logo_path = logo_path,
+                                     logo_path = logo,
                                      estilo_encabezado = estilo_encabezado,
                                      estilo_categorias = estilo_categorias,
                                      estilo_horizontal = estilo_horizontal,

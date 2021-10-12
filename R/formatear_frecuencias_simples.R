@@ -19,6 +19,8 @@
 #'
 #' frecuencias_simples(tabla = freq_simples, tipo_pregunta = 'categorica')
 #' }
+#' @import reshape2
+#' @import dplyr
 #' @export
 formatear_frecuencias_simples <- function(tabla,
                                           tipo_pregunta = 'categorica'){

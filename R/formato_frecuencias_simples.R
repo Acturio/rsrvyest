@@ -52,6 +52,7 @@
 #' renglon = c(1,1), columna = 1 , estilo_encabezado = headerStyle ,
 #' estilo_horizontal = horizontalStyle , estilo_total = totalStyle, tipo_pregunta = 'categorica')
 #' }
+#' @import openxlsx
 #' @export
 formato_frecuencias_simples <- function(tabla, wb, hojas = c(1,2), renglon = c(1,1),
                                         columna, estilo_encabezado,
