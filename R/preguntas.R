@@ -109,12 +109,14 @@
 #'   openxlsx::openXL(wb)
 #' }
 #' @export
+#'
 preguntas <- function(pregunta, num_pregunta, datos, DB_Mult, dominios,
                       lista_preguntas, diseño, wb, renglon_fs, renglon_tc,
                       columna = 1, hojas_fs = c(1,2),
                       hojas_tc = c(3,4),
                       fuente = 'fuente',
-                      organismo_participacion = 'organismo', logo_path = NULL,
+                      organismo_participacion = 'organismo',
+                      logo_path = 'imagen.png',
                       tipo_pregunta,
                       estilo_encabezado = headerStyle,
                       estilo_categorias = bodyStyle,
@@ -138,7 +140,6 @@ preguntas <- function(pregunta, num_pregunta, datos, DB_Mult, dominios,
                                          estilo_encabezado = estilo_encabezado,
                                          estilo_horizontal = estilo_horizontal,
                                          estilo_total = estilo_total)
-
 
   } else{
     fs_rows <- tibble()

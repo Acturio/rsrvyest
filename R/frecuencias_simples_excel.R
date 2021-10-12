@@ -3,7 +3,7 @@
 #' Función frecuencias simples en Excel
 #'
 #' @description Escribe los títulos 'Frecuencias simples' y 'Frecuencias simples (dispersión)', logo indicado, título de la pregunta, tabla de frecuencias simples formateada y pie de tabla en las hojas y renglones mencionados por el usuario
-#' @usage frecuencias_simples_excel <- function(
+#' @usage frecuencias_simples_excel(
 #' pregunta,
 #' num_pregunta,
 #' datos,
@@ -93,8 +93,7 @@ frecuencias_simples_excel <- function(pregunta, num_pregunta, datos, DB_Mult,
                                       lista_preguntas, diseño, wb, renglon = c(1,1),
                                       columna = 1, hojas = c(1,2),
                                       tipo_pregunta = 'categorica', fuente,
-                                      logo_path = NULL,
-                                      organismo_participacion,
+                                      organismo_participacion, logo_path = 'imagen.png',
                                       estilo_encabezado = headerStyle,
                                       estilo_horizontal = horizontalStyle,
                                       estilo_total = totalStyle){
@@ -132,16 +131,15 @@ frecuencias_simples_excel <- function(pregunta, num_pregunta, datos, DB_Mult,
   # Pegar logo UNAM renglón 1, columna 1
 
 
-  logo <- logo_path
+  #logo <- logo_path
 
   insertImage(wb = wb, sheet = hojas[1],
-              file = logo, startRow = 1, startCol = 1,
+              file = logo_path, startRow = 1, startCol = 1,
               width = 2.08, height =2.2, units = 'cm')
 
   insertImage(wb = wb, sheet = hojas[2],
-              file = logo, startRow = 1, startCol = 1,
+              file = logo_path, startRow = 1, startCol = 1,
               width = 2.08, height = 2.2, units = 'cm')
-
 
   # Título Pregunta
 
