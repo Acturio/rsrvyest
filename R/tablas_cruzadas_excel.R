@@ -235,7 +235,8 @@ tablas_cruzadas_excel <- function(pregunta, num_pregunta, dominios, datos,
 
     estilo_dominios(tabla = f, wb = wb, columna = columna, dominios = dominios,
                     hojas = hojas, renglon = c((renglon[1] + 2+1), (renglon[2] + 2+1)),
-                    estilo_dominios = estilo_horizontal, tipo_pregunta = tipo_pregunta)
+                    estilo_dominios = estilo_horizontal, tipo_pregunta = tipo_pregunta,
+                    estilo_merge_dominios = estilo_categorias)
     # Estilo columnas
 
     estilo_columnas(tabla = f, hojas = hojas, wb = wb, estilo = estilo_columnas,
@@ -350,6 +351,7 @@ tablas_cruzadas_excel <- function(pregunta, num_pregunta, dominios, datos,
     estilo_dominios(tabla = f, wb = wb, columna = columna, dominios = dominios,
                     hojas = hojas, renglon = c((renglon[1] +1+ 1), (renglon[2]+1 + 1)),
                     estilo_dominios = estilo_horizontal,
+                    estilo_merge_dominios = estilo_categorias,
                     tipo_pregunta = tipo_pregunta)
 
     # Estilo columnas
