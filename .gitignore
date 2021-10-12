@@ -44,3 +44,4 @@ sandbox/
 # DS Store
 
 .DS_Store
+inst/doc
