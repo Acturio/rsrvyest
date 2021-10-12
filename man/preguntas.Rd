@@ -20,7 +20,7 @@ hojas_fs,
 hojas_tc,
 fuente,
 organismo_participacion,
-logo_path,
+logo,
 tipo_pregunta,
 estilo_encabezado = headerStyle,
 estilo_categorias = bodyStyle,
@@ -61,7 +61,7 @@ tablas_cruzadas = TRUE
 
 \item{organismo_participacion}{Organismos que participaron en el proyecto, por ejemplo, 'Ciudadanía Mexicana'}
 
-\item{logo_path}{Path del logo de la UNAM}
+\item{logo}{Path del logo de la UNAM}
 
 \item{tipo_pregunta}{Tipo de pregunta_ 'categorica', 'multiple', 'continua'}
 

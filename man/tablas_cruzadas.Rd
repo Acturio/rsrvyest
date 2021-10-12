@@ -4,8 +4,7 @@
 \alias{tablas_cruzadas}
 \title{Función tablas cruzadas según tipo de pregunta y dominio}
 \usage{
-tablas_cruzadas(
-diseño,
+tablas_cruzadas(diseño,
 pregunta,
 dominio,
 datos,
@@ -13,7 +12,7 @@ DB_Mult,
 na.rm,
 vartype = c("ci","se","var","cv"),
 cuantiles = c(0,0.25, 0.5, 0.75,1),
-significancia = 0.95
+significancia = 0.95,
 proporcion = FALSE,
 metodo_prop = 'likelihood',
 DEFF = TRUE,
@@ -68,6 +67,10 @@ Se crea la tabla cruzada según dominio tipo de pregunta (categórica, múltiple
  tablas_cruzadas(diseño = disenio_mult, pregunta = 'P1', dominio = 'Sexo', datos = dataset,
  DB_Mult = DB_Mult, tipo_pregunta = 'multiple')
  }
+ @import srvyr
+ @import dplyr
+ @import tidyr
+ @importFrom  caret dummyVars
  @export
 }
 \seealso{

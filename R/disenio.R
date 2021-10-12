@@ -1,5 +1,3 @@
-# FUNCIÓN DISEÑO DE MUESTREO
-
 #' Crea un objeto con un diseño de muestreo
 #' @description Se crea un objeto con el diseño de muestreo especificado.
 #' @usage disenio(
@@ -32,10 +30,12 @@
 #'   pps = "brewer", varianza = "HT", reps = TRUE, metodo = "subbootstrap",
 #'   B = 50, semilla = 1234)
 #' }
+#' @import srvyr
+#' @import dplyr
 #' @export
 disenio <- function(id, estrato, pesos, datos, pps = "brewer",
                     varianza = "HT", reps = TRUE, metodo = "subbootstrap",
-                    B=50, semilla=1234){
+                    B=500, semilla=1234){
 
   disenio <- datos %>%
     as_survey_design(

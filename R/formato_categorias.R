@@ -59,6 +59,7 @@
 #'
 #'  openxlsx::openXL(wb)
 #'  }
+#'  @import openxlsx
 #' @export
 formato_categorias <- function(tabla, pregunta, diseño, datos, DB_Mult, wb,
                                renglon = c(1,1), columna = 4, hojas = c(3,4),

@@ -8,7 +8,7 @@ estilo_columnas(
 tabla,
 wb,
 hojas =  c(3,4),
-estilo = verticalStyle,
+estilo,
 renglon = c(1,1),
 tipo_pregunta = "categorica"
 )

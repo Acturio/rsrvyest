@@ -39,7 +39,6 @@
 #' @param estilo_encabezado estilo el cual se desea usar para los nombres de las columnas
 #' @param estilo_horizontal estilo último renglón horizontal
 #' @param estilo_total estilo el cual se desea usar para la columna total
-#'
 #' @details Esta función envuelve todas las funciones creadas para obtener las frecuencias simples, por lo que esta función es la única que se deberá llamar para crear las frecuencias simples de las preguntas deseadas e insertarlas en ciertas hojas de Excel
 #' @details Es necesario crear al menos dos hojas de excel con la función addWorksheet de la paquetería openxlsx
 #' @details El estilo_total se recomienda crear un estilo con la función createStyle de openxlsx con el formato que se desea, por ejemplo "###,###,###.0"
@@ -83,21 +82,20 @@
 #' tipo_pregunta = 'multiple',
 #' fuente =  'Conacyt 2018',
 #' organismo_participacion = 'Ciudadanía mexicana',
+#' logo_path = 'img/logo_unam.png',
 #' estilo_encabezado = headerStyle,
 #' estilo_horizontal = horizontalStyle,
 #' estilo_total = totalStyle
 #' )
 #' }
+#' @import openxlsx
 #' @export
-frecuencias_simples_excel <- function(pregunta, num_pregunta, datos, DB_Mult,
-                                      lista_preguntas, diseño, wb, renglon = c(1,1),
-                                      columna = 1, hojas = c(1,2),
-                                      tipo_pregunta = 'categorica', fuente,
-                                      organismo_participacion, logo_path = 'imagen.png',
-                                      estilo_encabezado = headerStyle,
-                                      estilo_horizontal = horizontalStyle,
-                                      estilo_total = totalStyle){
-
+frecuencias_simples_excel <- function(
+  pregunta, num_pregunta, datos, DB_Mult, lista_preguntas, diseño, wb,
+  renglon = c(1,1), columna = 1, hojas = c(1,2), tipo_pregunta = 'categorica',
+  fuente, organismo_participacion, logo_path,
+  estilo_encabezado = headerStyle, estilo_horizontal = horizontalStyle,
+  estilo_total = totalStyle){
 
   titleStyle <- createStyle(fontSize = 24, fontColour = '#011f4b',
                             textDecoration = 'underline')
@@ -129,7 +127,6 @@ frecuencias_simples_excel <- function(pregunta, num_pregunta, datos, DB_Mult,
            gridExpand = TRUE, stack = TRUE)
 
   # Pegar logo UNAM renglón 1, columna 1
-
 
   #logo <- logo_path
 

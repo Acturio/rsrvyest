@@ -1,9 +1,6 @@
-# FUNCIÓN TABLAS CRUZADAS SEGÚN TIPO PREGUNTA
-
 #' Función tablas cruzadas según tipo de pregunta y dominio
 #' @description Se crea la tabla cruzada según dominio tipo de pregunta (categórica, múltiple o continua)
-#' @usage tablas_cruzadas(
-#' diseño,
+#' @usage tablas_cruzadas(diseño,
 #' pregunta,
 #' dominio,
 #' datos,
@@ -11,7 +8,7 @@
 #' na.rm,
 #' vartype = c("ci","se","var","cv"),
 #' cuantiles = c(0,0.25, 0.5, 0.75,1),
-#' significancia = 0.95
+#' significancia = 0.95,
 #' proporcion = FALSE,
 #' metodo_prop = 'likelihood',
 #' DEFF = TRUE,
@@ -47,6 +44,10 @@
 #'  tablas_cruzadas(diseño = disenio_mult, pregunta = 'P1', dominio = 'Sexo', datos = dataset,
 #'  DB_Mult = DB_Mult, tipo_pregunta = 'multiple')
 #'  }
+#'  @import srvyr
+#'  @import dplyr
+#'  @import tidyr
+#'  @importFrom  caret dummyVars
 #'  @export
 tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
                             na.rm = TRUE, vartype = c("ci","se","var","cv"),
