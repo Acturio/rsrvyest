@@ -24,6 +24,7 @@
 #' estilo_horizontal = horizontalStyle,
 #' estilo_total = totalStyle
 #' )
+#'
 #' @param pregunta  Nombre de la pregunta sobre la cual se desea obtener la tabla cruzada e incluirla en un workbook de Excel
 #' @param num_pregunta Número de pregunta
 #' @param dominios Vector el cual contiene los nombres de los dominios sobre los cuales se desean obtener sus respectivas tablas cruzadas

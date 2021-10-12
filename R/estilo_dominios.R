@@ -13,6 +13,7 @@
 #' estilo_merge_dominios = bodyStyle,
 #' tipo_pregunta
 #' )
+#'
 #' @param tabla Lista con las tablas cruzadas formateadas
 #' @param wb Workbook en el que aplicará el formato
 #' @param columna Columna en la que se aplicará el formato
