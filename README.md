@@ -27,3 +27,15 @@ Para poder hacer uso de la librería *rsrvyest*, es importante tener instalada l
  # Uso
  
  Una vez que se cuenta con la carpeta *data* junto con los datos en formato .sav (spss) y la lista de pregunta que describe las preguntas para las cuales serán calculadas sus estadísticos univariados y bivariados, el análisis se realiza a través del siguiente flujo de funciones, las cuales pueden estar almacenadas en un archivo .R dentro de la carpeta *src*.
+
+# Siguientes pasos
+
+* Limpieza de funciones y librerías a importar
+* Revisar concordancia entre código y documentación
+* Limpiar conflicto `caret::dummyVars`
+* Revisar importación de `caret` y `tidyr`
+* Crear proceso paralelizable
+* Incorporar funciones de gráficas
+* Documentar funciones de gráficas
+* Incorporar en el workflow proceso de gráficas `gráfícas = TRUE`
+* Revisión y limpieza de código en general
