@@ -36,7 +36,7 @@
 #' }
 #' @import dplyr
 #' @import srvyr
-#' @importFrom caret dummyVars
+#' @rawNamespace import(caret, except = lift)
 #' @export
 frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE,
                                  estadisticas = c("se","ci","cv", "var"),

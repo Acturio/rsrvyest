@@ -70,7 +70,7 @@ Se crea la tabla cruzada según dominio tipo de pregunta (categórica, múltiple
  @import srvyr
  @import dplyr
  @import tidyr
- @importFrom  caret dummyVars
+ @rawNamespace import(caret, except = lift)
  @export
 }
 \seealso{
