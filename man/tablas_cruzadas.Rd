@@ -70,6 +70,7 @@ Se crea la tabla cruzada según dominio tipo de pregunta (categórica, múltiple
  @import srvyr
  @import dplyr
  @import tidyr
+ @import tibble
  @rawNamespace import(caret, except = lift)
  @export
 }

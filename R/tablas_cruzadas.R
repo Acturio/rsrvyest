@@ -47,6 +47,7 @@
 #'  @import srvyr
 #'  @import dplyr
 #'  @import tidyr
+#'  @import tibble
 #'  @rawNamespace import(caret, except = lift)
 #'  @export
 tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
