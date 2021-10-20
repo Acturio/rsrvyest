@@ -177,6 +177,8 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
   estadisticas %<>% mutate(
     prop_cv = ifelse(is.nan(prop_cv), NA, prop_cv),
     prop_deff = ifelse(is.nan(prop_deff), NA, prop_deff)
-  )
+  ) %>%
+    filter(!is.na(Respuesta))
+
   return(estadisticas)
 }
