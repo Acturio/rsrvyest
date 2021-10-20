@@ -53,6 +53,7 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
       str_trim(side = 'both')
 
     estadisticas <- {{diseño}} %>%
+      filter(!is.na(!!sym(pregunta))) %>%
       srvyr::group_by(!!sym(pregunta)) %>%
       srvyr::summarize(
         prop = survey_mean(
@@ -153,6 +154,7 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
 
     for (categ in categorias) {
       nacional <- diseño %>%
+        filter(!is.na(!!sym(categ))) %>%
         srvyr::summarize(
           prop = survey_mean(!!sym(categ),
                              na.rm = na.rm,
