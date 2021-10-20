@@ -70,12 +70,14 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
       mutate(prop_low = ifelse(prop_low < 0, 0, prop_low),
              prop_upp = ifelse(prop_upp > 1, 1, prop_upp),
              !!sym(pregunta) := str_trim(!!sym(pregunta), side = 'both')) %>%
-      dplyr::rename('Respuesta' := !!sym(pregunta))
+      dplyr::rename('Respuesta' := !!sym(pregunta)) %>%
+      filter(!is.na(Respuesta))
   }
 
   if (tipo_pregunta == 'continua'){
 
     estadisticas <- {{diseño}} %>%
+      filter(!is.na(!!sym(pregunta))) %>%
       srvyr::summarise(
         prop = survey_mean(
           as.numeric(!!sym(pregunta)),
@@ -97,7 +99,6 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
       select(total, prop, prop_low, prop_upp, cuantiles_q00, cuantiles_q25,
              cuantiles_q50, cuantiles_q75, cuantiles_q100, prop_se, prop_var,
              prop_cv, prop_deff)
-
   }
 
   if (tipo_pregunta == 'multiple'){
@@ -177,8 +178,7 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
   estadisticas %<>% mutate(
     prop_cv = ifelse(is.nan(prop_cv), NA, prop_cv),
     prop_deff = ifelse(is.nan(prop_deff), NA, prop_deff)
-  ) %>%
-    filter(!is.na(Respuesta))
+  )
 
   return(estadisticas)
 }
