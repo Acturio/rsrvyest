@@ -169,7 +169,8 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
 
       frecuencias_simples <- bind_rows(frecuencias_simples, nacional)
 
-      estadisticas <- frecuencias_simples
+      estadisticas <- frecuencias_simples %>%
+        filter(!is.na(Respuesta))
 
     }
 
