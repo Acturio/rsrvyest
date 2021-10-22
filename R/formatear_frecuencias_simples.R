@@ -52,9 +52,6 @@ formatear_frecuencias_simples <- function(tabla,
                           "Lim. inf." = NA,
                           "Lim. sup." = NA
                           )
-      # total <- c('TOTAL',as.numeric(sum(tabla1$Total)), as.numeric(sum(tabla1$Media)), NA, NA)
-      #
-      # tabla1 <- rbind(tabla1, total)
     }
     else{
       tabla1
@@ -72,6 +69,21 @@ formatear_frecuencias_simples <- function(tabla,
         "DEFF" = prop_deff
       ) %>%
       select(Respuesta,"Total", "Err. Est." , "Coef. Var.","Var.", "DEFF")
+
+    if (nrow(tabla) != 0){
+
+      tabla2 %<>% add_row("Respuesta" = 'TOTAL',
+                          "Total" = sum(tabla2$Total),
+                          "Err. Est." = NA ,
+                          "Coef. Var." = NA,
+                          "Var." = NA,
+                          "DEFF" = NA
+                          )
+    }
+    else{
+      tabla2
+    }
+
 
   }
 
