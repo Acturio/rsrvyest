@@ -18,6 +18,7 @@ columna,
 hojas ,
 tipo_pregunta,
 fuente,
+pie_tabla,
 organismo_participacion,
 logo_path,
 estilo_encabezado = headerStyle,
@@ -51,6 +52,8 @@ estilo_total = totalStyle
 \item{tipo_pregunta}{Tipo de pregunta_ 'categorica', 'multiple', 'continua'}
 
 \item{fuente}{Nombre del proyecto}
+
+\item{pie_tabla}{Pie de tabla}
 
 \item{organismo_participacion}{Organismos que participaron en el proyecto, por ejemplo, 'Ciudadanía Mexicana'}
 
@@ -115,6 +118,7 @@ columna = 1,
 hojas = c(1,2),
 tipo_pregunta = 'multiple',
 fuente =  'Conacyt 2018',
+pie_tabla = 'Conacyt 2018',
 organismo_participacion = 'Ciudadanía mexicana',
 logo_path = '~/Desktop/UNAM/DIAO/rsrvyest/img/logo_unam.png'
 estilo_encabezado = headerStyle,

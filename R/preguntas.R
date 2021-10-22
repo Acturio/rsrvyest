@@ -15,6 +15,7 @@
 #' hojas_fs,
 #' hojas_tc,
 #' fuente,
+#' pie_tabla,
 #' organismo_participacion,
 #' logo,
 #' tipo_pregunta,
@@ -39,6 +40,7 @@
 #' @param hojas_fs Vector de número de hojas en el cual se desea insertar las tablas de frecuencias simples
 #' @param hojas_tc Vector de número de hojas en el cual se desea insertar la tabla cruzada
 #' @param fuente Nombre del proyecto
+#' @param pie_tabla Pie de tabla
 #' @param organismo_participacion Organismos que participaron en el proyecto, por ejemplo, 'Ciudadanía Mexicana'
 #' @param logo Path del logo de la UNAM
 #' @param tipo_pregunta Tipo de pregunta_ 'categorica', 'multiple', 'continua'
@@ -58,6 +60,7 @@
 #' # Creación del workbook
 #'   organismo <- 'Ciudadanía mexicana'
 #'   nombre_proyecto <- 'Conacyt 2018'
+#'   pie <- 'Conacyt 2018'
 
 #' openxlsx::addWorksheet(wb, sheetName = 'Frecuencias simples')
 #' showGridLines(wb, sheet = 'Frecuencias simples', showGridLines = FALSE)
@@ -97,7 +100,7 @@
 #'   lista_preguntas=Lista_Preg,
 #'   diseño = disenio_mult, wb = wb, renglon_fs = c(1,1),
 #'   renglon_tc = c(1, 1), columna = 1, hojas_fs = c(1,3),
-#'   hojas_tc = c(2,4), fuente = nombre_proyecto,
+#'   hojas_tc = c(2,4), fuente = nombre_proyecto, pie_tabla = pie,
 #'   tipo_pregunta = 'multiple',
 #'   organismo_participacion = organismo,
 #'   estilo_encabezado = headerStyle,
@@ -112,7 +115,7 @@
 preguntas <- function(
   pregunta, num_pregunta, datos, DB_Mult, dominios, lista_preguntas, diseño, wb,
   renglon_fs, renglon_tc, columna = 1, hojas_fs = c(1,2), hojas_tc = c(3,4),
-  fuente = 'fuente', organismo_participacion = 'organismo',
+  fuente = 'fuente', pie_tabla, organismo_participacion = 'organismo',
   logo = NULL, tipo_pregunta, estilo_encabezado = headerStyle,
   estilo_categorias = bodyStyle, estilo_horizontal = horizontalStyle,
   estilo_total = totalStyle, frecuencias_simples = TRUE, tablas_cruzadas = TRUE){
@@ -127,7 +130,8 @@ preguntas <- function(
                                          diseño = diseño, wb = wb,
                                          renglon = renglon_fs,
                                          columna = columna, hojas = hojas_fs,
-                                         tipo_pregunta = tipo_pregunta, fuente = fuente,
+                                         tipo_pregunta = tipo_pregunta,
+                                         fuente = fuente, pie_tabla = pie_tabla,
                                          organismo_participacion = organismo_participacion,
                                          logo_path = logo,
                                          estilo_encabezado = estilo_encabezado,
@@ -149,7 +153,7 @@ preguntas <- function(
                                      renglon = renglon_tc, columna = columna,
                                      hojas = hojas_tc,
                                      tipo_pregunta = tipo_pregunta,
-                                     fuente = fuente,
+                                     fuente = fuente, pie_tabla = pie_tabla,
                                      organismo_participacion = organismo_participacion,
                                      logo_path = logo,
                                      estilo_encabezado = estilo_encabezado,

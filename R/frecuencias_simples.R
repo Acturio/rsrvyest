@@ -53,7 +53,6 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
       str_trim(side = 'both')
 
     estadisticas <- {{diseño}} %>%
-      filter(!is.na(!!sym(pregunta))) %>%
       srvyr::group_by(!!sym(pregunta)) %>%
       srvyr::summarize(
         prop = survey_mean(

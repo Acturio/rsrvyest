@@ -19,6 +19,7 @@ columna = 1,
 hojas_fs,
 hojas_tc,
 fuente,
+pie_tabla,
 organismo_participacion,
 logo,
 tipo_pregunta,
@@ -59,6 +60,8 @@ tablas_cruzadas = TRUE
 
 \item{fuente}{Nombre del proyecto}
 
+\item{pie_tabla}{Pie de tabla}
+
 \item{organismo_participacion}{Organismos que participaron en el proyecto, por ejemplo, 'Ciudadanía Mexicana'}
 
 \item{logo}{Path del logo de la UNAM}
@@ -94,6 +97,7 @@ El estilo_encabezado hace referencia al tipo de formato que se desea conseguir p
 # Creación del workbook
   organismo <- 'Ciudadanía mexicana'
   nombre_proyecto <- 'Conacyt 2018'
+  pie <- 'Conacyt 2018'
 openxlsx::addWorksheet(wb, sheetName = 'Frecuencias simples')
 showGridLines(wb, sheet = 'Frecuencias simples', showGridLines = FALSE)
 openxlsx::addWorksheet(wb, sheetName = 'Tablas cruzadas')
@@ -125,7 +129,7 @@ showGridLines(wb, sheet = 'Tablas cruzadas (dispersión)', showGridLines = FALSE
   lista_preguntas=Lista_Preg,
   diseño = disenio_mult, wb = wb, renglon_fs = c(1,1),
   renglon_tc = c(1, 1), columna = 1, hojas_fs = c(1,3),
-  hojas_tc = c(2,4), fuente = nombre_proyecto,
+  hojas_tc = c(2,4), fuente = nombre_proyecto, pie_tabla = pie,
   tipo_pregunta = 'multiple',
   organismo_participacion = organismo,
   estilo_encabezado = headerStyle,
