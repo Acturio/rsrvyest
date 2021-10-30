@@ -150,8 +150,11 @@ total_general <- function(diseño, pregunta, DB_Mult, datos, dominio = 'General'
                                  pregunta = pregunta, DB_Mult = DB_Mult,
                                  tipo_pregunta = "multiple")
 
+
     freqs <- formatear_frecuencias_simples(tabla = freqs,
                                            tipo_pregunta = 'multiple')
+
+    freqs %<>% filter('Respuesta' != 'TOTAL')
 
     categorias <- freqs[[1]] %>% dplyr::pull(Respuesta)
 
