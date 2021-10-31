@@ -311,6 +311,7 @@ frecuencias_simples_excel <- function(
                 rows = (renglon[2] + 4 + 1 + nrow(freq[[2]])), heights = 10)
 
 
+
   if(tipo_pregunta == 'multiple'){
 
     tabla_multiple <- paste0("Tabla correspondiente a pregunta de respuesta múltiple, los porcentajes no suman 100")

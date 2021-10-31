@@ -182,7 +182,5 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
 
   )
 
-  estadisticas
-
   return(estadisticas)
 }

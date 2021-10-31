@@ -120,4 +120,5 @@ formatear_frecuencias_simples <- function(tabla,
 
   }
   return(list(tabla1, tabla2))
+
 }
