@@ -60,6 +60,7 @@ tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
   if (tipo_pregunta == 'categorica'){
 
     estadisticas <- diseño %>%
+      filter(!is.na(!!sym(pregunta))) %>%
       srvyr::group_by(!!sym(dominio), !!sym(pregunta), .drop = TRUE) %>%
       srvyr::summarize(
         prop = survey_mean(
@@ -109,6 +110,7 @@ tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
   if (tipo_pregunta == 'continua'){
 
     cruce <- diseño %>%
+      filter(!is.na(!!sym(pregunta))) %>%
       srvyr::group_by(!!sym(dominio)) %>%
       srvyr::summarise(
         prop = survey_mean(
@@ -191,6 +193,7 @@ tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
 
     for (categ in categorias){
       Dominios_tabla <- {{diseño}} %>%
+        filter(!is.na(!!sym(categ))) %>%
         srvyr::group_by(!!sym(dominio), .drop = TRUE) %>%
         srvyr::summarize(
           prop = survey_mean(!!sym(categ),
@@ -222,6 +225,8 @@ tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
     )
   }
 
+
+  tabla_cruzada %<>% filter(!is.na(Categorias))
 
   return(tabla_cruzada)
 }

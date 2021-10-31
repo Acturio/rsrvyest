@@ -258,7 +258,22 @@ frecuencias_simples_excel <- function(
                 rows = (renglon[1] + 4 + 1 + nrow(freq[[1]])), heights = 10)
 
 
+  if(tipo_pregunta == 'multiple'){
 
+    tabla_multiple <- paste0("Tabla correspondiente a pregunta de respuesta múltiple,
+                           los porcentajes no suman 100")
+
+    writeData(wb = wb, sheet = hojas[1], x = tabla_multiple,
+              startRow = (renglon[1] + 4 + 1 + 1 + nrow(freq[[1]])),
+              startCol = columna, borders = 'none')
+
+    addStyle(wb = wb, sheet = hojas[1], style = fontStyle,
+             rows = (renglon[1] + 4 + 1 + 1 + nrow(freq[[1]])), cols = columna,
+             gridExpand = TRUE, stack = TRUE)
+
+    setRowHeights(wb = wb, sheet = hojas[1],
+                  rows = (renglon[1] + 4 + 1 + 1+ nrow(freq[[1]])), heights = 10)
+  }
 
   writeData(wb = wb, sheet = hojas[2], x = fuente_preg,
             startRow = (renglon[2] + 2+1 + nrow(freq[[2]])),
@@ -294,6 +309,23 @@ frecuencias_simples_excel <- function(
 
   setRowHeights(wb = wb, sheet = hojas[2],
                 rows = (renglon[2] + 4 + 1 + nrow(freq[[2]])), heights = 10)
+
+
+  if(tipo_pregunta == 'multiple'){
+
+    tabla_multiple <- paste0("Tabla correspondiente a pregunta de respuesta múltiple, los porcentajes no suman 100")
+
+    writeData(wb = wb, sheet = hojas[2], x = tabla_multiple,
+              startRow = (renglon[2] + 4 + 1 + 1 + nrow(freq[[2]])),
+              startCol = columna, borders = 'none')
+
+    addStyle(wb = wb, sheet = hojas[2], style = fontStyle,
+             rows = (renglon[2] + 4 + 1 + 1 + nrow(freq[[2]])), cols = columna,
+             gridExpand = TRUE, stack = TRUE)
+
+    setRowHeights(wb = wb, sheet = hojas[2],
+                  rows = (renglon[2] + 4 + 1 + 1+ nrow(freq[[2]])), heights = 10)
+  }
 
   return(freq)
 

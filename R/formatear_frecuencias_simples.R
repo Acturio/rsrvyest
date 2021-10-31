@@ -68,7 +68,8 @@ formatear_frecuencias_simples <- function(tabla,
         "Coef. Var." = prop_cv,
         "DEFF" = prop_deff
       ) %>%
-      select(Respuesta,"Total", "Err. Est." , "Coef. Var.","Var.", "DEFF")
+      select(Respuesta,"Total", "Err. Est." , "Coef. Var.","Var.", "DEFF") %>%
+      filter(!is.na(Respuesta))
 
     if (nrow(tabla) != 0){
 
