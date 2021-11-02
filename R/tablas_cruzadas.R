@@ -191,7 +191,7 @@ tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
 
     for (categ in categorias){
       Dominios_tabla <- {{diseño}} %>%
-        filter(!is.na(!!sym(categ))) %>%
+        filter(!is.na(!!sym(categ)), !is.na(!!sym(dominio))) %>%
         srvyr::group_by(!!sym(dominio), .drop = TRUE) %>%
         srvyr::summarize(
           prop = survey_mean(!!sym(categ),
@@ -222,8 +222,5 @@ tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
       prop_deff = ifelse(is.nan(prop_deff), NA, prop_deff)
     )
   }
-
-  tabla_cruzada %<>% filter(!is.na(Categorias))
-
   return(tabla_cruzada)
 }
