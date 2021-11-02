@@ -200,7 +200,6 @@ formatear_tabla_cruzada <- function(pregunta, datos, dominio, tabla, DB_Mult,
 
     suma_totales %<>% select(Total)
 
-
     tabla_final_1 = cbind(tabla_final_1,suma_totales)
 
     tabla_final_1 %<>% relocate(Total,.after = Categorias)
