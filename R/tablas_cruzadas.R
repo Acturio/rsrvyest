@@ -223,6 +223,7 @@ tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
     )
   }
 
+  tabla_cruzada %<>% filter(!is.na(Categorias))
 
   return(tabla_cruzada)
 }
