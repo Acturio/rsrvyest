@@ -189,7 +189,7 @@ tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
       variable <- menciones_juntas %>%
         pull(!!sym(i))
 
-      {{diseño}} %<>% srvyr::mutate(!!sym(i) := if_else(is.na(aux_missing), aux_missing, variable))
+      diseño %<>% srvyr::mutate(!!sym(i) := if_else(is.na(aux_missing), aux_missing, variable))
     }
 
     tabla_cruzada = tibble()
