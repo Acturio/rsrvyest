@@ -161,8 +161,12 @@ tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
 
     df <- df %>% mutate(ID = row.names(df))
 
-    one_hot <- caret::dummyVars(" ~ .", data=df)
+    one_hot <- caret::dummyVars(str_c('~ ',  str_c(ps, collapse = ' + ')), data=df)
     one_hot <- data.frame(predict(one_hot, newdata = df))
+    missings <- one_hot %>% pull(1)
+
+    diseño %<>% srvyr::mutate(aux_missing = missings)
+
     one_hot[is.na(one_hot)] <- 0
 
     menciones_juntas <- matrix(NA, nrow(df), ncol=numero_categorias) %>%
@@ -183,8 +187,8 @@ tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
 
     for (i in menciones_vector){
       variable <- menciones_juntas %>%
-        pull(!!sym(i))
-      diseño %<>% srvyr::mutate(!!sym(i) := variable)
+        pull(!!sym(i)) %>%
+      diseño %<>% srvyr::mutate(!!sym(i) := if_else(is.na(aux_missing), aux_missing, variable))
     }
 
     tabla_cruzada = tibble()

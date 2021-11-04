@@ -119,8 +119,14 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
 
     df <- df %>% mutate(ID = row.names(df))
 
-    one_hot <- caret::dummyVars(" ~ .", data=df)
+
+    one_hot <- caret::dummyVars(str_c('~ ',  str_c(ps, collapse = ' + ')), data=df)
     one_hot <- data.frame(predict(one_hot, newdata = df))
+
+    missings <- one_hot %>% pull(1)
+
+    diseño %<>% srvyr::mutate(aux_missing = missings)
+
     one_hot[is.na(one_hot)] <- 0
 
     menciones_juntas <- matrix(NA, nrow(df), ncol=numero_categorias) %>%
@@ -144,7 +150,7 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
     for (i in menciones_vector){
       variable <- menciones_juntas %>%
         pull(!!sym(i))
-      diseño %<>% srvyr::mutate(!!sym(i) := variable)
+      diseño %<>% srvyr::mutate(!!sym(i) := if_else(is.na(aux_missing), aux_missing, variable))
     }
 
     frecuencias_simples = data_frame()
