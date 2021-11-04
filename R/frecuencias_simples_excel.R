@@ -260,8 +260,7 @@ frecuencias_simples_excel <- function(
 
   if(tipo_pregunta == 'multiple'){
 
-    tabla_multiple <- paste0("Tabla correspondiente a pregunta de respuesta múltiple,
-                           los porcentajes no suman 100")
+    tabla_multiple <- paste0("Tabla correspondiente a pregunta de respuesta múltiple, los porcentajes no suman 100")
 
     writeData(wb = wb, sheet = hojas[1], x = tabla_multiple,
               startRow = (renglon[1] + 4 + 1 + 1 + nrow(freq[[1]])),

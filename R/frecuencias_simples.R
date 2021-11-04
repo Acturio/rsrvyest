@@ -152,8 +152,8 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
     ### Cálculo de frecuencias simples de todas las categorías de una pregunta
 
     for (categ in categorias) {
-      nacional <- diseño %>%
-        filter(!is.na(!!sym(categ))) %>%
+      nacional <- {{diseño}} %>%
+        srvyr::filter(!is.na(!!sym(categ))) %>%
         srvyr::summarize(
           prop = survey_mean(!!sym(categ),
                              na.rm = na.rm,
