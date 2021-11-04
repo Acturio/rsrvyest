@@ -119,8 +119,12 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
 
     df <- df %>% mutate(ID = row.names(df))
 
-    one_hot <- caret::dummyVars(" ~ .", data=df)
+    one_hot <- caret::dummyVars(str_c('~ ',  str_c(ps, collapse = ' + ')), data=df)
     one_hot <- data.frame(predict(one_hot, newdata = df))
+    missings <- one_hot %>% pull(1)
+
+    diseño %<>% srvyr::mutate(aux_missing = missings)
+
     one_hot[is.na(one_hot)] <- 0
 
     menciones_juntas <- matrix(NA, nrow(df), ncol=numero_categorias) %>%
@@ -128,10 +132,12 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
     names(menciones_juntas) <- categorias
 
     dum <- NULL
+
     for(j in 1:numero_categorias){
       dum <- one_hot[,j]
       for (i in 1:(length(ps)-1)) {
         dum <- dum + one_hot[,j+i*numero_categorias]
+        #dum <- sum(dum, one_hot[,j+i*numero_categorias], na.rm = TRUE)
       }
       menciones_juntas[,j] <- dum
     }
@@ -144,7 +150,7 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
     for (i in menciones_vector){
       variable <- menciones_juntas %>%
         pull(!!sym(i))
-      diseño %<>% srvyr::mutate(!!sym(i) := variable)
+      diseño %<>% srvyr::mutate(!!sym(i) := if_else(is.na(aux_missing), aux_missing, variable))
     }
 
     frecuencias_simples = data_frame()
@@ -153,7 +159,7 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
 
     for (categ in categorias) {
       nacional <- {{diseño}} %>%
-        srvyr::filter(!is.na(!!sym(categ))) %>%
+       # srvyr::filter(!is.na(!!sym(categ))) %>%
         srvyr::summarize(
           prop = survey_mean(!!sym(categ),
                              na.rm = na.rm,
