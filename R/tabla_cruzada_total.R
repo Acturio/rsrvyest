@@ -55,8 +55,10 @@ tabla_cruzada_total <- function(diseño, pregunta, datos, DB_Mult,
                                     dominio = d, tabla = f_n, DB_Mult = DB_Mult,
                                     tipo_pregunta = tipo_pregunta)
 
+
     nacional[[1]] <- rbind(nacional[[1]], f_tc[[1]])
     nacional[[2]] <- rbind(nacional[[2]], f_tc[[2]])
+
 
   }
 

@@ -53,6 +53,7 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
       str_trim(side = 'both')
 
     estadisticas <- {{diseño}} %>%
+      filter(!is.na(!!sym(pregunta))) %>%
       srvyr::group_by(!!sym(pregunta)) %>%
       srvyr::summarize(
         prop = survey_mean(
@@ -70,8 +71,7 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
       mutate(prop_low = ifelse(prop_low < 0, 0, prop_low),
              prop_upp = ifelse(prop_upp > 1, 1, prop_upp),
              !!sym(pregunta) := str_trim(!!sym(pregunta), side = 'both')) %>%
-      dplyr::rename('Respuesta' := !!sym(pregunta)) %>%
-      filter(!is.na(Respuesta))
+      dplyr::rename('Respuesta' := !!sym(pregunta))
   }
 
   if (tipo_pregunta == 'continua'){
@@ -119,10 +119,8 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
 
     df <- df %>% mutate(ID = row.names(df))
 
-
     one_hot <- caret::dummyVars(str_c('~ ',  str_c(ps, collapse = ' + ')), data=df)
     one_hot <- data.frame(predict(one_hot, newdata = df))
-
     missings <- one_hot %>% pull(1)
 
     diseño %<>% srvyr::mutate(aux_missing = missings)
@@ -134,6 +132,7 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
     names(menciones_juntas) <- categorias
 
     dum <- NULL
+
     for(j in 1:numero_categorias){
       dum <- one_hot[,j]
       for (i in 1:(length(ps)-1)) {
@@ -158,7 +157,8 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
     ### Cálculo de frecuencias simples de todas las categorías de una pregunta
 
     for (categ in categorias) {
-      nacional <- diseño %>%
+      nacional <- {{diseño}} %>%
+       # srvyr::filter(!is.na(!!sym(categ))) %>%
         srvyr::summarize(
           prop = survey_mean(!!sym(categ),
                              na.rm = na.rm,
@@ -175,8 +175,7 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
 
       frecuencias_simples <- bind_rows(frecuencias_simples, nacional)
 
-      estadisticas <- frecuencias_simples %>%
-        filter(!is.na(Respuesta))
+      estadisticas <- frecuencias_simples
 
     }
 

@@ -16,6 +16,7 @@
 #' hojas = c(1,2),
 #' tipo_pregunta = 'categorica',
 #' fuente,
+#' pie_tabla,
 #' logo_path,
 #' organismo_participacion,
 #' estilo_encabezado = headerStyle,
@@ -34,6 +35,7 @@
 #' @param hojas Vector de número de hojas en el cual se desea insertar las tablas
 #' @param tipo_pregunta Tipo de pregunta_ 'categorica', 'multiple', 'continua'
 #' @param fuente Nombre del proyecto
+#' @param pie_tabla Pie de tabla
 #' @param logo_path Path del logo de la UNAM
 #' @param organismo_participacion Organismos que participaron en el proyecto, por ejemplo, 'Ciudadanía Mexicana'
 #' @param estilo_encabezado estilo el cual se desea usar para los nombres de las columnas
@@ -81,6 +83,7 @@
 #' hojas = c(1,2),
 #' tipo_pregunta = 'multiple',
 #' fuente =  'Conacyt 2018',
+#' pie_tabla = 'Conacyt 2018',
 #' organismo_participacion = 'Ciudadanía mexicana',
 #' logo_path = 'img/logo_unam.png',
 #' estilo_encabezado = headerStyle,
@@ -93,7 +96,7 @@
 frecuencias_simples_excel <- function(
   pregunta, num_pregunta, datos, DB_Mult, lista_preguntas, diseño, wb,
   renglon = c(1,1), columna = 1, hojas = c(1,2), tipo_pregunta = 'categorica',
-  fuente, organismo_participacion, logo_path,
+  fuente, pie_tabla, organismo_participacion, logo_path,
   estilo_encabezado = headerStyle, estilo_horizontal = horizontalStyle,
   estilo_total = totalStyle){
 
@@ -186,6 +189,9 @@ frecuencias_simples_excel <- function(
 
   # Merge
 
+  # mergeCells(wb = wb, sheet = hojas[1], cols = 1:ncol(freq[[1]]),
+  #            rows = (renglon[1]))
+
   addStyle(wb = wb, sheet = hojas[1], style = table_Style,
            rows = (renglon[1] + 1), cols = 1:ncol(freq[[1]]),
            gridExpand = TRUE, stack = TRUE)
@@ -193,6 +199,9 @@ frecuencias_simples_excel <- function(
   mergeCells(wb = wb, sheet = hojas[1], cols = 1:ncol(freq[[1]]),
              rows = (renglon[1] + 1))
 
+#
+#   mergeCells(wb = wb, sheet = hojas[2], cols = 1:ncol(freq[[2]]),
+#              rows = (renglon[2]))
 
   addStyle(wb = wb, sheet = hojas[2], style = table_Style,
            rows = (renglon[2] + 1), cols = 1:ncol(freq[[2]]),
@@ -205,9 +214,9 @@ frecuencias_simples_excel <- function(
   # Fuente
 
   fuente_preg <- paste0("Fuente: ", fuente)
-  organismo <- paste0("Organismo de participacion ", organismo_participacion)
-  tabla_preg <- paste0("* Tabla correspondiente a la pregunta ", num_pregunta,
-                       " de ", fuente)
+  organismo <- paste0("Organismo de participacion: ", organismo_participacion)
+  tabla_preg <- paste0("* Tabla correspondiente a la pregunta ",
+                       pregunta, " de ", pie_tabla)
 
   fontStyle <- createStyle(fontSize = 9, fontColour = '#5b5b5b')
 
@@ -249,7 +258,21 @@ frecuencias_simples_excel <- function(
                 rows = (renglon[1] + 4 + 1 + nrow(freq[[1]])), heights = 10)
 
 
+  if(tipo_pregunta == 'multiple'){
 
+    tabla_multiple <- paste0("Tabla correspondiente a pregunta de respuesta múltiple, los porcentajes no suman 100")
+
+    writeData(wb = wb, sheet = hojas[1], x = tabla_multiple,
+              startRow = (renglon[1] + 4 + 1 + 1 + nrow(freq[[1]])),
+              startCol = columna, borders = 'none')
+
+    addStyle(wb = wb, sheet = hojas[1], style = fontStyle,
+             rows = (renglon[1] + 4 + 1 + 1 + nrow(freq[[1]])), cols = columna,
+             gridExpand = TRUE, stack = TRUE)
+
+    setRowHeights(wb = wb, sheet = hojas[1],
+                  rows = (renglon[1] + 4 + 1 + 1+ nrow(freq[[1]])), heights = 10)
+  }
 
   writeData(wb = wb, sheet = hojas[2], x = fuente_preg,
             startRow = (renglon[2] + 2+1 + nrow(freq[[2]])),
@@ -285,6 +308,24 @@ frecuencias_simples_excel <- function(
 
   setRowHeights(wb = wb, sheet = hojas[2],
                 rows = (renglon[2] + 4 + 1 + nrow(freq[[2]])), heights = 10)
+
+
+
+  if(tipo_pregunta == 'multiple'){
+
+    tabla_multiple <- paste0("Tabla correspondiente a pregunta de respuesta múltiple, los porcentajes no suman 100")
+
+    writeData(wb = wb, sheet = hojas[2], x = tabla_multiple,
+              startRow = (renglon[2] + 4 + 1 + 1 + nrow(freq[[2]])),
+              startCol = columna, borders = 'none')
+
+    addStyle(wb = wb, sheet = hojas[2], style = fontStyle,
+             rows = (renglon[2] + 4 + 1 + 1 + nrow(freq[[2]])), cols = columna,
+             gridExpand = TRUE, stack = TRUE)
+
+    setRowHeights(wb = wb, sheet = hojas[2],
+                  rows = (renglon[2] + 4 + 1 + 1+ nrow(freq[[2]])), heights = 10)
+  }
 
   return(freq)
 

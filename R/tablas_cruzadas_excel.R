@@ -16,6 +16,7 @@
 #' hojas ,
 #' tipo_pregunta,
 #' fuente,
+#' pie_tabla,
 #' organismo_participacion,
 #' logo_path,
 #' estilo_encabezado = headerStyle,
@@ -37,6 +38,7 @@
 #' @param hojas Vector de número de hojas en el cual se desea insertar las tablas
 #' @param tipo_pregunta Tipo de pregunta_ 'categorica', 'multiple', 'continua'
 #' @param fuente Nombre del proyecto
+#' @param pie_tabla Pie de tabla
 #' @param organismo_participacion Organismos que participaron en el proyecto, por ejemplo, 'Ciudadanía Mexicana'
 #' @param logo_path Path del logo de la UNAM
 #' @param estilo_encabezado estilo el cual se desea usar para los nombres de las columnas
@@ -88,6 +90,7 @@
 #' hojas = c(1,2),
 #' tipo_pregunta = 'multiple',
 #' fuente =  'Conacyt 2018',
+#' pie_tabla = 'Conacyt 2018',
 #' organismo_participacion = 'Ciudadanía mexicana',
 #' logo_path = '~/Desktop/UNAM/DIAO/rsrvyest/img/logo_unam.png'
 #' estilo_encabezado = headerStyle,
@@ -100,7 +103,7 @@
 tablas_cruzadas_excel <- function(pregunta, num_pregunta, dominios, datos,
                                   DB_Mult, lista_preguntas, diseño, wb,
                                   renglon = c(1,1), columna = 1, hojas = c(3,4),
-                                  tipo_pregunta = 'categorica', fuente,
+                                  tipo_pregunta = 'categorica', fuente, pie_tabla,
                                   organismo_participacion, logo_path = NULL,
                                   estilo_encabezado = headerStyle,
                                   estilo_columnas = verticalStyle,
@@ -254,9 +257,9 @@ tablas_cruzadas_excel <- function(pregunta, num_pregunta, dominios, datos,
     fontStyle <- createStyle(fontSize = 9, fontColour = '#5b5b5b')
 
     fuente_preg <- paste0("Fuente: ", fuente)
-    organismo <- paste0("Organismo de participacion ", organismo_participacion)
+    organismo <- paste0("Organismo de participacion: ", organismo_participacion)
     tabla_preg <- paste0("Tabla correspondiente a la pregunta ", num_pregunta,
-                         " de ", fuente)
+                         " de ", pie_tabla)
 
     writeData(wb = wb, sheet = hojas[1], x = fuente_preg,
               startRow = (renglon[1] + 3+1 + nrow(f[[1]])), startCol = columna,
@@ -363,9 +366,9 @@ tablas_cruzadas_excel <- function(pregunta, num_pregunta, dominios, datos,
     fontStyle <- createStyle(fontSize = 9, fontColour = '#5b5b5b')
 
     fuente_preg <- paste0("Fuente: ", fuente)
-    organismo <- paste0("Organismo de participacion ", organismo_participacion)
+    organismo <- paste0("Organismo de participacion: ", organismo_participacion)
     tabla_preg <- paste0("Tabla correspondiente a la pregunta ", num_pregunta,
-                         " de ", fuente)
+                         " de ", pie_tabla)
 
     writeData(wb = wb, sheet = hojas[1], x = fuente_preg,
               startRow = (renglon[1] + 2+1 + nrow(f[[1]])), startCol = columna,

@@ -44,6 +44,19 @@ formatear_frecuencias_simples <- function(tabla,
              "Total",
              "Media", "Lim. inf.", "Lim. sup.")
 
+    if (nrow(tabla) != 0){
+
+      tabla1 %<>% add_row("Respuesta" = 'TOTAL',
+                          "Total" = sum(tabla1$Total),
+                          "Media" = sum(tabla1$Media),
+                          "Lim. inf." = NA,
+                          "Lim. sup." = NA
+                          )
+    }
+    else{
+      tabla1
+    }
+
     tabla2 <- tabla %>%
       mutate(
         "Total" = round(total, 0),
@@ -55,7 +68,23 @@ formatear_frecuencias_simples <- function(tabla,
         "Coef. Var." = prop_cv,
         "DEFF" = prop_deff
       ) %>%
-      select(Respuesta,"Total", "Err. Est." , "Coef. Var.","Var.", "DEFF")
+      select(Respuesta,"Total", "Err. Est." , "Coef. Var.","Var.", "DEFF") %>%
+      filter(!is.na(Respuesta))
+
+    if (nrow(tabla) != 0){
+
+      tabla2 %<>% add_row("Respuesta" = 'TOTAL',
+                          "Total" = sum(tabla2$Total),
+                          "Err. Est." = NA ,
+                          "Coef. Var." = NA,
+                          "Var." = NA,
+                          "DEFF" = NA
+                          )
+    }
+    else{
+      tabla2
+    }
+
 
   }
 
@@ -91,4 +120,5 @@ formatear_frecuencias_simples <- function(tabla,
 
   }
   return(list(tabla1, tabla2))
+
 }
