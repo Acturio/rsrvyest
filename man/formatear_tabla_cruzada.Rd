@@ -33,20 +33,24 @@ Se formatea la tabla cruzada según tipo de pregunta y dominio
 }
 \examples{
 \dontrun{
- dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
- Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
-                       sheet = "Lista Preguntas")$Nombre \%>\% as.vector()
- DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",  sheet = "Múltiple") \%>\% as.data.frame()
- Lista_Cont <- read_xlsx("aux/Lista de Preguntas.xlsx",
-  sheet = "Continuas")$VARIABLE \%>\% as.vector()
- Dominios <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Dominios")$Dominios \%>\% as.vector()
+dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
+Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
+  sheet = "Lista Preguntas"
+)$Nombre \%>\% as.vector()
+DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Múltiple") \%>\% as.data.frame()
+Lista_Cont <- read_xlsx("aux/Lista de Preguntas.xlsx",
+  sheet = "Continuas"
+)$VARIABLE \%>\% as.vector()
+Dominios <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Dominios")$Dominios \%>\% as.vector()
 
- disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
+disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps = FALSE, datos = dataset)
 
- tc <-  tablas_cruzadas(diseño = disenio_mult, pregunta = 'P1', dominio = 'Sexo', datos = dataset,
- DB_Mult = DB_Mult, tipo_pregunta = 'multiple')
+tc <- tablas_cruzadas(
+  diseño = disenio_mult, pregunta = "P1", dominio = "Sexo", datos = dataset,
+  DB_Mult = DB_Mult, tipo_pregunta = "multiple"
+)
 
- formatear_tabla_cruzada(pregunta = 'P1', datos = dataset, dominio = 'Sexo', tabla = tc, DB_Mult = DB_Mult, tipo_pregunta = 'multiple')
+formatear_tabla_cruzada(pregunta = "P1", datos = dataset, dominio = "Sexo", tabla = tc, DB_Mult = DB_Mult, tipo_pregunta = "multiple")
 }
 }
 \seealso{

@@ -36,17 +36,19 @@ Crea un vector para las respuestas de las preguntas múltiples y categóricas.
 }
 \examples{
 \dontrun{
- # Carga de datos
- dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
- Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
- sheet = "Lista Preguntas")$Nombre \%>\% as.vector()
-  DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",
-  sheet = "Múltiple") \%>\% as.data.frame()
+# Carga de datos
+dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
+Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
+  sheet = "Lista Preguntas"
+)$Nombre \%>\% as.vector()
+DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",
+  sheet = "Múltiple"
+) \%>\% as.data.frame()
 
-#Diseño
- disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
+# Diseño
+disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps = FALSE, datos = dataset)
 
-categorias_pregunta_formato(pregunta = 'P1', diseño = disenio_mult, datos = dataset, DB_Mult = DB_Mult, tipo_pregunta = 'multiple', metricas = TRUE)
+categorias_pregunta_formato(pregunta = "P1", diseño = disenio_mult, datos = dataset, DB_Mult = DB_Mult, tipo_pregunta = "multiple", metricas = TRUE)
 }
 }
 \author{

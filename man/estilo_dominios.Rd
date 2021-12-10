@@ -40,9 +40,11 @@ Función para unir las celdas donde se encuentran los nombres de los dominios es
 }
 \examples{
 \dontrun{
-estilo_dominios(tabla = tabla_cruzada, wb = wb, columna = 1, hojas = c(3,4),
-dominios = dominios, renglon = c(1,1), estilo_dominios = horizontalStyle,
-estilo_merge_dominios = bodyStyle, tipo_pregunta = 'categorica')
+estilo_dominios(
+  tabla = tabla_cruzada, wb = wb, columna = 1, hojas = c(3, 4),
+  dominios = dominios, renglon = c(1, 1), estilo_dominios = horizontalStyle,
+  estilo_merge_dominios = bodyStyle, tipo_pregunta = "categorica"
+)
 }
 }
 \seealso{

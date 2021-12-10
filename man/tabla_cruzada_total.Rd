@@ -32,20 +32,24 @@ Esta función une la tabla cruzada general y las tablas cruzadas por dominios ge
 }
 \examples{
 \dontrun{
- # Lectura de datos
- dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
- Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
-                       sheet = "Lista Preguntas")$Nombre \%>\% as.vector()
- DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",  sheet = "Múltiple") \%>\% as.data.frame()
- Lista_Cont <- read_xlsx("aux/Lista de Preguntas.xlsx",
-  sheet = "Continuas")$VARIABLE \%>\% as.vector()
- Dominios <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Dominios")$Dominios \%>\% as.vector()
+# Lectura de datos
+dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
+Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
+  sheet = "Lista Preguntas"
+)$Nombre \%>\% as.vector()
+DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Múltiple") \%>\% as.data.frame()
+Lista_Cont <- read_xlsx("aux/Lista de Preguntas.xlsx",
+  sheet = "Continuas"
+)$VARIABLE \%>\% as.vector()
+Dominios <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Dominios")$Dominios \%>\% as.vector()
 
 # Diseño
- disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
+disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps = FALSE, datos = dataset)
 
- tabla_cruzada_total (diseño = disenio_mult,  pregunta = 'P1', dominios = Dominios, datos = dataset,
- DB_Mult = DB_Mult, tipo_pregunta = 'multiple')
+tabla_cruzada_total(
+  diseño = disenio_mult, pregunta = "P1", dominios = Dominios, datos = dataset,
+  DB_Mult = DB_Mult, tipo_pregunta = "multiple"
+)
 }
 }
 \seealso{

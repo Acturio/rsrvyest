@@ -55,29 +55,37 @@ addWorksheet(wb, "Tablas cruzadas")
 addWorksheet(wb, "Tablas cruzadas (dispersión)")
 
 # Estilos
-  bodyStyle <- createStyle(halign = 'center', border = "TopBottomLeftRight",
-  borderColour = "black", borderStyle = 'thin',
-  valign = 'center', wrapText = TRUE)
+bodyStyle <- createStyle(
+  halign = "center", border = "TopBottomLeftRight",
+  borderColour = "black", borderStyle = "thin",
+  valign = "center", wrapText = TRUE
+)
 
 # Carga de datos
- dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
- Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
-                       sheet = "Lista Preguntas")$Nombre \%>\% as.vector()
- DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",  sheet = "Múltiple") \%>\% as.data.frame()
- Lista_Cont <- read_xlsx("aux/Lista de Preguntas.xlsx",
-  sheet = "Continuas")$VARIABLE \%>\% as.vector()
- Dominios <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Dominios")$Dominios \%>\% as.vector()
+dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
+Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
+  sheet = "Lista Preguntas"
+)$Nombre \%>\% as.vector()
+DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Múltiple") \%>\% as.data.frame()
+Lista_Cont <- read_xlsx("aux/Lista de Preguntas.xlsx",
+  sheet = "Continuas"
+)$VARIABLE \%>\% as.vector()
+Dominios <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Dominios")$Dominios \%>\% as.vector()
 
- disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
+disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps = FALSE, datos = dataset)
 
- total <- total_general (diseño = disenio_mult,  pregunta = 'P1', dominio = 'General', datos = dataset,
- DB_Mult = DB_Mult, tipo_pregunta = 'multiple')
+total <- total_general(
+  diseño = disenio_mult, pregunta = "P1", dominio = "General", datos = dataset,
+  DB_Mult = DB_Mult, tipo_pregunta = "multiple"
+)
 
- formato_categorias(tabla = total, pregunta = 'P1', diseño = disenio_mult, datos = dataset,
- DB_Mult = DB_Mult, wb = wb, renglon = c(1,1), columna = 4, hojas = c(1,2), estilo_cuerpo = bodyStyle, tipo_pregunta = 'multiple')
+formato_categorias(
+  tabla = total, pregunta = "P1", diseño = disenio_mult, datos = dataset,
+  DB_Mult = DB_Mult, wb = wb, renglon = c(1, 1), columna = 4, hojas = c(1, 2), estilo_cuerpo = bodyStyle, tipo_pregunta = "multiple"
+)
 
- openxlsx::openXL(wb)
- }
+openxlsx::openXL(wb)
+}
  @import openxlsx
 }
 \seealso{

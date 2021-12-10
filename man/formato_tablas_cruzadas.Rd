@@ -35,14 +35,18 @@ Función para escribir y dar formato a las tablas cruzadas en el workbook
 \examples{
 \dontrun{
 # Estilos
- headerStyle <- createStyle( fontSize = 11, fontColour = "black", halign = "center",
- border = "TopBottom", borderColour = "black",
- borderStyle = c('thin', 'double'), textDecoration = 'bold')
+headerStyle <- createStyle(
+  fontSize = 11, fontColour = "black", halign = "center",
+  border = "TopBottom", borderColour = "black",
+  borderStyle = c("thin", "double"), textDecoration = "bold"
+)
 
- totalStyle <-  createStyle(numFmt = "###,###,###.0")
-formato_tablas_cruzadas(tabla = tabla_cruzada, wb = wb, renglon = c(1,1),
-columna = 1, hojas = c(3,4), estilo_encabezado = headerStyle,
-estilo_total = totalStyle)
+totalStyle <- createStyle(numFmt = "###,###,###.0")
+formato_tablas_cruzadas(
+  tabla = tabla_cruzada, wb = wb, renglon = c(1, 1),
+  columna = 1, hojas = c(3, 4), estilo_encabezado = headerStyle,
+  estilo_total = totalStyle
+)
 }
 }
 \seealso{

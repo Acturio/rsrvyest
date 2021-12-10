@@ -53,22 +53,28 @@ addWorksheet(wb, "Frecuencias simples")
 addWorksheet(wb, "Frecuencias simples (dispersión)")
 
 # Estilos
-headerStyle <- createStyle(fontSize = 11, fontColour = "black", halign = "center",
-border = "TopBottom", borderColour = "black",
-borderStyle = c('thin', 'double'), textDecoration = 'bold')
+headerStyle <- createStyle(
+  fontSize = 11, fontColour = "black", halign = "center",
+  border = "TopBottom", borderColour = "black",
+  borderStyle = c("thin", "double"), textDecoration = "bold"
+)
 
-totalStyle <-  createStyle(numFmt = "###,###,###.0")
+totalStyle <- createStyle(numFmt = "###,###,###.0")
 
-horizontalStyle <- createStyle(border = "bottom", borderColour = "black", borderStyle = 'thin', valign = 'center')
+horizontalStyle <- createStyle(border = "bottom", borderColour = "black", borderStyle = "thin", valign = "center")
 
-freq_simples <- frecuencias_simples(diseño = disenio_cat, datos = dataset, pregunta = 'P1',
- DB_Mult = DB_Mult, tipo_pregunta = 'categorica')
+freq_simples <- frecuencias_simples(
+  diseño = disenio_cat, datos = dataset, pregunta = "P1",
+  DB_Mult = DB_Mult, tipo_pregunta = "categorica"
+)
 
-freq_simples_format <- frecuencias_simples(tabla = freq_simples, tipo_pregunta = 'categorica')
+freq_simples_format <- frecuencias_simples(tabla = freq_simples, tipo_pregunta = "categorica")
 
-formato_frecuencias_simples(tabla = freq_simples_format , wb = wb, hojas = c(1,2),
-renglon = c(1,1), columna = 1 , estilo_encabezado = headerStyle ,
-estilo_horizontal = horizontalStyle , estilo_total = totalStyle, tipo_pregunta = 'categorica')
+formato_frecuencias_simples(
+  tabla = freq_simples_format, wb = wb, hojas = c(1, 2),
+  renglon = c(1, 1), columna = 1, estilo_encabezado = headerStyle,
+  estilo_horizontal = horizontalStyle, estilo_total = totalStyle, tipo_pregunta = "categorica"
+)
 }
 }
 \seealso{

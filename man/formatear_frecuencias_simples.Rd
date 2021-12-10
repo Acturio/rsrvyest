@@ -23,10 +23,12 @@ Se formatea la tabla de frecuencias simples según tipo de pregunta
 }
 \examples{
 \dontrun{
-freq_simples <- frecuencias_simples(diseño = disenio_cat, datos = dataset, pregunta = 'P1',
- DB_Mult = DB_Mult, tipo_pregunta = 'categorica')
+freq_simples <- frecuencias_simples(
+  diseño = disenio_cat, datos = dataset, pregunta = "P1",
+  DB_Mult = DB_Mult, tipo_pregunta = "categorica"
+)
 
-frecuencias_simples(tabla = freq_simples, tipo_pregunta = 'categorica')
+frecuencias_simples(tabla = freq_simples, tipo_pregunta = "categorica")
 }
 }
 \seealso{

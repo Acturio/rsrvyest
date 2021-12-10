@@ -33,21 +33,21 @@ Divide las métricas de las tablas cruzadas por categoría de respuestas en el c
 \dontrun{
 tabla_cruzada <- tablas_cruzadas(
   diseño = disenio_mult,
-  pregunta = 'P1',
-  dominio = 'Sexo',
+  pregunta = "P1",
+  dominio = "Sexo",
   datos = dataset,
   DB_Mult = DB_Mult,
-  tipo_pregunta = 'multiple'
-  )
+  tipo_pregunta = "multiple"
+)
 
 estilo_columnas(
   tabla = tabla_cruzada,
   wb = wb,
-  hojas = c(3,4),
+  hojas = c(3, 4),
   estilo = verticalStyle,
-  renglon = c(1,1),
-  tipo_pregunta = 'categorica'
-  )
+  renglon = c(1, 1),
+  tipo_pregunta = "categorica"
+)
 }
 }
 \seealso{

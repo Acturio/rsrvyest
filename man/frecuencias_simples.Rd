@@ -51,8 +51,10 @@ Se crean las frecuencias simples según tipo de pregunta (categórica, múltiple
 }
 \examples{
 \dontrun{
-frecuencias_simples(diseño = disenio_cat, datos = dataset, pregunta = 'P1',
- DB_Mult = DB_Mult, tipo_pregunta = 'categorica')
+frecuencias_simples(
+  diseño = disenio_cat, datos = dataset, pregunta = "P1",
+  DB_Mult = DB_Mult, tipo_pregunta = "categorica"
+)
 }
 }
 \seealso{

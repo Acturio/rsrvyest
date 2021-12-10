@@ -95,50 +95,54 @@ El estilo_encabezado hace referencia al tipo de formato que se desea conseguir p
 \examples{
 \dontrun{
 # Creación del workbook
-  organismo <- 'Ciudadanía mexicana'
-  nombre_proyecto <- 'Conacyt 2018'
-  pie <- 'Conacyt 2018'
-openxlsx::addWorksheet(wb, sheetName = 'Frecuencias simples')
-showGridLines(wb, sheet = 'Frecuencias simples', showGridLines = FALSE)
-openxlsx::addWorksheet(wb, sheetName = 'Tablas cruzadas')
-showGridLines(wb, sheet='Tablas cruzadas', showGridLines = FALSE)
-openxlsx::addWorksheet(wb, sheetName = 'Frecuencias (dispersión)')
-showGridLines(wb, sheet = 'Frecuencias (dispersión)', showGridLines = FALSE)
-openxlsx::addWorksheet(wb, sheetName = 'Tablas cruzadas (dispersión)')
-showGridLines(wb, sheet = 'Tablas cruzadas (dispersión)', showGridLines = FALSE)
+organismo <- "Ciudadanía mexicana"
+nombre_proyecto <- "Conacyt 2018"
+pie <- "Conacyt 2018"
+openxlsx::addWorksheet(wb, sheetName = "Frecuencias simples")
+showGridLines(wb, sheet = "Frecuencias simples", showGridLines = FALSE)
+openxlsx::addWorksheet(wb, sheetName = "Tablas cruzadas")
+showGridLines(wb, sheet = "Tablas cruzadas", showGridLines = FALSE)
+openxlsx::addWorksheet(wb, sheetName = "Frecuencias (dispersión)")
+showGridLines(wb, sheet = "Frecuencias (dispersión)", showGridLines = FALSE)
+openxlsx::addWorksheet(wb, sheetName = "Tablas cruzadas (dispersión)")
+showGridLines(wb, sheet = "Tablas cruzadas (dispersión)", showGridLines = FALSE)
 
 # Estilos
-  headerStyle <- createStyle(fontSize = 11, fontColour = "black", halign = "center", border = "TopBottom", borderColour = "black", borderStyle = c('thin', 'double'), textDecoration = 'bold')
-  bodyStyle <- createStyle(halign = 'center', border = "TopBottomLeftRight", borderColour = "black", borderStyle = 'thin', valign = 'center', wrapText = TRUE)
-  verticalStyle <- createStyle(border = "Right", borderColour = "black", borderStyle = 'thin', valign = 'center')
- totalStyle <-  createStyle(numFmt = "###,###,###.0")
- horizontalStyle <- createStyle(border = "bottom", borderColour = "black", borderStyle = 'thin', valign = 'center')
+headerStyle <- createStyle(fontSize = 11, fontColour = "black", halign = "center", border = "TopBottom", borderColour = "black", borderStyle = c("thin", "double"), textDecoration = "bold")
+bodyStyle <- createStyle(halign = "center", border = "TopBottomLeftRight", borderColour = "black", borderStyle = "thin", valign = "center", wrapText = TRUE)
+verticalStyle <- createStyle(border = "Right", borderColour = "black", borderStyle = "thin", valign = "center")
+totalStyle <- createStyle(numFmt = "###,###,###.0")
+horizontalStyle <- createStyle(border = "bottom", borderColour = "black", borderStyle = "thin", valign = "center")
 
 # Carga de datos
- dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
- Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
- sheet = "Lista Preguntas")$Nombre \%>\% as.vector()
-  DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",
-  sheet = "Múltiple") \%>\% as.data.frame()
+dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
+Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
+  sheet = "Lista Preguntas"
+)$Nombre \%>\% as.vector()
+DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",
+  sheet = "Múltiple"
+) \%>\% as.data.frame()
 
-#Diseño
- disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
+# Diseño
+disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps = FALSE, datos = dataset)
 
-  preguntas(pregunta = 'P1', num_pregunta = 1, datos=dataset,
+preguntas(
+  pregunta = "P1", num_pregunta = 1, datos = dataset,
   DB_Mult = DB_Mult, dominios = Dominios,
-  lista_preguntas=Lista_Preg,
-  diseño = disenio_mult, wb = wb, renglon_fs = c(1,1),
-  renglon_tc = c(1, 1), columna = 1, hojas_fs = c(1,3),
-  hojas_tc = c(2,4), fuente = nombre_proyecto, pie_tabla = pie,
-  tipo_pregunta = 'multiple',
+  lista_preguntas = Lista_Preg,
+  diseño = disenio_mult, wb = wb, renglon_fs = c(1, 1),
+  renglon_tc = c(1, 1), columna = 1, hojas_fs = c(1, 3),
+  hojas_tc = c(2, 4), fuente = nombre_proyecto, pie_tabla = pie,
+  tipo_pregunta = "multiple",
   organismo_participacion = organismo,
   estilo_encabezado = headerStyle,
   estilo_categorias = bodyStyle,
   estilo_horizontal = horizontalStyle,
   estilo_total = totalStyle,
-  frecuencias_simples = TRUE, tablas_cruzadas = TRUE)
+  frecuencias_simples = TRUE, tablas_cruzadas = TRUE
+)
 
-  openxlsx::openXL(wb)
+openxlsx::openXL(wb)
 }
 }
 \seealso{

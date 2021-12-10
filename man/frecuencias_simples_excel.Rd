@@ -82,41 +82,48 @@ addWorksheet(wb, "Frecuencias simples")
 addWorksheet(wb, "Frecuencias simples (dispersión)")
 
 # Estilos
-headerStyle <- createStyle(fontSize = 11, fontColour = "black", halign = "center",
-border = "TopBottom", borderColour = "black",
-borderStyle = c('thin', 'double'), textDecoration = 'bold')
-totalStyle <-  createStyle(numFmt = "###,###,###.0")
-horizontalStyle <- createStyle(border = "bottom",
-borderColour = "black", borderStyle = 'thin', valign = 'center')
+headerStyle <- createStyle(
+  fontSize = 11, fontColour = "black", halign = "center",
+  border = "TopBottom", borderColour = "black",
+  borderStyle = c("thin", "double"), textDecoration = "bold"
+)
+totalStyle <- createStyle(numFmt = "###,###,###.0")
+horizontalStyle <- createStyle(
+  border = "bottom",
+  borderColour = "black", borderStyle = "thin", valign = "center"
+)
 
 # Carga de datos
- dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
- Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
- sheet = "Lista Preguntas")$Nombre \%>\% as.vector()
-  DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",
-  sheet = "Múltiple") \%>\% as.data.frame()
+dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
+Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
+  sheet = "Lista Preguntas"
+)$Nombre \%>\% as.vector()
+DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",
+  sheet = "Múltiple"
+) \%>\% as.data.frame()
 
-#Diseño
- disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
+# Diseño
+disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps = FALSE, datos = dataset)
 
-frecuencias_simples_excel(pregunta = 'P1',
-num_pregunta = 1,
-datos = dataset,
-DB_Mult = DB_Mult,
-lista_preguntas = Lista_Preg,
-diseño = disenio_mult,
-wb = wb,
-renglon = c(1,1),
-columna = 1,
-hojas = c(1,2),
-tipo_pregunta = 'multiple',
-fuente =  'Conacyt 2018',
-pie_tabla = 'Conacyt 2018',
-organismo_participacion = 'Ciudadanía mexicana',
-logo_path = 'img/logo_unam.png',
-estilo_encabezado = headerStyle,
-estilo_horizontal = horizontalStyle,
-estilo_total = totalStyle
+frecuencias_simples_excel(
+  pregunta = "P1",
+  num_pregunta = 1,
+  datos = dataset,
+  DB_Mult = DB_Mult,
+  lista_preguntas = Lista_Preg,
+  diseño = disenio_mult,
+  wb = wb,
+  renglon = c(1, 1),
+  columna = 1,
+  hojas = c(1, 2),
+  tipo_pregunta = "multiple",
+  fuente = "Conacyt 2018",
+  pie_tabla = "Conacyt 2018",
+  organismo_participacion = "Ciudadanía mexicana",
+  logo_path = "logo_unam.png",
+  estilo_encabezado = headerStyle,
+  estilo_horizontal = horizontalStyle,
+  estilo_total = totalStyle
 )
 }
 }

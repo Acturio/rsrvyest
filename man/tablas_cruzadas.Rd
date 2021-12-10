@@ -54,28 +54,26 @@ Se crea la tabla cruzada según dominio tipo de pregunta (categórica, múltiple
 }
 \examples{
 \dontrun{
- dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
- Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
-                       sheet = "Lista Preguntas")$Nombre \%>\% as.vector()
- DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",  sheet = "Múltiple") \%>\% as.data.frame()
- Lista_Cont <- read_xlsx("aux/Lista de Preguntas.xlsx",
-  sheet = "Continuas")$VARIABLE \%>\% as.vector()
- Dominios <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Dominios")$Dominios \%>\% as.vector()
+dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
+Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
+  sheet = "Lista Preguntas"
+)$Nombre \%>\% as.vector()
+DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Múltiple") \%>\% as.data.frame()
+Lista_Cont <- read_xlsx("aux/Lista de Preguntas.xlsx",
+  sheet = "Continuas"
+)$VARIABLE \%>\% as.vector()
+Dominios <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Dominios")$Dominios \%>\% as.vector()
 
- disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
+disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps = FALSE, datos = dataset)
 
- tablas_cruzadas(diseño = disenio_mult, pregunta = 'P1', dominio = 'Sexo', datos = dataset,
- DB_Mult = DB_Mult, tipo_pregunta = 'multiple')
- }
- @import srvyr
- @import dplyr
- @import tidyr
- @import tibble
- @rawNamespace import(caret, except = lift)
- @export
+tablas_cruzadas(
+  diseño = disenio_mult, pregunta = "P1", dominio = "Sexo", datos = dataset,
+  DB_Mult = DB_Mult, tipo_pregunta = "multiple"
+)
+}
 }
 \seealso{
-\code{\link{survey_mean}} \code{\link{srvyr::group_by}}
+\code{\link{survey_mean}} \code{\link{group_by}}
 }
 \author{
 Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
