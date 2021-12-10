@@ -29,7 +29,7 @@
 #' @param tipo_pregunta Tipo de pregunta: 'categorica', 'multiple', 'continua'
 #' @return Tabla tipo tibble con las estadísticas especificadas en el parámetro estadisticas por respuestas pertenecientes a la pregunta y al dominio especificados
 #' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
-#' @seealso \code{\link{survey_mean}} \code{\link{srvyr::group_by}}
+#' @seealso \code{\link{survey_mean}} \code{\link{group_by}}
 #' @examples \dontrun{
 #' dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
 #' Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
@@ -48,12 +48,12 @@
 #'   DB_Mult = DB_Mult, tipo_pregunta = "multiple"
 #' )
 #' }
-#'  @import srvyr
-#'  @import dplyr
-#'  @import tidyr
-#'  @import tibble
-#'  @rawNamespace import(caret, except = lift)
-#'  @export
+#' @import srvyr
+#' @import dplyr
+#' @import tidyr
+#' @import tibble
+#' @rawNamespace import(caret, except = lift)
+#' @export
 tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
                             na.rm = TRUE, vartype = c("ci", "se", "var", "cv"),
                             cuantiles = c(0, 0.25, 0.5, 0.75, 1),
