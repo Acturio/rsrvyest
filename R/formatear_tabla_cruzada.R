@@ -66,7 +66,7 @@ formatear_tabla_cruzada <- function(pregunta, datos, dominio, tabla, DB_Mult,
 
     # Orden similar a las categorias
 
-    tabla %<>% select(Dominio, Categorias, contains(categorias))
+    tabla %<>% select(Dominio, Categorias, starts_with(categorias))
 
     # Multiplicar por 100 y 10,000
 
@@ -88,7 +88,7 @@ formatear_tabla_cruzada <- function(pregunta, datos, dominio, tabla, DB_Mult,
         ))
       )
 
-    tabla %<>% select(Dominio, Categorias, Total, contains(categorias))
+    tabla %<>% select(Dominio, Categorias, Total, starts_with(categorias))
 
     # Primera tabla
 
@@ -99,7 +99,7 @@ formatear_tabla_cruzada <- function(pregunta, datos, dominio, tabla, DB_Mult,
         Total,
         ends_with(c("_prop", "_prop_low", "_prop_upp"))
       ) %>%
-      select(Dominio, Categorias, Total, contains(categorias)) %>%
+      select(Dominio, Categorias, Total, starts_with(categorias)) %>%
       dplyr::ungroup()
 
     # Segunda tabla
@@ -111,7 +111,7 @@ formatear_tabla_cruzada <- function(pregunta, datos, dominio, tabla, DB_Mult,
         Total,
         ends_with(c("_prop_se", "_prop_cv", "_prop_var", "prop_deff"))
       ) %>%
-      select(Dominio, Categorias, Total, contains(categorias)) %>%
+      select(Dominio, Categorias, Total, starts_with(categorias)) %>%
       dplyr::ungroup()
 
     names(tabla_final_1) <- nombres1
