@@ -67,8 +67,9 @@ total_general <- function(diseño, pregunta, DB_Mult, datos, dominio = "General"
                           metodo_prop = "likelihood", DEFF = TRUE) {
   if (tipo_pregunta == "categorica") {
     estadisticas <- {{ diseño }} %>%
+      filter(!is.na(!!sym(pregunta))) %>%
       srvyr::group_by(!!sym(pregunta)) %>%
-      srvyr::summarize(
+      srvyr::summarise(
         prop = survey_mean(
           na.rm = na.rm,
           vartype = vartype,
