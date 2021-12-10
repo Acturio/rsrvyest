@@ -24,7 +24,7 @@
 #' @param semilla Número utilizado para inicializar la generación números aleatorios.
 #' @return Objeto del tipo tbl_svy
 #' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
-#' @seealso \code{\link{as_survey_design, as_survey_rep}}
+#' @seealso \code{\link{as_survey_design}} \code{\link{as_survey_rep}}
 #' @examples \dontrun{
 #' disenio(
 #'   id = id_estrato, estrato = estrato, pesos = ponderador, datos = dataset,
