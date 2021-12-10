@@ -31,19 +31,23 @@
 #' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
 #' @seealso \code{\link{survey_mean}} \code{\link{srvyr::group_by}}
 #' @examples \dontrun{
-#'  dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
-#'  Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
-#'                        sheet = "Lista Preguntas")$Nombre %>% as.vector()
-#'  DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",  sheet = "Múltiple") %>% as.data.frame()
-#'  Lista_Cont <- read_xlsx("aux/Lista de Preguntas.xlsx",
-#'   sheet = "Continuas")$VARIABLE %>% as.vector()
-#'  Dominios <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Dominios")$Dominios %>% as.vector()
+#' dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
+#' Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
+#'   sheet = "Lista Preguntas"
+#' )$Nombre %>% as.vector()
+#' DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Múltiple") %>% as.data.frame()
+#' Lista_Cont <- read_xlsx("aux/Lista de Preguntas.xlsx",
+#'   sheet = "Continuas"
+#' )$VARIABLE %>% as.vector()
+#' Dominios <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Dominios")$Dominios %>% as.vector()
 #'
-#'  disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
+#' disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps = FALSE, datos = dataset)
 #'
-#'  tablas_cruzadas(diseño = disenio_mult, pregunta = 'P1', dominio = 'Sexo', datos = dataset,
-#'  DB_Mult = DB_Mult, tipo_pregunta = 'multiple')
-#'  }
+#' tablas_cruzadas(
+#'   diseño = disenio_mult, pregunta = "P1", dominio = "Sexo", datos = dataset,
+#'   DB_Mult = DB_Mult, tipo_pregunta = "multiple"
+#' )
+#' }
 #'  @import srvyr
 #'  @import dplyr
 #'  @import tidyr
@@ -51,14 +55,12 @@
 #'  @rawNamespace import(caret, except = lift)
 #'  @export
 tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
-                            na.rm = TRUE, vartype = c("ci","se","var","cv"),
-                            cuantiles = c(0,0.25, 0.5, 0.75,1),
+                            na.rm = TRUE, vartype = c("ci", "se", "var", "cv"),
+                            cuantiles = c(0, 0.25, 0.5, 0.75, 1),
                             significancia = 0.95, proporcion = FALSE,
                             metodo_prop = "likelihood", DEFF = TRUE,
-                            tipo_pregunta = 'categorica'){
-
-  if (tipo_pregunta == 'categorica'){
-
+                            tipo_pregunta = "categorica") {
+  if (tipo_pregunta == "categorica") {
     estadisticas <- diseño %>%
       filter(!is.na(!!sym(pregunta))) %>%
       srvyr::group_by(!!sym(dominio), !!sym(pregunta), .drop = TRUE) %>%
@@ -69,15 +71,18 @@ tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
           level = significancia,
           proportion = proporcion,
           prop_method = metodo_prop,
-          deff = DEFF),
+          deff = DEFF
+        ),
         total = round(survey_total(
           na.rm = na.rm
         ), 0)
-      )%>%
-      mutate(prop_low = ifelse(prop_low < 0, 0, prop_low),
-             prop_upp = ifelse(prop_upp > 1, 1, prop_upp),
-             #Dominios = dominio,
-             !!sym(dominio) := str_trim(!!sym(dominio), side = 'both'))
+      ) %>%
+      mutate(
+        prop_low = ifelse(prop_low < 0, 0, prop_low),
+        prop_upp = ifelse(prop_upp > 1, 1, prop_upp),
+        # Dominios = dominio,
+        !!sym(dominio) := str_trim(!!sym(dominio), side = "both")
+      )
 
     # Transformar estadísticas a wide
 
@@ -100,15 +105,15 @@ tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
           prop_se,
           prop_cv,
           prop_var,
-          prop_deff),
-        names_glue = sprintf("{%s}_{.value}", {{pregunta}})) %>%
+          prop_deff
+        ),
+        names_glue = sprintf("{%s}_{.value}", {{ pregunta }})
+      ) %>%
       dplyr::rename(Categorias := !!sym(dominio)) %>%
       select(Dominio, Categorias, everything())
-
   }
 
-  if (tipo_pregunta == 'continua'){
-
+  if (tipo_pregunta == "continua") {
     cruce <- diseño %>%
       filter(!is.na(!!sym(pregunta))) %>%
       srvyr::group_by(!!sym(dominio)) %>%
@@ -134,18 +139,17 @@ tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
 
     cruce %<>%
       mutate(!!sym(dominio) := str_trim(!!sym(dominio), side = "both")) %>%
-      dplyr::rename('Categorias' = !!sym(dominio))
+      dplyr::rename("Categorias" = !!sym(dominio))
 
-    tabla_cruzada <- add_column(cruce, 'Dominio' = dominio, .before = "Categorias")
+    tabla_cruzada <- add_column(cruce, "Dominio" = dominio, .before = "Categorias")
 
     tabla_cruzada %<>% mutate(
       prop_cv = ifelse(is.nan(prop_cv), NA, prop_cv),
       prop_deff = ifelse(is.nan(prop_deff), NA, prop_deff)
     )
-
   }
 
-  if (tipo_pregunta == 'multiple'){
+  if (tipo_pregunta == "multiple") {
 
     ## Onehot
     ps <- DB_Mult %>%
@@ -163,7 +167,7 @@ tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
 
     df <- df %>% mutate(ID = row.names(df))
 
-    one_hot <- caret::dummyVars(str_c('~ ',  str_c(ps, collapse = ' + ')), data=df)
+    one_hot <- caret::dummyVars(str_c("~ ", str_c(ps, collapse = " + ")), data = df)
     one_hot <- data.frame(predict(one_hot, newdata = df))
     missings <- one_hot %>% pull(1)
 
@@ -171,58 +175,66 @@ tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
 
     one_hot[is.na(one_hot)] <- 0
 
-    menciones_juntas <- matrix(NA, nrow(df), ncol=numero_categorias) %>%
+    menciones_juntas <- matrix(NA, nrow(df), ncol = numero_categorias) %>%
       as_tibble()
     names(menciones_juntas) <- categorias
 
     dum <- NULL
-    for(j in 1:numero_categorias){
-      dum <- one_hot[,j]
-      for (i in 1:(length(ps)-1)) {
-        dum <- dum + one_hot[,j+i*numero_categorias]
+    for (j in 1:numero_categorias) {
+      dum <- one_hot[, j]
+      for (i in 1:(length(ps) - 1)) {
+        dum <- dum + one_hot[, j + i * numero_categorias]
       }
-      menciones_juntas[,j] <- dum
+      menciones_juntas[, j] <- dum
     }
     menciones_juntas[menciones_juntas > 1] <- 1
 
-    menciones_vector <- menciones_juntas %>% names() %>% as_vector()
+    menciones_vector <- menciones_juntas %>%
+      names() %>%
+      as_vector()
 
-    for (i in menciones_vector){
+    for (i in menciones_vector) {
       variable <- menciones_juntas %>%
         pull(!!sym(i))
 
       diseño %<>% srvyr::mutate(!!sym(i) := if_else(is.na(aux_missing), aux_missing, variable))
     }
 
-    tabla_cruzada = tibble()
+    tabla_cruzada <- tibble()
 
-    for (categ in categorias){
-      Dominios_tabla <- {{diseño}} %>%
+    for (categ in categorias) {
+      Dominios_tabla <- {{ diseño }} %>%
         filter(!is.na(!!sym(categ))) %>%
         srvyr::group_by(!!sym(dominio), .drop = TRUE) %>%
         srvyr::summarize(
           prop = survey_mean(!!sym(categ),
-                             na.rm = na.rm,
-                             vartype = vartype,
-                             level = significancia,
-                             proportion = proporcion,
-                             prop_method = metodo_prop,
-                             deff = DEFF),
+            na.rm = na.rm,
+            vartype = vartype,
+            level = significancia,
+            proportion = proporcion,
+            prop_method = metodo_prop,
+            deff = DEFF
+          ),
           total = round(survey_total(!!sym(categ),
-                                     na.rm = TRUE
-          ),0)) %>%
-        mutate(prop_low = ifelse(prop_low < 0, 0, prop_low),
-               prop_upp = ifelse(prop_upp > 1, 1, prop_upp),
-               Dominio = dominio,
-               Categorias := str_trim(!!sym(dominio), side = 'both'))
+            na.rm = TRUE
+          ), 0)
+        ) %>%
+        mutate(
+          prop_low = ifelse(prop_low < 0, 0, prop_low),
+          prop_upp = ifelse(prop_upp > 1, 1, prop_upp),
+          Dominio = dominio,
+          Categorias := str_trim(!!sym(dominio), side = "both")
+        )
 
       tabla_cruzada <- rbind(tabla_cruzada, Dominios_tabla)
     }
 
-    tabla_cruzada %<>% select(Dominio, Categorias, total,
-                              total_se, prop,prop_se,
-                              prop_low, prop_upp,
-                              prop_cv, prop_var, prop_deff)
+    tabla_cruzada %<>% select(
+      Dominio, Categorias, total,
+      total_se, prop, prop_se,
+      prop_low, prop_upp,
+      prop_cv, prop_var, prop_deff
+    )
 
     tabla_cruzada %<>% mutate(
       prop_cv = ifelse(is.nan(prop_cv), NA, prop_cv),

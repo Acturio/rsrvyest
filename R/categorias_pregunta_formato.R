@@ -20,36 +20,38 @@
 #' @return si metricas = FALSE se regresa un vector con las categorías de las respuestas y entre cada categoría se encuentran 3 NA's
 #' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
 #' @examples \dontrun{
-#'  # Carga de datos
-#'  dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
-#'  Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
-#'  sheet = "Lista Preguntas")$Nombre %>% as.vector()
-#'   DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",
-#'   sheet = "Múltiple") %>% as.data.frame()
+#' # Carga de datos
+#' dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
+#' Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
+#'   sheet = "Lista Preguntas"
+#' )$Nombre %>% as.vector()
+#' DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",
+#'   sheet = "Múltiple"
+#' ) %>% as.data.frame()
 #'
-#' #Diseño
-#'  disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
+#' # Diseño
+#' disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps = FALSE, datos = dataset)
 #'
-#' categorias_pregunta_formato(pregunta = 'P1', diseño = disenio_mult, datos = dataset, DB_Mult = DB_Mult, tipo_pregunta = 'multiple', metricas = TRUE)
+#' categorias_pregunta_formato(pregunta = "P1", diseño = disenio_mult, datos = dataset, DB_Mult = DB_Mult, tipo_pregunta = "multiple", metricas = TRUE)
 #' }
 #' @import dplyr
 #' @importFrom magrittr '%<>%'
 #' @export
 
 categorias_pregunta_formato <- function(pregunta, diseño, datos, DB_Mult,
-                                        tipo_pregunta = 'categorica',
-                                        metricas = TRUE){
-
-  if(tipo_pregunta == 'categorica'){
-
+                                        tipo_pregunta = "categorica",
+                                        metricas = TRUE) {
+  if (tipo_pregunta == "categorica") {
     categorias <- datos %>%
       select(!!sym(pregunta)) %>%
-      pull()%>%
+      pull() %>%
       levels() %>%
-      str_trim(side = 'both')
+      str_trim(side = "both")
 
-    est <- frecuencias_simples(diseño = diseño, datos = datos, pregunta = pregunta,
-                               DB_Mult = DB_Mult, tipo_pregunta = 'categorica')
+    est <- frecuencias_simples(
+      diseño = diseño, datos = datos, pregunta = pregunta,
+      DB_Mult = DB_Mult, tipo_pregunta = "categorica"
+    )
 
 
     categorias_tabla <- est %>%
@@ -67,27 +69,30 @@ categorias_pregunta_formato <- function(pregunta, diseño, datos, DB_Mult,
         b = NA
       )
 
-    for (i in 1:nrow(vector)){
-      categs <- c(categs, vector[i,]) %>% unlist() %>% t() %>% as_tibble()
+    for (i in 1:nrow(vector)) {
+      categs <- c(categs, vector[i, ]) %>%
+        unlist() %>%
+        t() %>%
+        as_tibble()
     }
 
 
-    if (metricas){
-
+    if (metricas) {
       categs <- NULL
 
       vector %<>%
         mutate(c = NA)
 
-      for (i in 1:nrow(vector)){
-        categs <- c(categs, vector[i,]) %>% unlist() %>% t() %>% as_tibble()
+      for (i in 1:nrow(vector)) {
+        categs <- c(categs, vector[i, ]) %>%
+          unlist() %>%
+          t() %>%
+          as_tibble()
       }
-
     }
   }
 
-  if(tipo_pregunta == 'multiple'){
-
+  if (tipo_pregunta == "multiple") {
     categs <- NULL
 
     ps <- DB_Mult %>%
@@ -99,31 +104,34 @@ categorias_pregunta_formato <- function(pregunta, diseño, datos, DB_Mult,
 
     categorias <- df %>%
       pull() %>%
-      levels()%>%
+      levels() %>%
       as_tibble() %>%
       mutate(
         a = NA,
         b = NA
       )
 
-    for (i in 1:nrow(categorias)){
-      categs <- c(categs, categorias[i,]) %>% unlist() %>% t() %>% as_tibble()
+    for (i in 1:nrow(categorias)) {
+      categs <- c(categs, categorias[i, ]) %>%
+        unlist() %>%
+        t() %>%
+        as_tibble()
     }
 
-    if (metricas){
-
+    if (metricas) {
       categs <- NULL
 
       categorias %<>%
         mutate(c = NA)
 
-      for (i in 1:nrow(categorias)){
-        categs <- c(categs, categorias[i,]) %>% unlist() %>% t() %>% as_tibble()
+      for (i in 1:nrow(categorias)) {
+        categs <- c(categs, categorias[i, ]) %>%
+          unlist() %>%
+          t() %>%
+          as_tibble()
       }
-
     }
   }
 
   return(categs)
-
 }

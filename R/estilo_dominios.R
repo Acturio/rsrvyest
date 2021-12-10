@@ -26,45 +26,54 @@
 #' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
 #' @seealso \code{\link{survey_mean}}
 #' @examples \dontrun{
-#' estilo_dominios(tabla = tabla_cruzada, wb = wb, columna = 1, hojas = c(3,4),
-#' dominios = dominios, renglon = c(1,1), estilo_dominios = horizontalStyle,
-#' estilo_merge_dominios = bodyStyle, tipo_pregunta = 'categorica')
+#' estilo_dominios(
+#'   tabla = tabla_cruzada, wb = wb, columna = 1, hojas = c(3, 4),
+#'   dominios = dominios, renglon = c(1, 1), estilo_dominios = horizontalStyle,
+#'   estilo_merge_dominios = bodyStyle, tipo_pregunta = "categorica"
+#' )
 #' }
 #' @export
-estilo_dominios <- function(tabla, wb, columna = 1, hojas = c(3,4), dominios,
-                            renglon = c(1,1), estilo_dominios,
-                            estilo_merge_dominios, tipo_pregunta){
+estilo_dominios <- function(tabla, wb, columna = 1, hojas = c(3, 4), dominios,
+                            renglon = c(1, 1), estilo_dominios,
+                            estilo_merge_dominios, tipo_pregunta) {
 
   # Renglón donde se empieza a escribir la tabla cruzada + 1 para linea horizontal nacional
 
   r <- renglon[1] + 1
 
-  dominios_general <- c('General', dominios)
+  dominios_general <- c("General", dominios)
 
   for (d in dominios_general) {
-    tope <- tabla[[1]] %>% select(Dominio) %>% filter(Dominio == d) %>% nrow()
+    tope <- tabla[[1]] %>%
+      select(Dominio) %>%
+      filter(Dominio == d) %>%
+      nrow()
 
-    for (i in hojas){
-      mergeCells(wb = wb, sheet = i, cols = 1, rows = r:(r+tope-1))
-      addStyle(wb = wb, sheet = i, cols = 1, rows = r:(r+tope-1),
-               style = estilo_merge_dominios, stack = TRUE, gridExpand = TRUE)
+    for (i in hojas) {
+      mergeCells(wb = wb, sheet = i, cols = 1, rows = r:(r + tope - 1))
+      addStyle(
+        wb = wb, sheet = i, cols = 1, rows = r:(r + tope - 1),
+        style = estilo_merge_dominios, stack = TRUE, gridExpand = TRUE
+      )
     }
 
-    addStyle(wb = wb, sheet = hojas[1], cols = 1:ncol(tabla[[1]]), rows = (r+tope-1),
-             style = estilo_dominios, stack = TRUE, gridExpand = TRUE)
+    addStyle(
+      wb = wb, sheet = hojas[1], cols = 1:ncol(tabla[[1]]), rows = (r + tope - 1),
+      style = estilo_dominios, stack = TRUE, gridExpand = TRUE
+    )
 
-    addStyle(wb = wb, sheet = hojas[2], cols = 1:ncol(tabla[[2]]), rows = (r+tope-1),
-             style = estilo_dominios, stack = TRUE, gridExpand = TRUE)
+    addStyle(
+      wb = wb, sheet = hojas[2], cols = 1:ncol(tabla[[2]]), rows = (r + tope - 1),
+      style = estilo_dominios, stack = TRUE, gridExpand = TRUE
+    )
 
     r <- r + tope
   }
 
   # Merge primeras tres columnas
 
-  if (tipo_pregunta == 'categorica' || tipo_pregunta == 'multiple'){
-
+  if (tipo_pregunta == "categorica" || tipo_pregunta == "multiple") {
     mergeCells(wb = wb, sheet = hojas[1], cols = 1:3, rows = (renglon[1] - 1))
     mergeCells(wb = wb, sheet = hojas[2], cols = 1:3, rows = (renglon[2] - 1))
   }
-
 }

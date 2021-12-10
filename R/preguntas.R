@@ -58,110 +58,103 @@
 #' @seealso \code{\link{openxlsx}}
 #' @examples \dontrun{
 #' # Creación del workbook
-#'   organismo <- 'Ciudadanía mexicana'
-#'   nombre_proyecto <- 'Conacyt 2018'
-#'   pie <- 'Conacyt 2018'
-
-#' openxlsx::addWorksheet(wb, sheetName = 'Frecuencias simples')
-#' showGridLines(wb, sheet = 'Frecuencias simples', showGridLines = FALSE)
-
-#' openxlsx::addWorksheet(wb, sheetName = 'Tablas cruzadas')
-#' showGridLines(wb, sheet='Tablas cruzadas', showGridLines = FALSE)
-
-#' openxlsx::addWorksheet(wb, sheetName = 'Frecuencias (dispersión)')
-#' showGridLines(wb, sheet = 'Frecuencias (dispersión)', showGridLines = FALSE)
-
-#' openxlsx::addWorksheet(wb, sheetName = 'Tablas cruzadas (dispersión)')
-#' showGridLines(wb, sheet = 'Tablas cruzadas (dispersión)', showGridLines = FALSE)
-
+#' organismo <- "Ciudadanía mexicana"
+#' nombre_proyecto <- "Conacyt 2018"
+#' pie <- "Conacyt 2018"
+#' openxlsx::addWorksheet(wb, sheetName = "Frecuencias simples")
+#' showGridLines(wb, sheet = "Frecuencias simples", showGridLines = FALSE)
+#' openxlsx::addWorksheet(wb, sheetName = "Tablas cruzadas")
+#' showGridLines(wb, sheet = "Tablas cruzadas", showGridLines = FALSE)
+#' openxlsx::addWorksheet(wb, sheetName = "Frecuencias (dispersión)")
+#' showGridLines(wb, sheet = "Frecuencias (dispersión)", showGridLines = FALSE)
+#' openxlsx::addWorksheet(wb, sheetName = "Tablas cruzadas (dispersión)")
+#' showGridLines(wb, sheet = "Tablas cruzadas (dispersión)", showGridLines = FALSE)
 #'
 #' # Estilos
-#'   headerStyle <- createStyle(fontSize = 11, fontColour = "black", halign = "center", border = "TopBottom", borderColour = "black", borderStyle = c('thin', 'double'), textDecoration = 'bold')
-#'   bodyStyle <- createStyle(halign = 'center', border = "TopBottomLeftRight", borderColour = "black", borderStyle = 'thin', valign = 'center', wrapText = TRUE)
-
-#'   verticalStyle <- createStyle(border = "Right", borderColour = "black", borderStyle = 'thin', valign = 'center')
-
-#'  totalStyle <-  createStyle(numFmt = "###,###,###.0")
-
-#'  horizontalStyle <- createStyle(border = "bottom", borderColour = "black", borderStyle = 'thin', valign = 'center')
+#' headerStyle <- createStyle(fontSize = 11, fontColour = "black", halign = "center", border = "TopBottom", borderColour = "black", borderStyle = c("thin", "double"), textDecoration = "bold")
+#' bodyStyle <- createStyle(halign = "center", border = "TopBottomLeftRight", borderColour = "black", borderStyle = "thin", valign = "center", wrapText = TRUE)
+#' verticalStyle <- createStyle(border = "Right", borderColour = "black", borderStyle = "thin", valign = "center")
+#' totalStyle <- createStyle(numFmt = "###,###,###.0")
+#' horizontalStyle <- createStyle(border = "bottom", borderColour = "black", borderStyle = "thin", valign = "center")
 #'
 #' # Carga de datos
-#'  dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
-#'  Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
-#'  sheet = "Lista Preguntas")$Nombre %>% as.vector()
-#'   DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",
-#'   sheet = "Múltiple") %>% as.data.frame()
+#' dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
+#' Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
+#'   sheet = "Lista Preguntas"
+#' )$Nombre %>% as.vector()
+#' DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",
+#'   sheet = "Múltiple"
+#' ) %>% as.data.frame()
 #'
-#' #Diseño
-#'  disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
+#' # Diseño
+#' disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps = FALSE, datos = dataset)
 #'
-#'   preguntas(pregunta = 'P1', num_pregunta = 1, datos=dataset,
+#' preguntas(
+#'   pregunta = "P1", num_pregunta = 1, datos = dataset,
 #'   DB_Mult = DB_Mult, dominios = Dominios,
-#'   lista_preguntas=Lista_Preg,
-#'   diseño = disenio_mult, wb = wb, renglon_fs = c(1,1),
-#'   renglon_tc = c(1, 1), columna = 1, hojas_fs = c(1,3),
-#'   hojas_tc = c(2,4), fuente = nombre_proyecto, pie_tabla = pie,
-#'   tipo_pregunta = 'multiple',
+#'   lista_preguntas = Lista_Preg,
+#'   diseño = disenio_mult, wb = wb, renglon_fs = c(1, 1),
+#'   renglon_tc = c(1, 1), columna = 1, hojas_fs = c(1, 3),
+#'   hojas_tc = c(2, 4), fuente = nombre_proyecto, pie_tabla = pie,
+#'   tipo_pregunta = "multiple",
 #'   organismo_participacion = organismo,
 #'   estilo_encabezado = headerStyle,
 #'   estilo_categorias = bodyStyle,
 #'   estilo_horizontal = horizontalStyle,
 #'   estilo_total = totalStyle,
-#'   frecuencias_simples = TRUE, tablas_cruzadas = TRUE)
+#'   frecuencias_simples = TRUE, tablas_cruzadas = TRUE
+#' )
 #'
-#'   openxlsx::openXL(wb)
+#' openxlsx::openXL(wb)
 #' }
 #' @export
-preguntas <- function(
-  pregunta, num_pregunta, datos, DB_Mult, dominios, lista_preguntas, diseño, wb,
-  renglon_fs, renglon_tc, columna = 1, hojas_fs = c(1,2), hojas_tc = c(3,4),
-  fuente = 'fuente', pie_tabla, organismo_participacion = 'organismo',
-  logo = NULL, tipo_pregunta, estilo_encabezado = headerStyle,
-  estilo_categorias = bodyStyle, estilo_horizontal = horizontalStyle,
-  estilo_total = totalStyle, frecuencias_simples = TRUE, tablas_cruzadas = TRUE){
-
-
-  if(frecuencias_simples){
-
-    fs_rows <- frecuencias_simples_excel(pregunta = pregunta,
-                                         num_pregunta = num_pregunta,
-                                         datos = datos, DB_Mult = DB_Mult,
-                                         lista_preguntas = lista_preguntas,
-                                         diseño = diseño, wb = wb,
-                                         renglon = renglon_fs,
-                                         columna = columna, hojas = hojas_fs,
-                                         tipo_pregunta = tipo_pregunta,
-                                         fuente = fuente, pie_tabla = pie_tabla,
-                                         organismo_participacion = organismo_participacion,
-                                         logo_path = logo,
-                                         estilo_encabezado = estilo_encabezado,
-                                         estilo_horizontal = estilo_horizontal,
-                                         estilo_total = estilo_total)
-
-  } else{
+preguntas <- function(pregunta, num_pregunta, datos, DB_Mult, dominios, lista_preguntas, diseño, wb,
+                      renglon_fs, renglon_tc, columna = 1, hojas_fs = c(1, 2), hojas_tc = c(3, 4),
+                      fuente = "fuente", pie_tabla, organismo_participacion = "organismo",
+                      logo = NULL, tipo_pregunta, estilo_encabezado = headerStyle,
+                      estilo_categorias = bodyStyle, estilo_horizontal = horizontalStyle,
+                      estilo_total = totalStyle, frecuencias_simples = TRUE, tablas_cruzadas = TRUE) {
+  if (frecuencias_simples) {
+    fs_rows <- frecuencias_simples_excel(
+      pregunta = pregunta,
+      num_pregunta = num_pregunta,
+      datos = datos, DB_Mult = DB_Mult,
+      lista_preguntas = lista_preguntas,
+      diseño = diseño, wb = wb,
+      renglon = renglon_fs,
+      columna = columna, hojas = hojas_fs,
+      tipo_pregunta = tipo_pregunta,
+      fuente = fuente, pie_tabla = pie_tabla,
+      organismo_participacion = organismo_participacion,
+      logo_path = logo,
+      estilo_encabezado = estilo_encabezado,
+      estilo_horizontal = estilo_horizontal,
+      estilo_total = estilo_total
+    )
+  } else {
     fs_rows <- tibble()
   }
 
-  if(tablas_cruzadas){
-
-    tc_rows <- tablas_cruzadas_excel(pregunta = pregunta,
-                                     num_pregunta = num_pregunta,
-                                     dominios = dominios, datos = datos,
-                                     DB_Mult = DB_Mult,
-                                     lista_preguntas = lista_preguntas,
-                                     diseño = diseño, wb = wb,
-                                     renglon = renglon_tc, columna = columna,
-                                     hojas = hojas_tc,
-                                     tipo_pregunta = tipo_pregunta,
-                                     fuente = fuente, pie_tabla = pie_tabla,
-                                     organismo_participacion = organismo_participacion,
-                                     logo_path = logo,
-                                     estilo_encabezado = estilo_encabezado,
-                                     estilo_categorias = estilo_categorias,
-                                     estilo_horizontal = estilo_horizontal,
-                                     estilo_total = estilo_total)
-
-  }else{
+  if (tablas_cruzadas) {
+    tc_rows <- tablas_cruzadas_excel(
+      pregunta = pregunta,
+      num_pregunta = num_pregunta,
+      dominios = dominios, datos = datos,
+      DB_Mult = DB_Mult,
+      lista_preguntas = lista_preguntas,
+      diseño = diseño, wb = wb,
+      renglon = renglon_tc, columna = columna,
+      hojas = hojas_tc,
+      tipo_pregunta = tipo_pregunta,
+      fuente = fuente, pie_tabla = pie_tabla,
+      organismo_participacion = organismo_participacion,
+      logo_path = logo,
+      estilo_encabezado = estilo_encabezado,
+      estilo_categorias = estilo_categorias,
+      estilo_horizontal = estilo_horizontal,
+      estilo_total = estilo_total
+    )
+  } else {
     tc_rows <- tibble()
   }
 

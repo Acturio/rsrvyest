@@ -23,80 +23,87 @@
 #' @examples \dontrun{
 #' tabla_cruzada <- tablas_cruzadas(
 #'   diseño = disenio_mult,
-#'   pregunta = 'P1',
-#'   dominio = 'Sexo',
+#'   pregunta = "P1",
+#'   dominio = "Sexo",
 #'   datos = dataset,
 #'   DB_Mult = DB_Mult,
-#'   tipo_pregunta = 'multiple'
-#'   )
+#'   tipo_pregunta = "multiple"
+#' )
 #'
 #' estilo_columnas(
 #'   tabla = tabla_cruzada,
 #'   wb = wb,
-#'   hojas = c(3,4),
+#'   hojas = c(3, 4),
 #'   estilo = verticalStyle,
-#'   renglon = c(1,1),
-#'   tipo_pregunta = 'categorica'
-#'   )
+#'   renglon = c(1, 1),
+#'   tipo_pregunta = "categorica"
+#' )
 #' }
 #' @import openxlsx
 #' @export
-estilo_columnas <- function(tabla, wb, hojas = c(3,4), estilo,
-                            renglon = c(1,1), tipo_pregunta){
+estilo_columnas <- function(tabla, wb, hojas = c(3, 4), estilo,
+                            renglon = c(1, 1), tipo_pregunta) {
+  if (tipo_pregunta == "categorica" || tipo_pregunta == "multiple") {
+    secuencia_1_a <- c(-1, 0, 1)
 
-  if (tipo_pregunta == 'categorica' || tipo_pregunta == 'multiple'){
+    secuencia_1_b <- seq(4, ncol(tabla[[1]]), by = 3)
 
-    secuencia_1_a<- c(-1, 0, 1)
-
-    secuencia_1_b <- seq(4, ncol(tabla[[1]]), by=3)
-
-    for (k in secuencia_1_a){
-      addStyle(wb = wb, sheet = hojas[1], cols = (k+2),
-               rows = (renglon[1] + 2):(renglon[1] + 2 + nrow(tabla[[1]])),
-               style = estilo, stack = TRUE, gridExpand = TRUE)
+    for (k in secuencia_1_a) {
+      addStyle(
+        wb = wb, sheet = hojas[1], cols = (k + 2),
+        rows = (renglon[1] + 2):(renglon[1] + 2 + nrow(tabla[[1]])),
+        style = estilo, stack = TRUE, gridExpand = TRUE
+      )
     }
 
-    for (k in secuencia_1_b){
-      addStyle(wb = wb, sheet = hojas[1], cols = (k+2),
-               rows = (renglon[1] + 1):(renglon[1] + 2 + nrow(tabla[[1]])),
-               style = estilo, stack = TRUE, gridExpand = TRUE)
+    for (k in secuencia_1_b) {
+      addStyle(
+        wb = wb, sheet = hojas[1], cols = (k + 2),
+        rows = (renglon[1] + 1):(renglon[1] + 2 + nrow(tabla[[1]])),
+        style = estilo, stack = TRUE, gridExpand = TRUE
+      )
     }
     secuencia_2_a <- c(-2, -1, 0)
 
-    secuencia_2_b <- seq(4, ncol(tabla[[2]]), by=4)
+    secuencia_2_b <- seq(4, ncol(tabla[[2]]), by = 4)
 
-    for (k in secuencia_2_a ) {
-      addStyle(wb = wb, sheet = hojas[2], cols = (k+3),
-               rows = (renglon[2] + 2):(renglon[2] + 2 + nrow(tabla[[2]])),
-               style = verticalStyle, stack = TRUE, gridExpand = TRUE)
+    for (k in secuencia_2_a) {
+      addStyle(
+        wb = wb, sheet = hojas[2], cols = (k + 3),
+        rows = (renglon[2] + 2):(renglon[2] + 2 + nrow(tabla[[2]])),
+        style = verticalStyle, stack = TRUE, gridExpand = TRUE
+      )
     }
 
     for (k in secuencia_2_b) {
-      addStyle(wb = wb, sheet = hojas[2], cols = (k+3),
-               rows = (renglon[2] + 1):(renglon[2] + 2 + nrow(tabla[[2]])),
-               style = verticalStyle, stack = TRUE, gridExpand = TRUE)
+      addStyle(
+        wb = wb, sheet = hojas[2], cols = (k + 3),
+        rows = (renglon[2] + 1):(renglon[2] + 2 + nrow(tabla[[2]])),
+        style = verticalStyle, stack = TRUE, gridExpand = TRUE
+      )
     }
   }
 
-  if (tipo_pregunta == 'continua'){
+  if (tipo_pregunta == "continua") {
+    secuencia_1_a <- c(-1, 0, 1, (ncol(tabla[[1]]) - 2))
 
-    secuencia_1_a<- c(-1, 0, 1,(ncol(tabla[[1]]) - 2))
-
-    for (k in secuencia_1_a){
-      addStyle(wb = wb, sheet = hojas[1], cols = (k+2),
-               rows = (renglon[1] + 1):(renglon[1] + 1 + nrow(tabla[[1]])),
-               style = estilo, stack = TRUE, gridExpand = TRUE)
+    for (k in secuencia_1_a) {
+      addStyle(
+        wb = wb, sheet = hojas[1], cols = (k + 2),
+        rows = (renglon[1] + 1):(renglon[1] + 1 + nrow(tabla[[1]])),
+        style = estilo, stack = TRUE, gridExpand = TRUE
+      )
     }
 
     secuencia_2_a <- c(-2, -1, 0, (ncol(tabla[[2]]) - 3))
 
 
     for (k in secuencia_2_a) {
-      addStyle(wb = wb, sheet = hojas[2], cols = (k+3),
-               rows = (renglon[2] + 1):(renglon[2] + 1 + nrow(tabla[[2]])),
-               style = verticalStyle, stack = TRUE, gridExpand = TRUE)
+      addStyle(
+        wb = wb, sheet = hojas[2], cols = (k + 3),
+        rows = (renglon[2] + 1):(renglon[2] + 1 + nrow(tabla[[2]])),
+        style = verticalStyle, stack = TRUE, gridExpand = TRUE
+      )
     }
-
   }
-
 }

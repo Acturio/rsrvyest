@@ -36,35 +36,37 @@
 #' @seealso \code{\link{survey_mean}}
 #' @examples \dontrun{
 #' # Lectura de datos
-#'  dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
-#'  Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
-#'                        sheet = "Lista Preguntas")$Nombre %>% as.vector()
-#'  DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",  sheet = "Múltiple") %>% as.data.frame()
-#'  Lista_Cont <- read_xlsx("aux/Lista de Preguntas.xlsx",
-#'   sheet = "Continuas")$VARIABLE %>% as.vector()
-#'  Dominios <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Dominios")$Dominios %>% as.vector()
+#' dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
+#' Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
+#'   sheet = "Lista Preguntas"
+#' )$Nombre %>% as.vector()
+#' DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Múltiple") %>% as.data.frame()
+#' Lista_Cont <- read_xlsx("aux/Lista de Preguntas.xlsx",
+#'   sheet = "Continuas"
+#' )$VARIABLE %>% as.vector()
+#' Dominios <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Dominios")$Dominios %>% as.vector()
 #'
 #' # Diseño
-#'  disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
+#' disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps = FALSE, datos = dataset)
 #'
-#'  total_general (diseño = disenio_mult,  pregunta = 'P1', dominio = 'General', datos = dataset,
-#'  DB_Mult = DB_Mult, tipo_pregunta = 'multiple')
+#' total_general(
+#'   diseño = disenio_mult, pregunta = "P1", dominio = "General", datos = dataset,
+#'   DB_Mult = DB_Mult, tipo_pregunta = "multiple"
+#' )
 #' }
 #' @import srvyr
 #' @import dplyr
 #'
 #' @export
 
-total_general <- function(diseño, pregunta, DB_Mult, datos, dominio = 'General',
-                          tipo_pregunta = 'categorica', na.rm = TRUE,
-                          vartype = c("se","ci","cv", "var"),
-                          cuantiles =  c(0,0.25, 0.5, 0.75,1),
+total_general <- function(diseño, pregunta, DB_Mult, datos, dominio = "General",
+                          tipo_pregunta = "categorica", na.rm = TRUE,
+                          vartype = c("se", "ci", "cv", "var"),
+                          cuantiles = c(0, 0.25, 0.5, 0.75, 1),
                           significancia = 0.95, proporcion = FALSE,
-                          metodo_prop = "likelihood", DEFF = TRUE){
-
-  if (tipo_pregunta == 'categorica'){
-
-    estadisticas <- {{diseño}} %>%
+                          metodo_prop = "likelihood", DEFF = TRUE) {
+  if (tipo_pregunta == "categorica") {
+    estadisticas <- {{ diseño }} %>%
       srvyr::group_by(!!sym(pregunta)) %>%
       srvyr::summarize(
         prop = survey_mean(
@@ -77,15 +79,19 @@ total_general <- function(diseño, pregunta, DB_Mult, datos, dominio = 'General'
         ),
         total = round(survey_total(
           na.rm = na.rm
-        ),0)
+        ), 0)
       ) %>%
-      mutate(prop_low = ifelse(prop_low < 0, 0, prop_low),
-             prop_upp = ifelse(prop_upp > 1, 1, prop_upp),
-             !!sym(pregunta) := str_trim(!!sym(pregunta), side = 'both'))
+      mutate(
+        prop_low = ifelse(prop_low < 0, 0, prop_low),
+        prop_upp = ifelse(prop_upp > 1, 1, prop_upp),
+        !!sym(pregunta) := str_trim(!!sym(pregunta), side = "both")
+      )
 
     total <- estadisticas %>%
-      mutate(Dominio = 'General',
-             Categorias = 'Total') %>%
+      mutate(
+        Dominio = "General",
+        Categorias = "Total"
+      ) %>%
       pivot_wider(
         names_from = !!sym(pregunta),
         values_from = c(
@@ -97,19 +103,21 @@ total_general <- function(diseño, pregunta, DB_Mult, datos, dominio = 'General'
           prop_se,
           prop_cv,
           prop_var,
-          prop_deff),
-        names_glue = sprintf("{%s}_{.value}", {{pregunta}}))
+          prop_deff
+        ),
+        names_glue = sprintf("{%s}_{.value}", {{ pregunta }})
+      )
 
-    total_formateado <- formatear_tabla_cruzada(pregunta = pregunta, datos = datos,
-                                                tabla = total, dominio = dominio,
-                                                DB_Mult = DB_Mult,
-                                                tipo_pregunta = tipo_pregunta)
-
+    total_formateado <- formatear_tabla_cruzada(
+      pregunta = pregunta, datos = datos,
+      tabla = total, dominio = dominio,
+      DB_Mult = DB_Mult,
+      tipo_pregunta = tipo_pregunta
+    )
   }
 
-  if (tipo_pregunta == 'continua'){
-
-    total <- {{diseño}} %>%
+  if (tipo_pregunta == "continua") {
+    total <- {{ diseño }} %>%
       srvyr::summarise(
         prop = survey_mean(
           as.numeric(!!sym(pregunta)),
@@ -126,88 +134,103 @@ total_general <- function(diseño, pregunta, DB_Mult, datos, dominio = 'General'
           na.rm = na.rm
         ),
         total = survey_total(
-          na.rm = na.rm)
+          na.rm = na.rm
+        )
       ) %>%
-      select(total, prop, prop_low, prop_upp, cuantiles_q00, cuantiles_q25,
-             cuantiles_q50, cuantiles_q75, cuantiles_q100, prop_se, prop_var,
-             prop_cv, prop_deff) %>%
-      mutate(Dominio = 'General',
-             Categorias = 'Total') %>%
+      select(
+        total, prop, prop_low, prop_upp, cuantiles_q00, cuantiles_q25,
+        cuantiles_q50, cuantiles_q75, cuantiles_q100, prop_se, prop_var,
+        prop_cv, prop_deff
+      ) %>%
+      mutate(
+        Dominio = "General",
+        Categorias = "Total"
+      ) %>%
       select(Dominio, Categorias, everything())
 
 
-    total_formateado <- formatear_tabla_cruzada(pregunta = pregunta, datos = datos,
-                                                tabla = total, dominio = dominio,
-                                                DB_Mult = DB_Mult,
-                                                tipo_pregunta = tipo_pregunta)
-
+    total_formateado <- formatear_tabla_cruzada(
+      pregunta = pregunta, datos = datos,
+      tabla = total, dominio = dominio,
+      DB_Mult = DB_Mult,
+      tipo_pregunta = tipo_pregunta
+    )
   }
 
-  if(tipo_pregunta == 'multiple'){
+  if (tipo_pregunta == "multiple") {
+    freqs <- frecuencias_simples(
+      diseño = diseño, datos = datos,
+      pregunta = pregunta, DB_Mult = DB_Mult,
+      tipo_pregunta = "multiple"
+    )
 
 
-    freqs <- frecuencias_simples(diseño = diseño, datos = datos,
-                                 pregunta = pregunta, DB_Mult = DB_Mult,
-                                 tipo_pregunta = "multiple")
+    freqs <- formatear_frecuencias_simples(
+      tabla = freqs,
+      tipo_pregunta = "multiple"
+    )
 
-
-    freqs <- formatear_frecuencias_simples(tabla = freqs,
-                                           tipo_pregunta = 'multiple')
-
-    freqs[[1]] %<>% filter(Respuesta != 'TOTAL')
-    freqs[[2]] %<>% filter(Respuesta != 'TOTAL')
+    freqs[[1]] %<>% filter(Respuesta != "TOTAL")
+    freqs[[2]] %<>% filter(Respuesta != "TOTAL")
 
 
     categorias <- freqs[[1]] %>% dplyr::pull(Respuesta)
 
     # Primera tabla
 
-    nombres_tabla_desagregada <- c('Dominio', 'Categorías', 'Total',
-                                   rep(c('Media', 'Lim. inf.', 'Lim. sup.'),
-                                       length(categorias)))
+    nombres_tabla_desagregada <- c(
+      "Dominio", "Categorías", "Total",
+      rep(
+        c("Media", "Lim. inf.", "Lim. sup."),
+        length(categorias)
+      )
+    )
 
-    suma_totales = freqs[[1]] %>% dplyr::summarise(Total = sum(Total))
+    suma_totales <- freqs[[1]] %>% dplyr::summarise(Total = sum(Total))
 
 
-    tabla_desagregada = freqs[[1]][1,c(-1,-2)] %>%
+    tabla_desagregada <- freqs[[1]][1, c(-1, -2)] %>%
       dplyr::mutate(Dominio = "General", Categorias = "Total")
 
-    for (i in seq(2,nrow(freqs[[1]]), by = 1)){
-      tabla_c1 = freqs[[1]][i,c(-1,-2)]
-      tabla_desagregada = cbind(tabla_desagregada,tabla_c1)
+    for (i in seq(2, nrow(freqs[[1]]), by = 1)) {
+      tabla_c1 <- freqs[[1]][i, c(-1, -2)]
+      tabla_desagregada <- cbind(tabla_desagregada, tabla_c1)
     }
 
-    tabla_desagregada = cbind(suma_totales,tabla_desagregada)
+    tabla_desagregada <- cbind(suma_totales, tabla_desagregada)
 
-    tabla_desagregada %<>% relocate(Categorias,.before = Total) %>%
-      relocate(Dominio,.before = Categorias)
+    tabla_desagregada %<>% relocate(Categorias, .before = Total) %>%
+      relocate(Dominio, .before = Categorias)
 
-    names(tabla_desagregada) = nombres_tabla_desagregada
+    names(tabla_desagregada) <- nombres_tabla_desagregada
 
     # Segunda tabla
 
-    nombres_tabla_desagregada_b <- c('Dominio', 'Categorías', 'Total',
-                                     rep(c("Err. Est.", "Coef. Var.","Var.", "DEFF"),
-                                         length(categorias)))
+    nombres_tabla_desagregada_b <- c(
+      "Dominio", "Categorías", "Total",
+      rep(
+        c("Err. Est.", "Coef. Var.", "Var.", "DEFF"),
+        length(categorias)
+      )
+    )
 
-    tabla_desagregada_b = freqs[[2]][1,c(-1,-2)] %>%
+    tabla_desagregada_b <- freqs[[2]][1, c(-1, -2)] %>%
       dplyr::mutate(Dominio = "General", Categorias = "Total")
 
-    for (i in seq(2,nrow(freqs[[2]]), by = 1)){
-      tabla_c1 = freqs[[2]][i,c(-1,-2)]
-      tabla_desagregada_b = cbind(tabla_desagregada_b,tabla_c1)
+    for (i in seq(2, nrow(freqs[[2]]), by = 1)) {
+      tabla_c1 <- freqs[[2]][i, c(-1, -2)]
+      tabla_desagregada_b <- cbind(tabla_desagregada_b, tabla_c1)
     }
 
-    tabla_desagregada_b = cbind(suma_totales, tabla_desagregada_b)
+    tabla_desagregada_b <- cbind(suma_totales, tabla_desagregada_b)
 
 
-    tabla_desagregada_b %<>% relocate(Categorias,.before = Total) %>%
-      relocate(Dominio,.before = Categorias)
+    tabla_desagregada_b %<>% relocate(Categorias, .before = Total) %>%
+      relocate(Dominio, .before = Categorias)
 
-    names(tabla_desagregada_b) = nombres_tabla_desagregada_b
+    names(tabla_desagregada_b) <- nombres_tabla_desagregada_b
 
     total_formateado <- list(tabla_desagregada, tabla_desagregada_b)
-
   }
 
   return(total_formateado)

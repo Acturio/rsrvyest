@@ -22,33 +22,41 @@
 #' @seealso \code{\link{survey_mean}}
 #' @examples \dontrun{
 #' # Estilos
-#'  headerStyle <- createStyle( fontSize = 11, fontColour = "black", halign = "center",
-#'  border = "TopBottom", borderColour = "black",
-#'  borderStyle = c('thin', 'double'), textDecoration = 'bold')
+#' headerStyle <- createStyle(
+#'   fontSize = 11, fontColour = "black", halign = "center",
+#'   border = "TopBottom", borderColour = "black",
+#'   borderStyle = c("thin", "double"), textDecoration = "bold"
+#' )
 #'
-#'  totalStyle <-  createStyle(numFmt = "###,###,###.0")
-#' formato_tablas_cruzadas(tabla = tabla_cruzada, wb = wb, renglon = c(1,1),
-#' columna = 1, hojas = c(3,4), estilo_encabezado = headerStyle,
-#' estilo_total = totalStyle)
+#' totalStyle <- createStyle(numFmt = "###,###,###.0")
+#' formato_tablas_cruzadas(
+#'   tabla = tabla_cruzada, wb = wb, renglon = c(1, 1),
+#'   columna = 1, hojas = c(3, 4), estilo_encabezado = headerStyle,
+#'   estilo_total = totalStyle
+#' )
 #' }
 #' @import openxlsx
 #' @export
-formato_tablas_cruzadas <- function(tabla, wb, renglon = c(1,1), columna = 1,
-                                    hojas = c(3,4),
+formato_tablas_cruzadas <- function(tabla, wb, renglon = c(1, 1), columna = 1,
+                                    hojas = c(3, 4),
                                     estilo_encabezado = headerStyle,
-                                    estilo_total = totalStyle){
+                                    estilo_total = totalStyle) {
 
 
   # renglón 3 columna 1
 
-  writeData(wb = wb, sheet =  hojas[1], x = tabla[[1]], startRow = renglon[1],
-            startCol = columna, borders = 'surrounding',
-            borderStyle = 'thin',  keepNA = TRUE, na.string = '-', col.names = TRUE,
-            headerStyle = estilo_encabezado)
+  writeData(
+    wb = wb, sheet = hojas[1], x = tabla[[1]], startRow = renglon[1],
+    startCol = columna, borders = "surrounding",
+    borderStyle = "thin", keepNA = TRUE, na.string = "-", col.names = TRUE,
+    headerStyle = estilo_encabezado
+  )
 
 
-  writeData(wb = wb, sheet =  hojas[2], x = tabla[[2]], startRow = renglon[2],
-            startCol = columna, borders = 'surrounding',
-            borderStyle = 'thin',  keepNA = TRUE, na.string = '-', col.names = TRUE,
-            headerStyle = estilo_encabezado)
+  writeData(
+    wb = wb, sheet = hojas[2], x = tabla[[2]], startRow = renglon[2],
+    startCol = columna, borders = "surrounding",
+    borderStyle = "thin", keepNA = TRUE, na.string = "-", col.names = TRUE,
+    headerStyle = estilo_encabezado
+  )
 }

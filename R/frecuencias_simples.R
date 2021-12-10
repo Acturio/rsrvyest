@@ -31,28 +31,28 @@
 #' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
 #' @seealso \code{\link{survey_mean}}
 #' @examples \dontrun{
-#' frecuencias_simples(diseño = disenio_cat, datos = dataset, pregunta = 'P1',
-#'  DB_Mult = DB_Mult, tipo_pregunta = 'categorica')
+#' frecuencias_simples(
+#'   diseño = disenio_cat, datos = dataset, pregunta = "P1",
+#'   DB_Mult = DB_Mult, tipo_pregunta = "categorica"
+#' )
 #' }
 #' @import dplyr
 #' @import srvyr
 #' @rawNamespace import(caret, except = lift)
 #' @export
-frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE,
-                                 estadisticas = c("se","ci","cv", "var"),
-                                 cuantiles = c(0,0.25, 0.5, 0.75,1),
-                                 significancia = 0.95, proporcion = FALSE,
-                                 metodo_prop = "likelihood", DEFF = TRUE,
-                                 tipo_pregunta = "categorica"){
-
-  if(tipo_pregunta == 'categorica'){
-
+frecuencias_simples <- function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE,
+                                estadisticas = c("se", "ci", "cv", "var"),
+                                cuantiles = c(0, 0.25, 0.5, 0.75, 1),
+                                significancia = 0.95, proporcion = FALSE,
+                                metodo_prop = "likelihood", DEFF = TRUE,
+                                tipo_pregunta = "categorica") {
+  if (tipo_pregunta == "categorica") {
     categorias <- datos %>%
       pull(!!sym(pregunta)) %>%
       levels() %>%
-      str_trim(side = 'both')
+      str_trim(side = "both")
 
-    estadisticas <- {{diseño}} %>%
+    estadisticas <- {{ diseño }} %>%
       filter(!is.na(!!sym(pregunta))) %>%
       srvyr::group_by(!!sym(pregunta)) %>%
       srvyr::summarize(
@@ -68,15 +68,16 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
           na.rm = na.rm
         )
       ) %>%
-      mutate(prop_low = ifelse(prop_low < 0, 0, prop_low),
-             prop_upp = ifelse(prop_upp > 1, 1, prop_upp),
-             !!sym(pregunta) := str_trim(!!sym(pregunta), side = 'both')) %>%
-      dplyr::rename('Respuesta' := !!sym(pregunta))
+      mutate(
+        prop_low = ifelse(prop_low < 0, 0, prop_low),
+        prop_upp = ifelse(prop_upp > 1, 1, prop_upp),
+        !!sym(pregunta) := str_trim(!!sym(pregunta), side = "both")
+      ) %>%
+      dplyr::rename("Respuesta" := !!sym(pregunta))
   }
 
-  if (tipo_pregunta == 'continua'){
-
-    estadisticas <- {{diseño}} %>%
+  if (tipo_pregunta == "continua") {
+    estadisticas <- {{ diseño }} %>%
       filter(!is.na(!!sym(pregunta))) %>%
       srvyr::summarise(
         prop = survey_mean(
@@ -94,14 +95,17 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
           na.rm = na.rm
         ),
         total = survey_total(
-          na.rm = na.rm)
+          na.rm = na.rm
+        )
       ) %>%
-      select(total, prop, prop_low, prop_upp, cuantiles_q00, cuantiles_q25,
-             cuantiles_q50, cuantiles_q75, cuantiles_q100, prop_se, prop_var,
-             prop_cv, prop_deff)
+      select(
+        total, prop, prop_low, prop_upp, cuantiles_q00, cuantiles_q25,
+        cuantiles_q50, cuantiles_q75, cuantiles_q100, prop_se, prop_var,
+        prop_cv, prop_deff
+      )
   }
 
-  if (tipo_pregunta == 'multiple'){
+  if (tipo_pregunta == "multiple") {
 
     ## Onehot encoding
     ps <- DB_Mult %>%
@@ -119,7 +123,7 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
 
     df <- df %>% mutate(ID = row.names(df))
 
-    one_hot <- caret::dummyVars(str_c('~ ',  str_c(ps, collapse = ' + ')), data=df)
+    one_hot <- caret::dummyVars(str_c("~ ", str_c(ps, collapse = " + ")), data = df)
     one_hot <- data.frame(predict(one_hot, newdata = df))
     missings <- one_hot %>% pull(1)
 
@@ -127,58 +131,63 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
 
     one_hot[is.na(one_hot)] <- 0
 
-    menciones_juntas <- matrix(NA, nrow(df), ncol=numero_categorias) %>%
+    menciones_juntas <- matrix(NA, nrow(df), ncol = numero_categorias) %>%
       as_tibble()
     names(menciones_juntas) <- categorias
 
     dum <- NULL
 
-    for(j in 1:numero_categorias){
-      dum <- one_hot[,j]
-      for (i in 1:(length(ps)-1)) {
-        dum <- dum + one_hot[,j+i*numero_categorias]
+    for (j in 1:numero_categorias) {
+      dum <- one_hot[, j]
+      for (i in 1:(length(ps) - 1)) {
+        dum <- dum + one_hot[, j + i * numero_categorias]
       }
-      menciones_juntas[,j] <- dum
+      menciones_juntas[, j] <- dum
     }
     menciones_juntas[menciones_juntas > 1] <- 1
 
-    menciones_vector <- menciones_juntas %>% names() %>% as_vector()
+    menciones_vector <- menciones_juntas %>%
+      names() %>%
+      as_vector()
 
     ## Agregamos variables onehot a diseño
 
-    for (i in menciones_vector){
+    for (i in menciones_vector) {
       variable <- menciones_juntas %>%
         pull(!!sym(i))
       diseño %<>% srvyr::mutate(!!sym(i) := if_else(is.na(aux_missing), aux_missing, variable))
     }
 
-    frecuencias_simples = data_frame()
+    frecuencias_simples <- data_frame()
 
     ### Cálculo de frecuencias simples de todas las categorías de una pregunta
 
     for (categ in categorias) {
-      nacional <- {{diseño}} %>%
-       # srvyr::filter(!is.na(!!sym(categ))) %>%
+      nacional <- {{ diseño }} %>%
+        # srvyr::filter(!is.na(!!sym(categ))) %>%
         srvyr::summarize(
           prop = survey_mean(!!sym(categ),
-                             na.rm = na.rm,
-                             vartype = c("se", "ci", "cv", "var"),
-                             level = significancia,
-                             proportion = proporcion,
-                             prop_method = metodo_prop,
-                             deff  = DEFF),
+            na.rm = na.rm,
+            vartype = c("se", "ci", "cv", "var"),
+            level = significancia,
+            proportion = proporcion,
+            prop_method = metodo_prop,
+            deff = DEFF
+          ),
           total = survey_total(!!sym(categ),
-                               na.rm = na.rm)) %>%
-        mutate(prop_low = ifelse(prop_low < 0, 0, prop_low),
-               prop_upp = ifelse(prop_upp > 1, 1, prop_upp),
-               Respuesta = categ)
+            na.rm = na.rm
+          )
+        ) %>%
+        mutate(
+          prop_low = ifelse(prop_low < 0, 0, prop_low),
+          prop_upp = ifelse(prop_upp > 1, 1, prop_upp),
+          Respuesta = categ
+        )
 
       frecuencias_simples <- bind_rows(frecuencias_simples, nacional)
 
       estadisticas <- frecuencias_simples
-
     }
-
   }
 
   estadisticas %<>% mutate(

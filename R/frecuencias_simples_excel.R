@@ -54,137 +54,178 @@
 #' addWorksheet(wb, "Frecuencias simples (dispersión)")
 #'
 #' # Estilos
-#' headerStyle <- createStyle(fontSize = 11, fontColour = "black", halign = "center",
-#' border = "TopBottom", borderColour = "black",
-#' borderStyle = c('thin', 'double'), textDecoration = 'bold')
-#' totalStyle <-  createStyle(numFmt = "###,###,###.0")
-#' horizontalStyle <- createStyle(border = "bottom",
-#' borderColour = "black", borderStyle = 'thin', valign = 'center')
+#' headerStyle <- createStyle(
+#'   fontSize = 11, fontColour = "black", halign = "center",
+#'   border = "TopBottom", borderColour = "black",
+#'   borderStyle = c("thin", "double"), textDecoration = "bold"
+#' )
+#' totalStyle <- createStyle(numFmt = "###,###,###.0")
+#' horizontalStyle <- createStyle(
+#'   border = "bottom",
+#'   borderColour = "black", borderStyle = "thin", valign = "center"
+#' )
 #'
 #' # Carga de datos
-#'  dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
-#'  Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
-#'  sheet = "Lista Preguntas")$Nombre %>% as.vector()
-#'   DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",
-#'   sheet = "Múltiple") %>% as.data.frame()
+#' dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
+#' Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
+#'   sheet = "Lista Preguntas"
+#' )$Nombre %>% as.vector()
+#' DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",
+#'   sheet = "Múltiple"
+#' ) %>% as.data.frame()
 #'
-#' #Diseño
-#'  disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
+#' # Diseño
+#' disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps = FALSE, datos = dataset)
 #'
-#' frecuencias_simples_excel(pregunta = 'P1',
-#' num_pregunta = 1,
-#' datos = dataset,
-#' DB_Mult = DB_Mult,
-#' lista_preguntas = Lista_Preg,
-#' diseño = disenio_mult,
-#' wb = wb,
-#' renglon = c(1,1),
-#' columna = 1,
-#' hojas = c(1,2),
-#' tipo_pregunta = 'multiple',
-#' fuente =  'Conacyt 2018',
-#' pie_tabla = 'Conacyt 2018',
-#' organismo_participacion = 'Ciudadanía mexicana',
-#' logo_path = 'img/logo_unam.png',
-#' estilo_encabezado = headerStyle,
-#' estilo_horizontal = horizontalStyle,
-#' estilo_total = totalStyle
+#' frecuencias_simples_excel(
+#'   pregunta = "P1",
+#'   num_pregunta = 1,
+#'   datos = dataset,
+#'   DB_Mult = DB_Mult,
+#'   lista_preguntas = Lista_Preg,
+#'   diseño = disenio_mult,
+#'   wb = wb,
+#'   renglon = c(1, 1),
+#'   columna = 1,
+#'   hojas = c(1, 2),
+#'   tipo_pregunta = "multiple",
+#'   fuente = "Conacyt 2018",
+#'   pie_tabla = "Conacyt 2018",
+#'   organismo_participacion = "Ciudadanía mexicana",
+#'   logo_path = "logo_unam.png",
+#'   estilo_encabezado = headerStyle,
+#'   estilo_horizontal = horizontalStyle,
+#'   estilo_total = totalStyle
 #' )
 #' }
 #' @import openxlsx
 #' @export
-frecuencias_simples_excel <- function(
-  pregunta, num_pregunta, datos, DB_Mult, lista_preguntas, diseño, wb,
-  renglon = c(1,1), columna = 1, hojas = c(1,2), tipo_pregunta = 'categorica',
-  fuente, pie_tabla, organismo_participacion, logo_path,
-  estilo_encabezado = headerStyle, estilo_horizontal = horizontalStyle,
-  estilo_total = totalStyle){
+frecuencias_simples_excel <- function(pregunta, num_pregunta, datos, DB_Mult, lista_preguntas, diseño, wb,
+                                      renglon = c(1, 1), columna = 1, hojas = c(1, 2), tipo_pregunta = "categorica",
+                                      fuente, pie_tabla, organismo_participacion, logo_path,
+                                      estilo_encabezado = headerStyle, estilo_horizontal = horizontalStyle,
+                                      estilo_total = totalStyle) {
+  titleStyle <- createStyle(
+    fontSize = 24, fontColour = "#011f4b",
+    textDecoration = "underline"
+  )
 
-  titleStyle <- createStyle(fontSize = 24, fontColour = '#011f4b',
-                            textDecoration = 'underline')
+  subtitleStyle <- createStyle(
+    fontSize = 14, fontColour = "#011f4b",
+    textDecoration = "underline"
+  )
 
-  subtitleStyle <- createStyle(fontSize = 14, fontColour = '#011f4b',
-                               textDecoration = 'underline')
-
-  table_Style <- createStyle(valign = 'center', halign = 'center')
+  table_Style <- createStyle(valign = "center", halign = "center")
 
   # Título general renglón 1 columna 2
 
-  writeData(wb = wb, sheet = hojas[1], x = 'Frecuencias estadísticas',
-            startCol = 2, startRow = 1)
-  writeData(wb = wb, sheet = hojas[1], x = nombre_proyecto,
-            startCol = 2, startRow = 2)
-  addStyle(wb = wb, sheet = hojas[1], style = titleStyle, rows = 1, cols = 2,
-           gridExpand = TRUE, stack = TRUE)
-  addStyle(wb = wb, sheet = hojas[1], style = subtitleStyle, rows = 2, cols = 2,
-           gridExpand = TRUE, stack = TRUE)
+  writeData(
+    wb = wb, sheet = hojas[1], x = "Frecuencias estadísticas",
+    startCol = 2, startRow = 1
+  )
+  writeData(
+    wb = wb, sheet = hojas[1], x = nombre_proyecto,
+    startCol = 2, startRow = 2
+  )
+  addStyle(
+    wb = wb, sheet = hojas[1], style = titleStyle, rows = 1, cols = 2,
+    gridExpand = TRUE, stack = TRUE
+  )
+  addStyle(
+    wb = wb, sheet = hojas[1], style = subtitleStyle, rows = 2, cols = 2,
+    gridExpand = TRUE, stack = TRUE
+  )
 
 
-  writeData(wb = wb, sheet = hojas[2], x = 'Frecuencias estadísticas (dispersión)',
-            startCol = 2, startRow = 1)
-  writeData(wb = wb, sheet = hojas[2], x = nombre_proyecto,
-            startCol = 2, startRow = 2)
-  addStyle(wb = wb, sheet = hojas[2], style = titleStyle, rows = 1, cols = 2,
-           gridExpand = TRUE, stack = TRUE)
-  addStyle(wb = wb, sheet = hojas[2], style = subtitleStyle, rows = 2, cols = 2,
-           gridExpand = TRUE, stack = TRUE)
+  writeData(
+    wb = wb, sheet = hojas[2], x = "Frecuencias estadísticas (dispersión)",
+    startCol = 2, startRow = 1
+  )
+  writeData(
+    wb = wb, sheet = hojas[2], x = nombre_proyecto,
+    startCol = 2, startRow = 2
+  )
+  addStyle(
+    wb = wb, sheet = hojas[2], style = titleStyle, rows = 1, cols = 2,
+    gridExpand = TRUE, stack = TRUE
+  )
+  addStyle(
+    wb = wb, sheet = hojas[2], style = subtitleStyle, rows = 2, cols = 2,
+    gridExpand = TRUE, stack = TRUE
+  )
 
   # Pegar logo UNAM renglón 1, columna 1
 
-  #logo <- logo_path
+  # logo <- logo_path
 
-  insertImage(wb = wb, sheet = hojas[1],
-              file = logo_path, startRow = 1, startCol = 1,
-              width = 2.08, height =2.2, units = 'cm')
+  insertImage(
+    wb = wb, sheet = hojas[1],
+    file = logo_path, startRow = 1, startCol = 1,
+    width = 2.08, height = 2.2, units = "cm"
+  )
 
-  insertImage(wb = wb, sheet = hojas[2],
-              file = logo_path, startRow = 1, startCol = 1,
-              width = 2.08, height = 2.2, units = 'cm')
+  insertImage(
+    wb = wb, sheet = hojas[2],
+    file = logo_path, startRow = 1, startCol = 1,
+    width = 2.08, height = 2.2, units = "cm"
+  )
 
   # Título Pregunta
 
   np <- lista_preguntas[[num_pregunta]]
 
-  writeData(wb = wb, sheet = hojas[1], x = np, startRow = (renglon[1]),
-            startCol = columna, colNames = TRUE, borders = 'none')
+  writeData(
+    wb = wb, sheet = hojas[1], x = np, startRow = (renglon[1]),
+    startCol = columna, colNames = TRUE, borders = "none"
+  )
 
   setRowHeights(wb = wb, sheet = hojas[1], rows = (renglon[1]), heights = 35)
 
 
-  writeData(wb = wb, sheet = hojas[2], x = np, startRow = (renglon[2]),
-            startCol = columna, colNames = TRUE, borders = 'none')
+  writeData(
+    wb = wb, sheet = hojas[2], x = np, startRow = (renglon[2]),
+    startCol = columna, colNames = TRUE, borders = "none"
+  )
 
   setRowHeights(wb = wb, sheet = hojas[2], rows = (renglon[2] + 1), heights = 35)
 
 
   # Tabla
 
-  tabla_titulo <- paste0('Tabla ', num_pregunta, '*')
+  tabla_titulo <- paste0("Tabla ", num_pregunta, "*")
 
-  writeData(wb = wb, sheet = hojas[1], x = tabla_titulo, startRow = (renglon[1] +1),
-            startCol = columna, colNames = FALSE, borders = 'none')
+  writeData(
+    wb = wb, sheet = hojas[1], x = tabla_titulo, startRow = (renglon[1] + 1),
+    startCol = columna, colNames = FALSE, borders = "none"
+  )
 
   setRowHeights(wb = wb, sheet = hojas[1], rows = (renglon[1] + 1), heights = 30)
 
 
 
-  writeData(wb = wb, sheet = hojas[2], x = tabla_titulo, startRow = (renglon[2] +1),
-            startCol = columna, colNames = FALSE, borders = 'none')
+  writeData(
+    wb = wb, sheet = hojas[2], x = tabla_titulo, startRow = (renglon[2] + 1),
+    startCol = columna, colNames = FALSE, borders = "none"
+  )
 
   setRowHeights(wb = wb, sheet = hojas[2], rows = (renglon[1] + 1), heights = 30)
 
 
-  est <- frecuencias_simples(diseño = diseño, datos = datos, pregunta = pregunta,
-                             DB_Mult = DB_Mult, tipo_pregunta = tipo_pregunta)
+  est <- frecuencias_simples(
+    diseño = diseño, datos = datos, pregunta = pregunta,
+    DB_Mult = DB_Mult, tipo_pregunta = tipo_pregunta
+  )
 
-  freq <-  formatear_frecuencias_simples(est, tipo_pregunta = tipo_pregunta)
+  freq <- formatear_frecuencias_simples(est, tipo_pregunta = tipo_pregunta)
 
-  formato_frecuencias_simples(tabla = freq, wb = wb, hojas = hojas,
-                              renglon = c((renglon[1] + 1 + 1), (renglon[2] + 1 + 1)),
-                              columna = columna, estilo_encabezado = estilo_encabezado,
-                              estilo_horizontal = estilo_horizontal,
-                              estilo_total = estilo_total,
-                              tipo_pregunta = tipo_pregunta)
+  formato_frecuencias_simples(
+    tabla = freq, wb = wb, hojas = hojas,
+    renglon = c((renglon[1] + 1 + 1), (renglon[2] + 1 + 1)),
+    columna = columna, estilo_encabezado = estilo_encabezado,
+    estilo_horizontal = estilo_horizontal,
+    estilo_total = estilo_total,
+    tipo_pregunta = tipo_pregunta
+  )
 
 
   # Merge
@@ -192,141 +233,196 @@ frecuencias_simples_excel <- function(
   # mergeCells(wb = wb, sheet = hojas[1], cols = 1:ncol(freq[[1]]),
   #            rows = (renglon[1]))
 
-  addStyle(wb = wb, sheet = hojas[1], style = table_Style,
-           rows = (renglon[1] + 1), cols = 1:ncol(freq[[1]]),
-           gridExpand = TRUE, stack = TRUE)
+  addStyle(
+    wb = wb, sheet = hojas[1], style = table_Style,
+    rows = (renglon[1] + 1), cols = 1:ncol(freq[[1]]),
+    gridExpand = TRUE, stack = TRUE
+  )
 
-  mergeCells(wb = wb, sheet = hojas[1], cols = 1:ncol(freq[[1]]),
-             rows = (renglon[1] + 1))
+  mergeCells(
+    wb = wb, sheet = hojas[1], cols = 1:ncol(freq[[1]]),
+    rows = (renglon[1] + 1)
+  )
 
-#
-#   mergeCells(wb = wb, sheet = hojas[2], cols = 1:ncol(freq[[2]]),
-#              rows = (renglon[2]))
+  #
+  #   mergeCells(wb = wb, sheet = hojas[2], cols = 1:ncol(freq[[2]]),
+  #              rows = (renglon[2]))
 
-  addStyle(wb = wb, sheet = hojas[2], style = table_Style,
-           rows = (renglon[2] + 1), cols = 1:ncol(freq[[2]]),
-           gridExpand = TRUE, stack = TRUE)
+  addStyle(
+    wb = wb, sheet = hojas[2], style = table_Style,
+    rows = (renglon[2] + 1), cols = 1:ncol(freq[[2]]),
+    gridExpand = TRUE, stack = TRUE
+  )
 
-  mergeCells(wb = wb, sheet = hojas[2], cols = 1:ncol(freq[[2]]),
-             rows = (renglon[2] + 1))
+  mergeCells(
+    wb = wb, sheet = hojas[2], cols = 1:ncol(freq[[2]]),
+    rows = (renglon[2] + 1)
+  )
 
 
   # Fuente
 
   fuente_preg <- paste0("Fuente: ", fuente)
   organismo <- paste0("Organismo de participacion: ", organismo_participacion)
-  tabla_preg <- paste0("* Tabla correspondiente a la pregunta ",
-                       pregunta, " de ", pie_tabla)
+  tabla_preg <- paste0(
+    "* Tabla correspondiente a la pregunta ",
+    pregunta, " de ", pie_tabla
+  )
 
-  fontStyle <- createStyle(fontSize = 9, fontColour = '#5b5b5b')
-
-
-  writeData(wb = wb, sheet = hojas[1], x = fuente_preg,
-            startRow = (renglon[1] + 2 + 1 + nrow(freq[[1]])),
-            startCol = columna, borders = 'none')
-
-  addStyle(wb = wb, sheet = hojas[1], style = fontStyle,
-           rows = (renglon[1] + 2 + 1 + nrow(freq[[1]])), cols = columna,
-           gridExpand = TRUE, stack = TRUE)
-
-  setRowHeights(wb = wb, sheet = hojas[1],
-                rows = (renglon[1] + 2 + 1 + nrow(freq[[1]])), heights = 10)
+  fontStyle <- createStyle(fontSize = 9, fontColour = "#5b5b5b")
 
 
+  writeData(
+    wb = wb, sheet = hojas[1], x = fuente_preg,
+    startRow = (renglon[1] + 2 + 1 + nrow(freq[[1]])),
+    startCol = columna, borders = "none"
+  )
 
-  writeData(wb = wb, sheet = hojas[1], x = organismo,
-            startRow = (renglon[1] + 3+ 1 + nrow(freq[[1]])),
-            startCol = columna, borders = 'none')
+  addStyle(
+    wb = wb, sheet = hojas[1], style = fontStyle,
+    rows = (renglon[1] + 2 + 1 + nrow(freq[[1]])), cols = columna,
+    gridExpand = TRUE, stack = TRUE
+  )
 
-  addStyle(wb = wb, sheet = hojas[1], style = fontStyle,
-           rows = (renglon[1] + 3 + 1 + nrow(freq[[1]])), cols = columna,
-           gridExpand = TRUE, stack = TRUE)
-
-  setRowHeights(wb = wb, sheet = hojas[1],
-                rows = (renglon[1] + 3 + 1 + nrow(freq[[1]])), heights = 10)
-
-
-  writeData(wb = wb, sheet = hojas[1], x = tabla_preg,
-            startRow = (renglon[1] + 4 + 1+ nrow(freq[[1]])),
-            startCol = columna, borders = 'none')
-
-  addStyle(wb = wb, sheet = hojas[1], style = fontStyle,
-           rows = (renglon[1] + 4 + 1 + nrow(freq[[1]])), cols = columna,
-           gridExpand = TRUE, stack = TRUE)
-
-  setRowHeights(wb = wb, sheet = hojas[1],
-                rows = (renglon[1] + 4 + 1 + nrow(freq[[1]])), heights = 10)
+  setRowHeights(
+    wb = wb, sheet = hojas[1],
+    rows = (renglon[1] + 2 + 1 + nrow(freq[[1]])), heights = 10
+  )
 
 
-  if(tipo_pregunta == 'multiple'){
 
+  writeData(
+    wb = wb, sheet = hojas[1], x = organismo,
+    startRow = (renglon[1] + 3 + 1 + nrow(freq[[1]])),
+    startCol = columna, borders = "none"
+  )
+
+  addStyle(
+    wb = wb, sheet = hojas[1], style = fontStyle,
+    rows = (renglon[1] + 3 + 1 + nrow(freq[[1]])), cols = columna,
+    gridExpand = TRUE, stack = TRUE
+  )
+
+  setRowHeights(
+    wb = wb, sheet = hojas[1],
+    rows = (renglon[1] + 3 + 1 + nrow(freq[[1]])), heights = 10
+  )
+
+
+  writeData(
+    wb = wb, sheet = hojas[1], x = tabla_preg,
+    startRow = (renglon[1] + 4 + 1 + nrow(freq[[1]])),
+    startCol = columna, borders = "none"
+  )
+
+  addStyle(
+    wb = wb, sheet = hojas[1], style = fontStyle,
+    rows = (renglon[1] + 4 + 1 + nrow(freq[[1]])), cols = columna,
+    gridExpand = TRUE, stack = TRUE
+  )
+
+  setRowHeights(
+    wb = wb, sheet = hojas[1],
+    rows = (renglon[1] + 4 + 1 + nrow(freq[[1]])), heights = 10
+  )
+
+
+  if (tipo_pregunta == "multiple") {
     tabla_multiple <- paste0("Tabla correspondiente a pregunta de respuesta múltiple, los porcentajes no suman 100")
 
-    writeData(wb = wb, sheet = hojas[1], x = tabla_multiple,
-              startRow = (renglon[1] + 4 + 1 + 1 + nrow(freq[[1]])),
-              startCol = columna, borders = 'none')
+    writeData(
+      wb = wb, sheet = hojas[1], x = tabla_multiple,
+      startRow = (renglon[1] + 4 + 1 + 1 + nrow(freq[[1]])),
+      startCol = columna, borders = "none"
+    )
 
-    addStyle(wb = wb, sheet = hojas[1], style = fontStyle,
-             rows = (renglon[1] + 4 + 1 + 1 + nrow(freq[[1]])), cols = columna,
-             gridExpand = TRUE, stack = TRUE)
+    addStyle(
+      wb = wb, sheet = hojas[1], style = fontStyle,
+      rows = (renglon[1] + 4 + 1 + 1 + nrow(freq[[1]])), cols = columna,
+      gridExpand = TRUE, stack = TRUE
+    )
 
-    setRowHeights(wb = wb, sheet = hojas[1],
-                  rows = (renglon[1] + 4 + 1 + 1+ nrow(freq[[1]])), heights = 10)
+    setRowHeights(
+      wb = wb, sheet = hojas[1],
+      rows = (renglon[1] + 4 + 1 + 1 + nrow(freq[[1]])), heights = 10
+    )
   }
 
-  writeData(wb = wb, sheet = hojas[2], x = fuente_preg,
-            startRow = (renglon[2] + 2+1 + nrow(freq[[2]])),
-            startCol = columna, borders = 'none')
+  writeData(
+    wb = wb, sheet = hojas[2], x = fuente_preg,
+    startRow = (renglon[2] + 2 + 1 + nrow(freq[[2]])),
+    startCol = columna, borders = "none"
+  )
 
-  addStyle(wb = wb, sheet = hojas[2], style = fontStyle,
-           rows = (renglon[2] + 2 + 1 + nrow(freq[[2]])), cols = columna,
-           gridExpand = TRUE, stack = TRUE)
+  addStyle(
+    wb = wb, sheet = hojas[2], style = fontStyle,
+    rows = (renglon[2] + 2 + 1 + nrow(freq[[2]])), cols = columna,
+    gridExpand = TRUE, stack = TRUE
+  )
 
-  setRowHeights(wb = wb, sheet = hojas[2],
-                rows = (renglon[2] + 2 + 1 + nrow(freq[[2]])), heights = 10)
-
-
-  writeData(wb = wb, sheet = hojas[2], x = organismo,
-            startRow = (renglon[2] + 3 +1+ nrow(freq[[2]])),
-            startCol = columna, borders = 'none')
-
-  addStyle(wb = wb, sheet = hojas[2], style = fontStyle,
-           rows = (renglon[2] + 3 + 1 + nrow(freq[[2]])), cols = columna,
-           gridExpand = TRUE, stack = TRUE)
-
-  setRowHeights(wb = wb, sheet = hojas[2],
-                rows = (renglon[2] + 3 + 1 + nrow(freq[[2]])), heights = 10)
+  setRowHeights(
+    wb = wb, sheet = hojas[2],
+    rows = (renglon[2] + 2 + 1 + nrow(freq[[2]])), heights = 10
+  )
 
 
-  writeData(wb = wb, sheet = hojas[2], x = tabla_preg,
-            startRow = (renglon[2] + 4+1 + nrow(freq[[2]])),
-            startCol = columna, borders = 'none')
+  writeData(
+    wb = wb, sheet = hojas[2], x = organismo,
+    startRow = (renglon[2] + 3 + 1 + nrow(freq[[2]])),
+    startCol = columna, borders = "none"
+  )
 
-  addStyle(wb = wb, sheet = hojas[2], style = fontStyle,
-           rows = (renglon[2] + 4 + 1 + nrow(freq[[2]])), cols = columna,
-           gridExpand = TRUE, stack = TRUE)
+  addStyle(
+    wb = wb, sheet = hojas[2], style = fontStyle,
+    rows = (renglon[2] + 3 + 1 + nrow(freq[[2]])), cols = columna,
+    gridExpand = TRUE, stack = TRUE
+  )
 
-  setRowHeights(wb = wb, sheet = hojas[2],
-                rows = (renglon[2] + 4 + 1 + nrow(freq[[2]])), heights = 10)
+  setRowHeights(
+    wb = wb, sheet = hojas[2],
+    rows = (renglon[2] + 3 + 1 + nrow(freq[[2]])), heights = 10
+  )
+
+
+  writeData(
+    wb = wb, sheet = hojas[2], x = tabla_preg,
+    startRow = (renglon[2] + 4 + 1 + nrow(freq[[2]])),
+    startCol = columna, borders = "none"
+  )
+
+  addStyle(
+    wb = wb, sheet = hojas[2], style = fontStyle,
+    rows = (renglon[2] + 4 + 1 + nrow(freq[[2]])), cols = columna,
+    gridExpand = TRUE, stack = TRUE
+  )
+
+  setRowHeights(
+    wb = wb, sheet = hojas[2],
+    rows = (renglon[2] + 4 + 1 + nrow(freq[[2]])), heights = 10
+  )
 
 
 
-  if(tipo_pregunta == 'multiple'){
-
+  if (tipo_pregunta == "multiple") {
     tabla_multiple <- paste0("Tabla correspondiente a pregunta de respuesta múltiple, los porcentajes no suman 100")
 
-    writeData(wb = wb, sheet = hojas[2], x = tabla_multiple,
-              startRow = (renglon[2] + 4 + 1 + 1 + nrow(freq[[2]])),
-              startCol = columna, borders = 'none')
+    writeData(
+      wb = wb, sheet = hojas[2], x = tabla_multiple,
+      startRow = (renglon[2] + 4 + 1 + 1 + nrow(freq[[2]])),
+      startCol = columna, borders = "none"
+    )
 
-    addStyle(wb = wb, sheet = hojas[2], style = fontStyle,
-             rows = (renglon[2] + 4 + 1 + 1 + nrow(freq[[2]])), cols = columna,
-             gridExpand = TRUE, stack = TRUE)
+    addStyle(
+      wb = wb, sheet = hojas[2], style = fontStyle,
+      rows = (renglon[2] + 4 + 1 + 1 + nrow(freq[[2]])), cols = columna,
+      gridExpand = TRUE, stack = TRUE
+    )
 
-    setRowHeights(wb = wb, sheet = hojas[2],
-                  rows = (renglon[2] + 4 + 1 + 1+ nrow(freq[[2]])), heights = 10)
+    setRowHeights(
+      wb = wb, sheet = hojas[2],
+      rows = (renglon[2] + 4 + 1 + 1 + nrow(freq[[2]])), heights = 10
+    )
   }
 
   return(freq)
-
 }
