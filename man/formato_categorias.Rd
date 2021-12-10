@@ -86,7 +86,6 @@ formato_categorias(
 
 openxlsx::openXL(wb)
 }
- @import openxlsx
 }
 \seealso{
 \code{\link{mergeCells}} \code{\link{addStyle}} \code{\link{createStyle}}
