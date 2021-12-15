@@ -47,11 +47,12 @@
 formatear_tabla_cruzada <- function(pregunta, datos, dominio, tabla, DB_Mult,
                                     tipo_pregunta = "categorica") {
   if (tipo_pregunta == "categorica") {
+
     categorias <- datos %>%
       pull(!!sym(pregunta)) %>%
       levels() %>%
-      str_trim(side = "both")
-
+      str_trim(side = "both") %>%
+      str_c("_")
 
     nombres1 <- c("Dominio", "Categorías", "Total", rep(
       c("Media", "Lim. inf.", "Lim. sup."),
@@ -63,9 +64,7 @@ formatear_tabla_cruzada <- function(pregunta, datos, dominio, tabla, DB_Mult,
       length(categorias)
     ))
 
-
     # Orden similar a las categorias
-
     tabla %<>% select(Dominio, Categorias, starts_with(categorias))
 
     # Multiplicar por 100 y 10,000
@@ -78,20 +77,10 @@ formatear_tabla_cruzada <- function(pregunta, datos, dominio, tabla, DB_Mult,
     tabla %<>%
       rowwise() %>%
       mutate(Total = sum(c_across(ends_with("_total")), na.rm = TRUE)) %>%
-      select(
-        Dominio,
-        Categorias,
-        Total,
-        ends_with(c(
-          "_prop", "_prop_low", "_prop_upp",
-          "_prop_se", "_prop_var", "_prop_cv", "prop_deff"
-        ))
-      )
-
-    tabla %<>% select(Dominio, Categorias, Total, starts_with(categorias))
+      ungroup() %>%
+      relocate(Total, .after = Categorias)
 
     # Primera tabla
-
     tabla_final_1 <- tabla %>%
       select(
         Dominio,
@@ -99,11 +88,9 @@ formatear_tabla_cruzada <- function(pregunta, datos, dominio, tabla, DB_Mult,
         Total,
         ends_with(c("_prop", "_prop_low", "_prop_upp"))
       ) %>%
-      select(Dominio, Categorias, Total, starts_with(categorias)) %>%
-      dplyr::ungroup()
+      select(Dominio, Categorias, Total, starts_with(categorias))
 
     # Segunda tabla
-
     tabla_final_2 <- tabla %>%
       select(
         Dominio,
@@ -111,11 +98,9 @@ formatear_tabla_cruzada <- function(pregunta, datos, dominio, tabla, DB_Mult,
         Total,
         ends_with(c("_prop_se", "_prop_cv", "_prop_var", "prop_deff"))
       ) %>%
-      select(Dominio, Categorias, Total, starts_with(categorias)) %>%
-      dplyr::ungroup()
+      select(Dominio, Categorias, Total, starts_with(categorias))
 
     names(tabla_final_1) <- nombres1
-
     names(tabla_final_2) <- nombres2
   }
 
@@ -197,8 +182,7 @@ formatear_tabla_cruzada <- function(pregunta, datos, dominio, tabla, DB_Mult,
       dplyr::filter(!is.na(!!sym(pregunta))) %>%
       dplyr::pull(!!sym(pregunta))
 
-    df <- datos %>%
-      select(ps)
+    df <- select(datos, ps)
 
     categorias <- df %>%
       pull() %>%
@@ -230,9 +214,8 @@ formatear_tabla_cruzada <- function(pregunta, datos, dominio, tabla, DB_Mult,
 
     suma_totales %<>% select(Total)
 
-    tabla_final_1 <- cbind(tabla_final_1, suma_totales)
-
-    tabla_final_1 %<>% relocate(Total, .after = Categorias)
+    tabla_final_1 <- cbind(tabla_final_1, suma_totales) %>%
+      relocate(Total, .after = Categorias)
 
     tabla_final_2 <- tabla2[c(1:len), ]
 
@@ -241,9 +224,8 @@ formatear_tabla_cruzada <- function(pregunta, datos, dominio, tabla, DB_Mult,
       tabla_final_2 <- cbind(tabla_final_2, tabla_c2)
     }
 
-    tabla_final_2 <- cbind(tabla_final_2, suma_totales)
-
-    tabla_final_2 %<>% relocate(Total, .after = Categorias)
+    tabla_final_2 <- cbind(tabla_final_2, suma_totales) %>%
+      relocate(Total, .after = Categorias)
 
     names(tabla_final_1) <- nombres_tabla1
     names(tabla_final_2) <- nombres_tabla2
