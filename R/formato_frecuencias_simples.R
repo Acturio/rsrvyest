@@ -35,99 +35,80 @@
 #' addWorksheet(wb, "Frecuencias simples (dispersión)")
 #'
 #' # Estilos
-#' headerStyle <- createStyle(
-#'   fontSize = 11, fontColour = "black", halign = "center",
-#'   border = "TopBottom", borderColour = "black",
-#'   borderStyle = c("thin", "double"), textDecoration = "bold"
-#' )
+#' headerStyle <- createStyle(fontSize = 11, fontColour = "black", halign = "center",
+#' border = "TopBottom", borderColour = "black",
+#' borderStyle = c('thin', 'double'), textDecoration = 'bold')
 #'
-#' totalStyle <- createStyle(numFmt = "###,###,###.0")
+#' totalStyle <-  createStyle(numFmt = "###,###,###.0")
 #'
-#' horizontalStyle <- createStyle(border = "bottom", borderColour = "black", borderStyle = "thin", valign = "center")
+#' horizontalStyle <- createStyle(border = "bottom", borderColour = "black", borderStyle = 'thin', valign = 'center')
 #'
-#' freq_simples <- frecuencias_simples(
-#'   diseño = disenio_cat, datos = dataset, pregunta = "P1",
-#'   DB_Mult = DB_Mult, tipo_pregunta = "categorica"
-#' )
+#' freq_simples <- frecuencias_simples(diseño = disenio_cat, datos = dataset, pregunta = 'P1',
+#'  DB_Mult = DB_Mult, tipo_pregunta = 'categorica')
 #'
-#' freq_simples_format <- frecuencias_simples(tabla = freq_simples, tipo_pregunta = "categorica")
+#' freq_simples_format <- frecuencias_simples(tabla = freq_simples, tipo_pregunta = 'categorica')
 #'
-#' formato_frecuencias_simples(
-#'   tabla = freq_simples_format, wb = wb, hojas = c(1, 2),
-#'   renglon = c(1, 1), columna = 1, estilo_encabezado = headerStyle,
-#'   estilo_horizontal = horizontalStyle, estilo_total = totalStyle, tipo_pregunta = "categorica"
-#' )
+#' formato_frecuencias_simples(tabla = freq_simples_format , wb = wb, hojas = c(1,2),
+#' renglon = c(1,1), columna = 1 , estilo_encabezado = headerStyle ,
+#' estilo_horizontal = horizontalStyle , estilo_total = totalStyle, tipo_pregunta = 'categorica')
 #' }
 #' @import openxlsx
 #' @export
-formato_frecuencias_simples <- function(tabla, wb, hojas = c(1, 2), renglon = c(1, 1),
+formato_frecuencias_simples <- function(tabla, wb, hojas = c(1,2), renglon = c(1,1),
                                         columna, estilo_encabezado,
                                         estilo_horizontal, estilo_total,
-                                        tipo_pregunta = "categorica") {
+                                        tipo_pregunta = 'categorica'){
 
 
   # Primera Página renglón 2 columna 1
 
-  writeData(
-    wb = wb, sheet = hojas[1], x = tabla[[1]], startRow = renglon[1],
-    startCol = columna, colNames = TRUE, borders = "none", keepNA = TRUE,
-    na.string = "-", headerStyle = estilo_encabezado
-  )
+  writeData(wb = wb, sheet = hojas[1], x = tabla[[1]], startRow = renglon[1],
+            startCol = columna, colNames = TRUE, borders = 'none', keepNA = TRUE,
+            na.string = '-', headerStyle = estilo_encabezado)
 
   # Ultimo renglón
-  addStyle(
-    wb = wb, sheet = hojas[1], style = estilo_horizontal,
-    rows = (renglon[1] + nrow(tabla[[1]])),
-    cols = columna:(ncol(tabla[[1]])), gridExpand = TRUE, stack = TRUE
-  )
+  addStyle(wb = wb, sheet = hojas[1], style = estilo_horizontal,
+           rows = (renglon[1] + nrow(tabla[[1]])),
+           cols = columna:(ncol(tabla[[1]])), gridExpand = TRUE, stack = TRUE)
 
 
-  writeData(
-    wb = wb, sheet = hojas[2], x = tabla[[2]], startRow = renglon[2],
-    startCol = columna, colNames = TRUE, borders = "none", keepNA = TRUE,
-    na.string = "-", headerStyle = estilo_encabezado
-  )
+  writeData(wb = wb, sheet = hojas[2], x = tabla[[2]], startRow = renglon[2],
+            startCol = columna, colNames = TRUE, borders = 'none', keepNA = TRUE,
+            na.string = '-', headerStyle = estilo_encabezado)
 
   # Ultimo renglón
-  addStyle(
-    wb = wb, sheet = hojas[2], style = estilo_horizontal,
-    rows = (renglon[2] + nrow(tabla[[2]])), cols = columna:(ncol(tabla[[2]])),
-    gridExpand = TRUE, stack = TRUE
-  )
+  addStyle(wb = wb, sheet = hojas[2], style = estilo_horizontal,
+           rows = (renglon[2] + nrow(tabla[[2]])), cols = columna:(ncol(tabla[[2]])),
+           gridExpand = TRUE, stack = TRUE)
 
   # Estilo total
 
-  if (tipo_pregunta == "categorica" || tipo_pregunta == "multiple") {
+  if (tipo_pregunta == 'categorica' || tipo_pregunta == 'multiple'){
 
     # Columna total
-    addStyle(
-      wb = wb, sheet = hojas[1], style = estilo_total,
-      rows = renglon[1]:(renglon[1] + nrow(tabla[[1]])), cols = 2,
-      gridExpand = TRUE, stack = TRUE
-    )
+    addStyle(wb = wb, sheet = hojas[1], style = estilo_total,
+             rows = renglon[1]:(renglon[1] + nrow(tabla[[1]])), cols = c(2,3),
+             gridExpand = TRUE, stack = TRUE)
 
     # Columna total
-    addStyle(
-      wb = wb, sheet = hojas[2], style = estilo_total,
-      rows = renglon[2]:(renglon[2] + 1 + nrow(tabla[[2]])), cols = 2,
-      gridExpand = TRUE, stack = TRUE
-    )
+    addStyle(wb = wb, sheet = hojas[2], style = estilo_total,
+             rows = renglon[2]:(renglon[2] + 1 + nrow(tabla[[2]])), cols = c(2,3),
+             gridExpand = TRUE, stack = TRUE)
+
   }
 
-  if (tipo_pregunta == "continua") {
+  if (tipo_pregunta == 'continua'){
 
     # Columna total
-    addStyle(
-      wb = wb, sheet = hojas[1], style = estilo_total,
-      rows = (renglon[1] + 1), cols = 2,
-      gridExpand = TRUE, stack = TRUE
-    )
+    addStyle(wb = wb, sheet = hojas[1], style = estilo_total,
+             rows = (renglon[1] + 1), cols = 2,
+             gridExpand = TRUE, stack = TRUE)
 
     # Columna total
-    addStyle(
-      wb = wb, sheet = hojas[2], style = estilo_total,
-      rows = (renglon[2] + 1), cols = 2,
-      gridExpand = TRUE, stack = TRUE
-    )
+    addStyle(wb = wb, sheet = hojas[2], style = estilo_total,
+             rows = (renglon[2] + 1), cols = 2,
+             gridExpand = TRUE, stack = TRUE)
+
   }
+
 }

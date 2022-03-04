@@ -24,30 +24,30 @@
 #' @param semilla Número utilizado para inicializar la generación números aleatorios.
 #' @return Objeto del tipo tbl_svy
 #' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
-#' @seealso \code{\link{as_survey_design}} \code{\link{as_survey_rep}}
+#' @seealso \code{\link{as_survey_design, as_survey_rep}}
 #' @examples \dontrun{
-#' disenio(
-#'   id = id_estrato, estrato = estrato, pesos = ponderador, datos = dataset,
+#' disenio(id = id_estrato, estrato = estrato, pesos = ponderador, datos = dataset,
 #'   pps = "brewer", varianza = "HT", reps = TRUE, metodo = "subbootstrap",
-#'   B = 50, semilla = 1234
-#' )
+#'   B = 50, semilla = 1234)
 #' }
 #' @import srvyr
 #' @import dplyr
 #' @export
 disenio <- function(id, estrato, pesos, datos, pps = "brewer",
-                    varianza = "HT", reps = TRUE, metodo = "subbootstrap",
-                    B = 500, semilla = 1234) {
+                    varianza = "HT", reps = TRUE, nesteo = FALSE, metodo = "subbootstrap",
+                    B=500, semilla=1234){
+
   disenio <- datos %>%
     as_survey_design(
-      ids = {{ id }},
-      weights = {{ pesos }},
-      strata = {{ estrato }},
+      ids = {{id}},
+      weights = {{pesos}},
+      strata = {{estrato}},
       pps = pps,
-      variance = varianza
+      variance = varianza,
+      nest = nesteo
     )
 
-  if (reps) {
+  if (reps){
     disenio %<>% as_survey_rep(
       type = metodo,
       replicates = B
@@ -55,3 +55,4 @@ disenio <- function(id, estrato, pesos, datos, pps = "brewer",
   }
   return(disenio)
 }
+

@@ -57,23 +57,19 @@ Esta función transforma la tabla de frecuencias simples de cierta pregunta espe
 \examples{
 \dontrun{
 # Lectura de datos
-dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
-Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
-  sheet = "Lista Preguntas"
-)$Nombre \%>\% as.vector()
-DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Múltiple") \%>\% as.data.frame()
-Lista_Cont <- read_xlsx("aux/Lista de Preguntas.xlsx",
-  sheet = "Continuas"
-)$VARIABLE \%>\% as.vector()
-Dominios <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Dominios")$Dominios \%>\% as.vector()
+ dataset <- read.spss("data/BASE_CONACYT_260118.sav", to.data.frame = TRUE)
+ Lista_Preg <- read_xlsx("aux/Lista de Preguntas.xlsx",
+                       sheet = "Lista Preguntas")$Nombre \%>\% as.vector()
+ DB_Mult <- read_xlsx("aux/Lista de Preguntas.xlsx",  sheet = "Múltiple") \%>\% as.data.frame()
+ Lista_Cont <- read_xlsx("aux/Lista de Preguntas.xlsx",
+  sheet = "Continuas")$VARIABLE \%>\% as.vector()
+ Dominios <- read_xlsx("aux/Lista de Preguntas.xlsx", sheet = "Dominios")$Dominios \%>\% as.vector()
 
 # Diseño
-disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps = FALSE, datos = dataset)
+ disenio_mult <- disenio(id = c(CV_ESC, ID_DIAO), estrato = ESTRATO, pesos = Pondi1, reps=FALSE, datos = dataset)
 
-total_general(
-  diseño = disenio_mult, pregunta = "P1", dominio = "General", datos = dataset,
-  DB_Mult = DB_Mult, tipo_pregunta = "multiple"
-)
+ total_general (diseño = disenio_mult,  pregunta = 'P1', dominio = 'General', datos = dataset,
+ DB_Mult = DB_Mult, tipo_pregunta = 'multiple')
 }
 }
 \seealso{

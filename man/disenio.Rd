@@ -46,15 +46,13 @@ Se crea un objeto con el diseño de muestreo especificado.
 }
 \examples{
 \dontrun{
-disenio(
-  id = id_estrato, estrato = estrato, pesos = ponderador, datos = dataset,
+disenio(id = id_estrato, estrato = estrato, pesos = ponderador, datos = dataset,
   pps = "brewer", varianza = "HT", reps = TRUE, metodo = "subbootstrap",
-  B = 50, semilla = 1234
-)
+  B = 50, semilla = 1234)
 }
 }
 \seealso{
-\code{\link{as_survey_design}} \code{\link{as_survey_rep}}
+\code{\link{as_survey_design, as_survey_rep}}
 }
 \author{
 Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
