@@ -48,7 +48,7 @@ formatear_frecuencias_simples <- function(tabla,
     if (nrow(tabla) != 0){
 
       tabla1 %<>% add_row("Respuesta" = 'TOTAL',
-                          "Casos" = sum(tabla1$`Número de casos`),
+                          "Casos" = sum(tabla1$Casos),
                           "Total" = sum(tabla1$Total),
                           "Media" = sum(tabla1$Media),
                           "Lim. inf." = NA,
@@ -78,7 +78,7 @@ formatear_frecuencias_simples <- function(tabla,
     if (nrow(tabla) != 0){
 
       tabla2 %<>% add_row("Respuesta" = 'TOTAL',
-                          "Casos" = sum(tabla2$`Número de casos`),
+                          "Casos" = sum(tabla2$Casos),
                           "Total" = sum(tabla2$Total),
                           "Err. Est." = NA ,
                           "Coef. Var." = NA,
@@ -96,9 +96,10 @@ formatear_frecuencias_simples <- function(tabla,
   if (tipo_pregunta == 'continua'){
 
     tabla1 <- tabla %>%
-      select(total, prop, prop_low, prop_upp, cuantiles_q00, cuantiles_q25,
+      select(total, prop, n_casos, prop_low, prop_upp, cuantiles_q00, cuantiles_q25,
              cuantiles_q50, cuantiles_q75, cuantiles_q100) %>%
       dplyr::rename('Total' = total,
+                    "Casos" = n_casos,
                     'Media' = prop,
                     'Lim. inf' = prop_low,
                     'Lim. sup' = prop_upp,
@@ -112,9 +113,10 @@ formatear_frecuencias_simples <- function(tabla,
     names(tabla1) <- c("Métrica", "Valor")
 
     tabla2 <- tabla %>%
-      select(total, prop_se, prop_var, prop_cv, prop_deff) %>%
+      select(total, n_casos, prop_se, prop_var, prop_cv, prop_deff) %>%
       dplyr::rename( "Err. Est." = prop_se,
                      "Total" = total,
+                     "Casos" = n_casos,
                      "Var" = prop_var,
                      "Coef. Var." = prop_cv,
                      "DEFF" = prop_deff) %>%

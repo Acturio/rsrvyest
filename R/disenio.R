@@ -34,7 +34,7 @@
 #' @import dplyr
 #' @export
 disenio <- function(id, estrato, pesos, datos, pps = "brewer",
-                    varianza = "HT", reps = TRUE, nesteo = FALSE, metodo = "subbootstrap",
+                    varianza = "HT", reps = TRUE, nesteo = FALSE, metodo = "bootstrap",
                     B=500, semilla=1234){
 
   disenio <- datos %>%

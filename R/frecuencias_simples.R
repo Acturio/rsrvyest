@@ -58,6 +58,8 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
       table() %>%
       dplyr::as_tibble()
 
+    casos$. %<>% str_trim(side = 'both')
+
     n_casos <- tibble('Respuesta' = casos$., n_casos = casos$n)
 
     estadisticas <- {{diseño}} %>%
@@ -88,6 +90,15 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
 
   if (tipo_pregunta == 'continua'){
 
+    #Número de casos
+
+    casos <- datos %>%
+      select(!!sym(pregunta)) %>%
+      table() %>%
+      dplyr::as_tibble() %>%
+      select(n) %>%
+      sum()
+
     estadisticas <- {{diseño}} %>%
       filter(!is.na(!!sym(pregunta))) %>%
       srvyr::summarise(
@@ -108,7 +119,8 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
         total = survey_total(
           na.rm = na.rm)
       ) %>%
-      select(total, prop, prop_low, prop_upp, cuantiles_q00, cuantiles_q25,
+      mutate(n_casos = casos) %>%
+      select(total, n_casos, prop, prop_low, prop_upp, cuantiles_q00, cuantiles_q25,
              cuantiles_q50, cuantiles_q75, cuantiles_q100, prop_se, prop_var,
              prop_cv, prop_deff)
   }

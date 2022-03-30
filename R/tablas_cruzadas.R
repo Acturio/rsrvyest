@@ -60,6 +60,7 @@ tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
                             significancia = 0.95, proporcion = FALSE,
                             metodo_prop = "likelihood", DEFF = TRUE,
                             tipo_pregunta = "categorica") {
+
   if (tipo_pregunta == "categorica") {
     estadisticas <- diseño %>%
       filter(!is.na(!!sym(pregunta))) %>%

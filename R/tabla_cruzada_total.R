@@ -44,12 +44,15 @@ tabla_cruzada_total <- function(diseño, pregunta, datos, DB_Mult,
                                 tipo_pregunta = "categorica") {
 
   # Tabla nacional
-  nacional <- total_general(
+  gral <- total_general(
     diseño = diseño, datos = datos, DB_Mult = DB_Mult,
     pregunta = pregunta, tipo_pregunta = tipo_pregunta
   )
 
   # Dominios de dispersión
+
+  nacional[[1]] <- tibble()
+  nacional[[2]] <- tibble()
 
   for (d in dominios) {
     f_n <- tablas_cruzadas(
@@ -69,5 +72,8 @@ tabla_cruzada_total <- function(diseño, pregunta, datos, DB_Mult,
     nacional[[2]] <- rbind(nacional[[2]], f_tc[[2]])
   }
 
-  return(nacional)
+  gral[[1]] <- rbind(gral[[1]], nacional[[1]])
+  gral[[2]] <- rbind(gral[[2]], nacional[[2]])
+
+  return(gral)
 }

@@ -62,50 +62,49 @@ total_general <- function(diseño, pregunta, DB_Mult, datos, dominio = 'General'
                           significancia = 0.95, proporcion = FALSE,
                           metodo_prop = "likelihood", DEFF = TRUE){
 
-  if (tipo_pregunta == 'categorica'){
+if (tipo_pregunta == 'categorica'){
 
-    estadisticas <- {{diseño}} %>%
-      srvyr::group_by(!!sym(pregunta)) %>%
-      srvyr::summarize(
-        prop = survey_mean(
-          na.rm = na.rm,
-          vartype = vartype,
-          level = significancia,
-          proportion = proporcion,
-          prop_method = metodo_prop,
-          deff = DEFF
-        ),
-        total = round(survey_total(
-          na.rm = na.rm
-        ),0)
-      ) %>%
-      mutate(prop_low = ifelse(prop_low < 0, 0, prop_low),
-             prop_upp = ifelse(prop_upp > 1, 1, prop_upp),
-             !!sym(pregunta) := str_trim(!!sym(pregunta), side = 'both'))
+  estadisticas <- {{diseño}} %>%
+    srvyr::group_by(!!sym(pregunta)) %>%
+    srvyr::summarize(
+      prop = survey_mean(
+        na.rm = na.rm,
+        vartype = vartype,
+        level = significancia,
+        proportion = proporcion,
+        prop_method = metodo_prop,
+        deff = DEFF
+      ),
+      total = round(survey_total(
+        na.rm = na.rm
+      ),0)
+    ) %>%
+    mutate(prop_low = ifelse(prop_low < 0, 0, prop_low),
+           prop_upp = ifelse(prop_upp > 1, 1, prop_upp),
+           !!sym(pregunta) := str_trim(!!sym(pregunta), side = 'both'))
 
-    total <- estadisticas %>%
-      mutate(Dominio = 'General',
-             Categorias = 'Total') %>%
-      pivot_wider(
-        names_from = !!sym(pregunta),
-        values_from = c(
-          total,
-          total_se,
-          prop,
-          prop_low,
-          prop_upp,
-          prop_se,
-          prop_cv,
-          prop_var,
-          prop_deff),
-        names_glue = sprintf("{%s}_{.value}", {{pregunta}}))
+  total <- estadisticas %>%
+    mutate(Dominio = 'General',
+           Categorias = 'Total') %>%
+    pivot_wider(
+      names_from = !!sym(pregunta),
+      values_from = c(
+        total,
+        total_se,
+        prop,
+        prop_low,
+        prop_upp,
+        prop_se,
+        prop_cv,
+        prop_var,
+        prop_deff),
+      names_glue = sprintf("{%s}_{.value}", {{pregunta}}))
 
-    total_formateado <- formatear_tabla_cruzada(pregunta = pregunta, datos = datos,
-                                                tabla = total, dominio = dominio,
-                                                DB_Mult = DB_Mult,
-                                                tipo_pregunta = tipo_pregunta)
-
-  }
+  total_formateado <- formatear_tabla_cruzada(pregunta = pregunta, datos = datos,
+                                              tabla = total, dominio = dominio,
+                                              DB_Mult = DB_Mult,
+                                              tipo_pregunta = tipo_pregunta)
+}
 
   if (tipo_pregunta == 'continua'){
 
@@ -148,17 +147,16 @@ total_general <- function(diseño, pregunta, DB_Mult, datos, dominio = 'General'
 
     freqs <- frecuencias_simples(diseño = diseño, datos = datos,
                                  pregunta = pregunta, DB_Mult = DB_Mult,
-                                 tipo_pregunta = "multiple")
-
+                                 tipo_pregunta = tipo_pregunta)
 
     freqs <- formatear_frecuencias_simples(tabla = freqs,
-                                           tipo_pregunta = 'multiple')
+                                           tipo_pregunta = tipo_pregunta)
 
     freqs[[1]] %<>% filter(Respuesta != 'TOTAL')%>%
-      select(- `Número de casos`, -`Media acumulada`)
+      select(- `Casos`, -`Media acumulada`)
 
     freqs[[2]] %<>% filter(Respuesta != 'TOTAL')%>%
-      select(- `Número de casos`)
+      select(- `Casos`)
 
 
     categorias <- freqs[[1]] %>% dplyr::pull(Respuesta)
