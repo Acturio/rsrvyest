@@ -67,7 +67,7 @@ if (tipo_pregunta == 'categorica'){
   estadisticas <- {{diseño}} %>%
     srvyr::group_by(!!sym(pregunta)) %>%
     srvyr::summarize(
-      prop = survey_mean(
+      prop = srvyr::survey_mean(
         na.rm = na.rm,
         vartype = vartype,
         level = significancia,
@@ -75,7 +75,7 @@ if (tipo_pregunta == 'categorica'){
         prop_method = metodo_prop,
         deff = DEFF
       ),
-      total = round(survey_total(
+      total = round(srvyr::survey_total(
         na.rm = na.rm
       ),0)
     ) %>%
@@ -110,7 +110,7 @@ if (tipo_pregunta == 'categorica'){
 
     total <- {{diseño}} %>%
       srvyr::summarise(
-        prop = survey_mean(
+        prop = srvyr::survey_mean(
           as.numeric(!!sym(pregunta)),
           na.rm = na.rm,
           vartype = vartype,
@@ -119,12 +119,12 @@ if (tipo_pregunta == 'categorica'){
           prop_method = metodo_prop,
           deff = DEFF
         ),
-        cuantiles = survey_quantile(
+        cuantiles = srvyr::survey_quantile(
           as.numeric(!!sym(pregunta)),
           quantiles = cuantiles,
           na.rm = na.rm
         ),
-        total = survey_total(
+        total = srvyr::survey_total(
           na.rm = na.rm)
       ) %>%
       select(total, prop, prop_low, prop_upp, cuantiles_q00, cuantiles_q25,
