@@ -168,21 +168,6 @@ tablas_cruzadas_excel <- function(pregunta, num_pregunta, dominios, datos,
     gridExpand = TRUE, stack = TRUE
   )
 
-
-  # Pegar logo UNAM renglón 1, columna 1
-
-  insertImage(
-    wb = wb, sheet = hojas[1],
-    file = logo_path, startRow = 1, startCol = 1,
-    width = 2.08, height = 2.2, units = "cm"
-  )
-
-  insertImage(
-    wb = wb, sheet = hojas[2],
-    file = logo_path, startRow = 1, startCol = 1,
-    width = 2.08, height = 2.2, units = "cm"
-  )
-
   # Título pregunta
 
   np <- lista_preguntas[[num_pregunta]]
