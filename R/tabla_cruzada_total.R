@@ -16,7 +16,7 @@
 #' @param tipo_pregunta Tipo de pregunta: 'categorica', 'multiple', 'continua'
 #' @return Lista de dos tibbles: en la primera tibble se encuentra el total estimado y las métricas media, límite inferior y superior;
 #' en la segunda tibble se encuentra el total y las métricas error estándar, varianza, coeficiente de variación y el efecto de diseño (si es que DEFF = TRUE en la función tablas_cruzadas)
-#' @author Bringas Arturo, Rosales Cinthia, Salgado Iván, Torres Ana
+#' @author Bringas Arturo, Torres Ana, Rosales Cinthia, Salgado Iván
 #' @seealso \code{\link{survey_mean}}
 #' @examples \dontrun{
 #' # Lectura de datos
@@ -51,6 +51,7 @@ tabla_cruzada_total <- function(diseño, pregunta, datos, DB_Mult,
 
   # Dominios de dispersión
 
+  nacional <- list()
   nacional[[1]] <- tibble()
   nacional[[2]] <- tibble()
 
