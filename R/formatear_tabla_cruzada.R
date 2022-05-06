@@ -52,8 +52,8 @@ formatear_tabla_cruzada <- function(pregunta, datos, dominio, tabla, DB_Mult,
     categorias <- datos %>%
       pull(!!sym(pregunta)) %>%
       levels() %>%
-      str_trim(side = "both") #%>%
-      #str_c("_")
+      str_trim(side = "both") %>%
+      str_c("_")
 
     nombres1 <- c("Dominio", "Categorías", "Total", rep(
       c("Media", "Lim. inf.", "Lim. sup."),
