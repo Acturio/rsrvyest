@@ -136,6 +136,10 @@ tablas_cruzadas <- function(diseño, pregunta, dominio, datos, DB_Mult,
           quantiles = cuantiles,
           na.rm = na.rm
         )
+      ) %>%
+    mutate(
+        prop_low = ifelse(prop_low < min(prop), min(prop), prop_low),
+        prop_upp = ifelse(prop_upp > max(prop), max(prop), prop_upp)
       )
 
     cruce %<>%
