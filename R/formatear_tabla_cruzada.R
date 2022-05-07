@@ -178,6 +178,7 @@ formatear_tabla_cruzada <- function(pregunta, datos, dominio, tabla, DB_Mult,
     len <- datos %>%
       select(!!sym(dominio)) %>%
       distinct() %>%
+      filter(!is.na(!!sym(dominio))) %>% 
       nrow()
 
     ps <- DB_Mult %>%
