@@ -119,6 +119,8 @@ frecuencias_simples <-  function(diseño, datos, pregunta, DB_Mult, na.rm = TRUE
         total = survey_total(
           na.rm = na.rm)
       ) %>%
+      mutate(prop_low = ifelse(prop_low < min(prop), min(prop), prop_low),
+             prop_upp = ifelse(prop_upp > max(prop), max(prop), prop_upp)) %>%
       mutate(n_casos = casos) %>%
       select(total, n_casos, prop, prop_low, prop_upp, cuantiles_q00, cuantiles_q25,
              cuantiles_q50, cuantiles_q75, cuantiles_q100, prop_se, prop_var,
