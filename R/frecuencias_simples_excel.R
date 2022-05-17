@@ -105,54 +105,8 @@ frecuencias_simples_excel <- function(pregunta, num_pregunta, datos, DB_Mult, li
                                       fuente, pie_tabla, organismo_participacion, logo_path,
                                       estilo_encabezado = headerStyle, estilo_horizontal = horizontalStyle,
                                       estilo_total = totalStyle) {
-  titleStyle <- createStyle(
-    fontSize = 24, fontColour = "#011f4b",
-    textDecoration = "underline"
-  )
-
-  subtitleStyle <- createStyle(
-    fontSize = 14, fontColour = "#011f4b",
-    textDecoration = "underline"
-  )
 
   table_Style <- createStyle(valign = "center", halign = "center")
-
-  # Título general renglón 1 columna 2
-
-  writeData(
-    wb = wb, sheet = hojas[1], x = "Frecuencias estadísticas",
-    startCol = 2, startRow = 1
-  )
-  writeData(
-    wb = wb, sheet = hojas[1], x = nombre_proyecto,
-    startCol = 2, startRow = 2
-  )
-  addStyle(
-    wb = wb, sheet = hojas[1], style = titleStyle, rows = 1, cols = 2,
-    gridExpand = TRUE, stack = TRUE
-  )
-  addStyle(
-    wb = wb, sheet = hojas[1], style = subtitleStyle, rows = 2, cols = 2,
-    gridExpand = TRUE, stack = TRUE
-  )
-
-
-  writeData(
-    wb = wb, sheet = hojas[2], x = "Frecuencias estadísticas (dispersión)",
-    startCol = 2, startRow = 1
-  )
-  writeData(
-    wb = wb, sheet = hojas[2], x = nombre_proyecto,
-    startCol = 2, startRow = 2
-  )
-  addStyle(
-    wb = wb, sheet = hojas[2], style = titleStyle, rows = 1, cols = 2,
-    gridExpand = TRUE, stack = TRUE
-  )
-  addStyle(
-    wb = wb, sheet = hojas[2], style = subtitleStyle, rows = 2, cols = 2,
-    gridExpand = TRUE, stack = TRUE
-  )
 
   # Título Pregunta
 
