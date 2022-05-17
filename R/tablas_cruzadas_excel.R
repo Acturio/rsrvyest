@@ -118,41 +118,7 @@ tablas_cruzadas_excel <- function(pregunta, num_pregunta, dominios, datos,
                                   estilo_total = totalStyle) {
 
   # Título pregunta
-
-  titleStyle <- createStyle(
-    fontSize = 24, fontColour = "#011f4b",
-    textDecoration = "underline"
-  )
-
-  subtitleStyle <- createStyle(
-    fontSize = 14, fontColour = "#011f4b",
-    textDecoration = "underline"
-  )
-
   table_Style <- createStyle(valign = "center", halign = "center")
-
-  # Título general renglón 1 columna 2
-
-  addStyle(
-    wb = wb, sheet = hojas[1], style = titleStyle, rows = 1, cols = 2,
-    gridExpand = TRUE, stack = TRUE
-  )
-  addStyle(
-    wb = wb, sheet = hojas[1], style = subtitleStyle, rows = 2, cols = 2,
-    gridExpand = TRUE, stack = TRUE
-  )
-
-  addStyle(
-    wb = wb, sheet = hojas[2], style = titleStyle, rows = 1, cols = 2,
-    gridExpand = TRUE, stack = TRUE
-  )
-  addStyle(
-    wb = wb, sheet = hojas[2], style = subtitleStyle, rows = 2, cols = 2,
-    gridExpand = TRUE, stack = TRUE
-  )
-
-  # Título pregunta
-
   np <- lista_preguntas[[num_pregunta]]
 
   writeData(
