@@ -133,14 +133,6 @@ tablas_cruzadas_excel <- function(pregunta, num_pregunta, dominios, datos,
 
   # Título general renglón 1 columna 2
 
-  writeData(
-    wb = wb, sheet = hojas[1], x = "Tablas cruzadas",
-    startCol = 2, startRow = 1
-  )
-  writeData(
-    wb = wb, sheet = hojas[1], x = organismo_participacion,
-    startCol = 2, startRow = 2
-  )
   addStyle(
     wb = wb, sheet = hojas[1], style = titleStyle, rows = 1, cols = 2,
     gridExpand = TRUE, stack = TRUE
@@ -150,15 +142,6 @@ tablas_cruzadas_excel <- function(pregunta, num_pregunta, dominios, datos,
     gridExpand = TRUE, stack = TRUE
   )
 
-
-  writeData(
-    wb = wb, sheet = hojas[2], x = "Tablas cruzadas (dispersión)",
-    startCol = 2, startRow = 1
-  )
-  writeData(
-    wb = wb, sheet = hojas[2], x = nombre_proyecto,
-    startCol = 2, startRow = 2
-  )
   addStyle(
     wb = wb, sheet = hojas[2], style = titleStyle, rows = 1, cols = 2,
     gridExpand = TRUE, stack = TRUE
@@ -304,7 +287,7 @@ tablas_cruzadas_excel <- function(pregunta, num_pregunta, dominios, datos,
     fuente_preg <- paste0("Fuente: ", fuente)
     organismo <- paste0("Organismo de participacion: ", organismo_participacion)
     tabla_preg <- paste0(
-      "Tabla correspondiente a la pregunta ", num_pregunta,
+      "* Tabla correspondiente a la pregunta ", pregunta,
       " de ", pie_tabla
     )
 
@@ -456,7 +439,7 @@ tablas_cruzadas_excel <- function(pregunta, num_pregunta, dominios, datos,
     fuente_preg <- paste0("Fuente: ", fuente)
     organismo <- paste0("Organismo de participacion: ", organismo_participacion)
     tabla_preg <- paste0(
-      "Tabla correspondiente a la pregunta ", num_pregunta,
+      "* Tabla correspondiente a la pregunta ", pregunta,
       " de ", pie_tabla
     )
 
