@@ -65,6 +65,7 @@ total_general <- function(diseño, pregunta, DB_Mult, datos, dominio = 'General'
 if (tipo_pregunta == 'categorica'){
 
   estadisticas <- {{diseño}} %>%
+    srvyr::filter(!is.na(!!sym(pregunta))) %>%
     srvyr::group_by(!!sym(pregunta)) %>%
     srvyr::summarize(
       prop = srvyr::survey_mean(
@@ -109,6 +110,7 @@ if (tipo_pregunta == 'categorica'){
   if (tipo_pregunta == 'continua'){
 
     total <- {{diseño}} %>%
+      srvyr::filter(!is.na(!!sym(pregunta))) %>%
       srvyr::summarise(
         prop = srvyr::survey_mean(
           as.numeric(!!sym(pregunta)),
